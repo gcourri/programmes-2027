@@ -8,15 +8,15 @@
 <body>
 <title>Programmes 2027 côte à côte</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Présidentielle 2027 : les programmes des candidats comparés thème par thème, expliqués simplement, avec leurs sources.">
+<meta name="description" content="Présidentielle 2027 : comparer les programmes des candidats, débat par débat, avec des explications et des sources.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@500&display=swap">
 <style>
-/* Layout: masthead with ballot-style candidate toggles, sticky theme tabs + search, then one reading column of candidate sections whose measures unfold in place */
+/* Layout: home screen picks who to compare (all / selection / face-à-face); theme view = sticky bar (mode, tabs, search) then debates, each with its own tabs: positions, how it works, abroad, approaches, pros & cons, effects */
 :root{
   --bg:#f3f4f6; --surface:#ffffff; --sunk:#f6f7f9; --ink:#151922; --muted:#5b6372; --line:#dde1e8;
-  --focus:#2d55c8; --warn:#8a5a00; --warn-soft:#fbf1dc; --note:#eef1f7;
+  --focus:#2d55c8; --warn:#8a5a00; --warn-soft:#fbf1dc; --note:#eef1f7; --pro:#1f7a4d; --con:#b23a2e;
   --c-attal:#d29c00; --c-glucksmann:#d02f78; --c-lepen:#1f2f78; --c-melenchon:#dd4f36;
   --c-philippe:#1590c6; --c-roussel:#a8102b; --c-tondelier:#2c9447;
   --display:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
@@ -26,151 +26,226 @@
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#0f1218; --surface:#171b23; --sunk:#1c212b; --ink:#e8ebf1; --muted:#9aa3b2; --line:#2a303c;
-  --focus:#8aa8ff; --warn:#f0c46a; --warn-soft:#2e2615; --note:#1d2433;
+  --focus:#8aa8ff; --warn:#f0c46a; --warn-soft:#2e2615; --note:#1d2433; --pro:#5fcf93; --con:#f08070;
   --c-attal:#f0c23a; --c-glucksmann:#f069a6; --c-lepen:#7489e4; --c-melenchon:#f47c63;
   --c-philippe:#5cbfeb; --c-roussel:#ec5767; --c-tondelier:#5ec77b; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0f1218; --surface:#171b23; --sunk:#1c212b; --ink:#e8ebf1; --muted:#9aa3b2; --line:#2a303c;
-  --focus:#8aa8ff; --warn:#f0c46a; --warn-soft:#2e2615; --note:#1d2433;
+  --focus:#8aa8ff; --warn:#f0c46a; --warn-soft:#2e2615; --note:#1d2433; --pro:#5fcf93; --con:#f08070;
   --c-attal:#f0c23a; --c-glucksmann:#f069a6; --c-lepen:#7489e4; --c-melenchon:#f47c63;
   --c-philippe:#5cbfeb; --c-roussel:#ec5767; --c-tondelier:#5ec77b; color-scheme:dark}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;margin:0;-webkit-font-smoothing:antialiased}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
-.wrap{max-width:800px;margin:0 auto;padding-left:var(--gut-l);padding-right:var(--gut-r)}
+.wrap{max-width:820px;margin:0 auto;padding-left:var(--gut-l);padding-right:var(--gut-r)}
 button,input{font:inherit;color:inherit}
+button{cursor:pointer}
 button:focus-visible,summary:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.eyebrow{font-family:var(--mono);font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0}
 
-/* Masthead */
-.mast{padding-block:40px 20px;display:flex;flex-direction:column;gap:14px}
-.eyebrow{font-family:var(--mono);font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0}
-h1{font-family:var(--display);font-weight:800;font-size:clamp(2rem,6vw,3.1rem);line-height:1.02;letter-spacing:-.02em;margin:0;text-wrap:balance}
-.intro{margin:0;color:var(--muted);max-width:60ch;font-size:1.02rem}
-.ballots{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
-.ballot{display:flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:7px 12px 7px 8px;cursor:pointer;font-family:var(--display);font-weight:700;font-size:.9rem;line-height:1.2;transition:opacity .15s,border-color .15s}
-.ballot .sw{width:14px;height:14px;border-radius:2px;background:var(--p);border:2px solid var(--p);flex:0 0 auto}
-.ballot[aria-pressed="false"]{opacity:.5}
-.ballot[aria-pressed="false"] .sw{background:transparent}
+/* Home */
+.home{padding-block:44px 64px;display:flex;flex-direction:column;gap:22px}
+.home h1{font-family:var(--display);font-weight:800;font-size:clamp(2rem,6.5vw,3.2rem);line-height:1.02;letter-spacing:-.02em;margin:0;text-wrap:balance}
+.modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.mode{text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.mode b{font-family:var(--display);font-weight:800;font-size:1.15rem;display:flex;align-items:center;gap:10px}
+.mode b::before{content:"";width:14px;height:14px;border-radius:50%;border:2px solid var(--muted);flex:0 0 auto}
+.mode span{font-size:.95rem;color:var(--muted);line-height:1.45}
+.mode:hover{border-color:var(--muted)}
+.mode[aria-checked="true"]{border-color:var(--ink)}
+.mode[aria-checked="true"] b::before{border-color:var(--ink);background:radial-gradient(circle,var(--ink) 0 40%,transparent 45%)}
+.picker{display:flex;flex-direction:column;gap:12px}
+.picker .lab{font-family:var(--display);font-weight:700;font-size:.95rem;margin:0}
+.ballots{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}
+.ballot{display:flex;align-items:center;gap:10px;background:var(--surface);border:1.5px solid var(--line);border-radius:6px;padding:10px 12px;font-family:var(--display);font-weight:700;font-size:.95rem;line-height:1.2;text-align:left;min-width:0}
+.ballot small{display:block;font-weight:500;font-size:.78rem;color:var(--muted);margin-top:2px}
+.ballot .sw{width:16px;height:16px;border-radius:3px;border:2px solid var(--p);flex:0 0 auto}
+.ballot[aria-pressed="true"]{border-color:var(--p)}
+.ballot[aria-pressed="true"] .sw{background:var(--p)}
+.ballot .slot{margin-left:auto;font-family:var(--mono);font-size:.72rem;font-weight:500;background:var(--p);color:var(--surface);border-radius:3px;padding:1px 6px}
 .ballot:hover{border-color:var(--p)}
-.hint{font-family:var(--mono);font-size:.72rem;color:var(--muted);margin:0}
-.hint button{background:none;border:0;padding:0;color:var(--focus);cursor:pointer;text-decoration:underline;text-underline-offset:2px;font-family:inherit;font-size:inherit}
+.vsbar{display:grid;grid-template-columns:1fr auto 1fr;align-items:stretch;gap:10px}
+.vss{border-radius:6px;padding:12px 14px;font-family:var(--display);font-weight:800;font-size:1.1rem;line-height:1.2;background:var(--surface);border:1.5px dashed var(--line);color:var(--muted);min-width:0;display:flex;align-items:center}
+.vss.on{border:0;border-top:5px solid var(--p);color:var(--ink)}
+.vss:last-child{justify-content:flex-end;text-align:right}
+.vsx{align-self:center;font-family:var(--mono);font-size:.8rem;color:var(--muted)}
+.go{align-self:flex-start;font-family:var(--display);font-weight:800;font-size:1.05rem;background:var(--ink);color:var(--bg);border:0;border-radius:999px;padding:13px 24px}
+.go:disabled{opacity:.35;cursor:not-allowed}
+.homenote{margin:0;font-size:.92rem;color:var(--muted);max-width:60ch}
 
-/* Sticky navigation */
+/* Sticky bar */
 .strip{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
 .strip .wrap{padding-block:10px;display:flex;flex-direction:column;gap:10px}
+.toprow{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{flex:0 0 auto;white-space:nowrap;background:none;border:0;padding:0;font-family:var(--display);font-weight:800;font-size:1rem}
+.modechip{display:flex;align-items:center;gap:8px;min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-family:var(--display);font-weight:700;font-size:.84rem}
+.modechip .dots{display:flex;gap:3px;flex:0 0 auto}
+.modechip .dots i{width:9px;height:9px;border-radius:50%;background:var(--p)}
+.modechip .txt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.modechip u{color:var(--muted);font-weight:500;text-underline-offset:2px;flex:0 0 auto}
 .tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-inline:calc(-1 * var(--gut-l)) calc(-1 * var(--gut-r));padding-inline:var(--gut-l) var(--gut-r)}
 .tabs::-webkit-scrollbar{display:none}
-.tab{flex:0 0 auto;font-family:var(--display);font-weight:700;font-size:.88rem;border:1px solid var(--line);background:var(--surface);padding:7px 13px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.tab{flex:0 0 auto;font-family:var(--display);font-weight:700;font-size:.88rem;border:1px solid var(--line);background:var(--surface);padding:7px 13px;border-radius:999px;white-space:nowrap}
 .tab:hover{border-color:var(--ink)}
 .tab[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
-.tab.learn{border-style:dashed;border-color:var(--muted)}
-.tab.learn[aria-pressed="true"]{border-style:solid}
-.sep{flex:0 0 1px;background:var(--line);margin:4px 2px}
+.tab .new{font-family:var(--mono);font-size:.62rem;font-weight:500;vertical-align:2px;margin-left:5px;color:var(--pro)}
+.tab[aria-pressed="true"] .new{color:inherit}
 .searchrow{display:flex;gap:10px;align-items:center}
 .search{flex:1;min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:8px 12px;font-family:var(--display);font-size:.95rem}
 .search::placeholder{color:var(--muted)}
-.tool{flex:0 0 auto;font-family:var(--display);font-size:.85rem;font-weight:700;background:none;border:0;color:var(--ink);cursor:pointer;padding:6px 2px;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--line)}
+.tool{flex:0 0 auto;font-family:var(--display);font-size:.85rem;font-weight:700;background:none;border:0;padding:6px 2px;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--line)}
 .tool:hover{text-decoration-color:var(--ink)}
 
-/* Theme heading */
-main{padding-block:28px 64px}
-.bar{display:flex;flex-direction:column;gap:6px;margin-bottom:22px}
-.bar h2{font-family:var(--display);font-weight:800;font-size:clamp(1.6rem,4.5vw,2.1rem);letter-spacing:-.01em;line-height:1.1;margin:0;text-wrap:balance}
+/* Theme */
+main{padding-block:28px 56px}
+.bar{display:flex;flex-direction:column;gap:10px;margin-bottom:22px}
+.bar h2{font-family:var(--display);font-weight:800;font-size:clamp(1.7rem,5vw,2.3rem);letter-spacing:-.01em;line-height:1.1;margin:0;text-wrap:balance}
 .sub{margin:0;color:var(--muted);max-width:62ch}
-.list{display:flex;flex-direction:column;gap:18px}
+.dnav{display:flex;flex-wrap:wrap;gap:6px;scroll-margin-top:160px}
+.dnav button{font-family:var(--display);font-weight:700;font-size:.85rem;background:none;border:1px solid var(--line);border-radius:4px;padding:5px 10px}
+.dnav button:hover{border-color:var(--ink)}
+.list{display:flex;flex-direction:column;gap:22px}
+.resth{font-family:var(--display);font-weight:800;font-size:1.3rem;margin:0}
 
-/* Candidate section */
-.cand{background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--p);border-radius:6px;scroll-margin-top:130px}
-.ch{display:flex;align-items:baseline;gap:12px;padding:16px 18px 12px;flex-wrap:wrap}
-.ch .who{flex:1;min-width:0}
-.ch h3{font-family:var(--display);font-weight:800;font-size:1.3rem;line-height:1.15;margin:0}
-.party{display:flex;align-items:center;gap:7px;font-family:var(--display);font-size:.85rem;color:var(--muted);margin:3px 0 0}
-.party::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--p);flex:0 0 auto}
-.count{font-family:var(--mono);font-size:.75rem;color:var(--muted);font-variant-numeric:tabular-nums}
-.measures{border-top:1px solid var(--line)}
-.m+.m{border-top:1px solid var(--line)}
-.m>summary{list-style:none;cursor:pointer;display:flex;gap:12px;align-items:flex-start;padding:13px 18px}
+/* Debate */
+.debate{background:var(--surface);border:1px solid var(--line);border-radius:8px;scroll-margin-top:150px;min-width:0}
+.dh{padding:20px 20px 0;display:flex;flex-direction:column;gap:4px}
+.dh h3{font-family:var(--display);font-weight:800;font-size:1.45rem;line-height:1.15;margin:0;text-wrap:balance}
+.dh .q{margin:0;color:var(--muted);font-size:1rem}
+.dtabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;padding:14px 20px 0;border-bottom:1px solid var(--line)}
+.dtabs::-webkit-scrollbar{display:none}
+.dtab{flex:0 0 auto;background:none;border:0;border-bottom:3px solid transparent;padding:8px 10px 9px;font-family:var(--display);font-weight:700;font-size:.88rem;color:var(--muted);white-space:nowrap}
+.dtab:hover{color:var(--ink)}
+.dtab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
+.dp{padding:20px;display:flex;flex-direction:column;gap:16px;min-width:0}
+.dp>p,.dp .para{margin:0;max-width:64ch}
+.dp h4{font-family:var(--mono);font-size:.72rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:4px 0 0}
+.cite{font-family:var(--display);font-size:.78rem;color:var(--muted)}
+.cite a{white-space:nowrap}
+.cite a{color:var(--muted);text-underline-offset:2px;text-decoration-color:var(--line)}
+.cite a:hover{color:var(--ink);text-decoration-color:var(--ink)}
+.cite.gen{font-style:italic}
+
+/* Scale */
+.scale{background:var(--sunk);border-radius:6px;padding:14px 14px 10px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.scale .sl{font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0}
+.track{position:relative;margin-inline:4px}
+.axis{position:absolute;left:0;right:0;height:2px;background:var(--line)}
+.tick{position:absolute;transform:translateX(-50%);font-family:var(--mono);font-size:.72rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.tick::before{content:"";position:absolute;left:50%;top:-9px;width:1px;height:6px;background:var(--muted)}
+.now{position:absolute;width:10px;height:10px;transform:translate(-50%,-4px) rotate(45deg);border:2px solid var(--ink);background:var(--sunk)}
+.bucket{position:absolute;display:flex;flex-direction:column-reverse;gap:4px;align-items:center}
+.bucket.l{align-items:flex-start}.bucket.r{align-items:flex-end}
+.bucket .stem{width:2px;background:var(--muted);margin:0 4px;opacity:.6}
+.bucket .dot{width:10px;height:10px;border-radius:50%;background:var(--ink);margin-bottom:-6px}
+.pin{font-family:var(--display);font-weight:700;font-size:.8rem;line-height:1;padding:5px 8px;border-radius:3px;background:var(--p);color:var(--surface);white-space:nowrap}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-family:var(--display);font-size:.78rem;color:var(--muted);margin:0}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend .lnow{width:8px;height:8px;transform:rotate(45deg);border:2px solid var(--ink)}
+.off{display:flex;flex-direction:column;gap:6px;border-top:1px dashed var(--line);padding-top:8px;margin-top:4px}
+.off p{margin:0;display:flex;gap:8px;align-items:baseline;font-size:.92rem;flex-wrap:wrap}
+.off .ol{font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+/* Positions */
+.pos{display:flex;flex-direction:column}
+.prow{display:grid;grid-template-columns:4px 1fr;gap:0 14px;padding:12px 0;border-top:1px solid var(--line)}
+.prow:first-child{border-top:0;padding-top:0}
+.prow .bar4{background:var(--p);border-radius:2px;grid-row:1/4}
+.who{font-family:var(--display);font-weight:800;font-size:1.02rem;line-height:1.2;margin:0}
+.who small{font-weight:500;color:var(--muted);font-size:.8rem;margin-left:6px}
+.stance{margin:4px 0 0;max-width:62ch}
+.ms{display:flex;flex-direction:column;margin-top:6px;min-width:0}
+.absent{margin:0;font-size:.9rem;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
+.vcol{border-top:5px solid var(--p);background:var(--sunk);border-radius:0 0 6px 6px;padding:12px 12px 6px;min-width:0;display:flex;flex-direction:column;gap:6px}
+.vcol .stance{font-size:1rem;margin:0}
+.vcol .none{color:var(--muted);font-style:italic;font-size:.92rem;margin:0 0 6px}
+
+/* Measures */
+.m{border-top:1px solid var(--line)}
+.ms .m:first-child{border-top:0}
+.m>summary{list-style:none;cursor:pointer;display:flex;gap:10px;align-items:flex-start;padding:9px 0}
 .m>summary::-webkit-details-marker{display:none}
 .m>summary:hover .mt{text-decoration:underline;text-decoration-color:var(--p);text-underline-offset:3px;text-decoration-thickness:2px}
-.chev{flex:0 0 auto;width:18px;height:18px;margin-top:4px;border-radius:50%;border:1.5px solid var(--p);position:relative;transition:transform .2s}
-.chev::after{content:"";position:absolute;left:4.5px;top:5.5px;width:5px;height:5px;border-right:1.5px solid var(--ink);border-bottom:1.5px solid var(--ink);transform:rotate(-45deg)}
-.m[open] .chev{transform:rotate(90deg);background:var(--p)}
-.m[open] .chev::after{border-color:var(--surface)}
-.mt{min-width:0;flex:1;font-family:var(--display);font-weight:700;font-size:1.04rem;line-height:1.35}
-.tag{flex:0 0 auto;font-family:var(--mono);font-size:.68rem;background:var(--warn-soft);color:var(--warn);padding:2px 7px;border-radius:3px;margin-top:3px}
-.ttag{flex:0 0 auto;font-family:var(--mono);font-size:.68rem;border:1px solid var(--line);color:var(--muted);padding:1px 7px;border-radius:3px;margin-top:3px}
-.m[open]{background:var(--sunk)}
-.md{padding:0 22px 18px 48px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.chev{flex:0 0 auto;width:16px;height:16px;margin-top:3px;border-radius:50%;border:1.5px solid var(--p);position:relative;transition:transform .2s}
+.chev::after{content:"";position:absolute;left:3.5px;top:4.5px;width:4.5px;height:4.5px;border-right:1.5px solid var(--ink);border-bottom:1.5px solid var(--ink);transform:rotate(-45deg)}
+.m[open]>summary .chev{transform:rotate(90deg);background:var(--p)}
+.m[open]>summary .chev::after{border-color:var(--surface)}
+.mt{min-width:0;flex:1;font-family:var(--display);font-weight:700;font-size:.95rem;line-height:1.35}
+.tag{flex:0 0 auto;font-family:var(--mono);font-size:.66rem;background:var(--warn-soft);color:var(--warn);padding:2px 6px;border-radius:3px;margin-top:2px}
+.ttag{flex:0 0 auto;font-family:var(--mono);font-size:.66rem;border:1px solid var(--line);color:var(--muted);padding:1px 6px;border-radius:3px;margin-top:2px}
+.md{padding:0 0 14px 26px;display:flex;flex-direction:column;gap:10px;min-width:0;font-size:.96rem}
 .md p{margin:0;max-width:64ch}
-.ctx{padding:10px 14px;background:var(--note);border-radius:4px;font-size:.94rem}
-.ctx b{display:block;font-family:var(--mono);font-size:.7rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
-.src{font-family:var(--display);font-size:.8rem;color:var(--muted);line-height:1.5}
+.ctx{padding:9px 12px;background:var(--note);border-radius:4px;font-size:.92rem}
+.ctx b{display:block;font-family:var(--mono);font-size:.68rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.src{font-family:var(--display);font-size:.78rem;color:var(--muted);line-height:1.5}
 .src a{color:var(--muted);text-decoration-color:var(--line);text-underline-offset:2px}
 .src a:hover{color:var(--ink);text-decoration-color:var(--ink)}
-.empty{color:var(--muted);font-style:italic;margin:0;padding:14px 18px}
-.nlink,.jb{align-self:flex-start;font-family:var(--display);font-size:.82rem;font-weight:700;background:var(--surface);border:1px dashed var(--muted);border-radius:999px;padding:5px 12px;cursor:pointer}
-.nlink:hover,.jb:hover{border-style:solid;border-color:var(--ink)}
+.nlink{align-self:flex-start;font-family:var(--display);font-size:.8rem;font-weight:700;background:var(--surface);border:1px dashed var(--muted);border-radius:999px;padding:5px 12px}
+.nlink:hover{border-style:solid;border-color:var(--ink)}
+.nlink[aria-expanded="true"]{border-style:solid}
+
+/* Flat theme lists (themes without debates yet) */
+.cand{background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--p);border-radius:6px;padding:14px 18px 6px;scroll-margin-top:150px}
+.cand .party{font-family:var(--display);font-size:.84rem;color:var(--muted);margin:2px 0 6px}
+.vs .cand{padding:12px 12px 4px}
+.empty{color:var(--muted);font-style:italic;margin:0 0 10px;font-size:.92rem}
 .none{color:var(--muted);text-align:center;padding:40px 0;margin:0}
 
-/* Comprendre */
-.grp{font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:10px 2px -6px}
-.grp:first-child{margin-top:0}
-.notion{background:var(--surface);border:1px solid var(--line);border-radius:6px;scroll-margin-top:130px}
-.notion>summary{list-style:none;cursor:pointer;display:flex;gap:12px;align-items:flex-start;padding:16px 18px;--p:var(--ink)}
-.notion>summary::-webkit-details-marker{display:none}
-.notion[open] .chev{transform:rotate(90deg);background:var(--ink)}
-.notion[open] .chev::after{border-color:var(--surface)}
-.nt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
-.nt b{font-family:var(--display);font-weight:800;font-size:1.12rem;line-height:1.3}
-.nt span{color:var(--muted);font-size:.95rem}
-.nb{border-top:1px solid var(--line);padding:16px 18px 18px;display:flex;flex-direction:column;gap:14px;min-width:0}
-.nb p{margin:0;max-width:64ch}
-.nb h4{font-family:var(--mono);font-size:.72rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:6px 0 0}
-.facts{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
-.facts li{border-left:2px solid var(--ink);padding:2px 0 2px 12px;font-size:.9rem;line-height:1.4;color:var(--muted);min-width:0}
-.facts b{display:block;font-family:var(--display);font-weight:800;font-size:1.3rem;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.2;margin-bottom:2px}
-.sides{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
-.side{background:var(--sunk);border-radius:4px;padding:12px 14px;min-width:0}
-.side h5{font-family:var(--display);font-size:.9rem;margin:0 0 6px}
-.side ul{margin:0;padding-left:18px;font-size:.95rem}
-.side li+li{margin-top:5px}
-.jump{display:flex;flex-wrap:wrap;gap:8px}
+/* Explainers */
+.facts{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.facts li{border-left:2px solid var(--ink);padding:2px 0 2px 12px;font-size:.88rem;line-height:1.4;color:var(--muted);min-width:0}
+.facts b{display:block;font-family:var(--display);font-weight:800;font-size:1.25rem;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.2;margin-bottom:2px}
+.world{margin:0;padding:0;list-style:none;display:flex;flex-direction:column}
+.world li{display:grid;grid-template-columns:110px 1fr;gap:4px 16px;padding:12px 0;border-top:1px solid var(--line);min-width:0}
+.world li:first-child{border-top:0;padding-top:0}
+.world b{font-family:var(--display);font-weight:800}
+.world div{min-width:0}
+.caution{padding:10px 14px;background:var(--note);border-radius:4px;font-size:.94rem;margin:0}
+.appr{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}
+.ap{border:1px solid var(--line);border-radius:6px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.ap b{font-family:var(--display);font-weight:800;font-size:1rem;line-height:1.25}
+.ap p{margin:0;font-size:.93rem;color:var(--muted);line-height:1.5}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:auto;padding-top:4px}
+.chips .pin{font-size:.76rem}
+.chips .nobody{font-family:var(--display);font-size:.78rem;color:var(--muted);font-style:italic}
+.chips .wl{width:100%;font-family:var(--display);font-size:.74rem;color:var(--muted)}
+.pcb{display:flex;flex-direction:column;gap:10px}
+.pcb+.pcb{border-top:1px solid var(--line);padding-top:18px}
+.pcb h5{font-family:var(--display);font-weight:800;font-size:1.05rem;margin:0;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.pcg{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.pcc{border-radius:6px;background:var(--sunk);padding:12px 14px;min-width:0}
+.pcc h6{font-family:var(--display);font-weight:800;font-size:.88rem;margin:0 0 6px;display:flex;align-items:center;gap:7px}
+.pcc h6 i{font-style:normal;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;color:var(--surface);font-size:.9rem;line-height:1}
+.pcc.pro h6 i{background:var(--pro)}.pcc.con h6 i{background:var(--con)}
+.pcc ul{margin:0;padding-left:18px;font-size:.94rem;display:flex;flex-direction:column;gap:8px}
+.pcc li::marker{color:var(--muted)}
+.notion{border:1px solid var(--line);border-radius:6px;padding:12px 14px;display:flex;flex-direction:column;gap:10px;background:var(--surface)}
+.notion b.nt{font-family:var(--display);font-weight:800}
+.notion p{margin:0}
+.sides{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.side{background:var(--sunk);border-radius:4px;padding:10px 12px;min-width:0}
+.side h6{font-family:var(--display);font-size:.85rem;margin:0 0 4px}
+.side ul{margin:0;padding-left:18px;font-size:.92rem}
 
 footer{border-top:1px solid var(--line);padding-block:20px 40px;font-family:var(--display);font-size:.82rem;color:var(--muted)}
 footer p{margin:0 0 6px;max-width:64ch}
-.flash{animation:flash 1.2s ease-out}
-@keyframes flash{from{box-shadow:0 0 0 3px var(--focus)}to{box-shadow:0 0 0 0 transparent}}
-@media (max-width:520px){
+@media (max-width:560px){
   body{font-size:16px}
-  .md{padding:0 16px 16px 16px}
-  .m>summary,.ch,.notion>summary{padding-inline:14px}
+  .dh,.dp{padding-inline:14px}.dtabs{padding-inline:8px}
+  .vs{gap:8px}.vcol{padding:10px 8px 4px}
+  .vcol .stance{font-size:.92rem}
+  .md{padding-left:0}
+  .world li{grid-template-columns:1fr}
+  .vsbar{grid-template-columns:1fr}.vsx{justify-self:center}.vss:last-child{justify-content:flex-start;text-align:left}
 }
-@media (prefers-reduced-motion:reduce){.chev,.ballot{transition:none}.flash{animation:none}}
+@media (prefers-reduced-motion:reduce){.chev{transition:none}}
 </style>
 
-<header class="mast wrap">
-  <p class="eyebrow">Présidentielle 2027</p>
-  <h1>Les programmes, côte à côte</h1>
-  <p class="intro">Sept candidats, dix thèmes. Chaque mesure est expliquée simplement, avec ce qui existe aujourd'hui et ses sources.</p>
-  <div class="ballots" id="ballots" role="group" aria-label="Candidats affichés"></div>
-  <p class="hint" id="hint">Touchez un nom pour le masquer ou l'afficher.</p>
-</header>
-<nav class="strip" aria-label="Thèmes">
-  <div class="wrap">
-    <div class="tabs" id="chips" role="toolbar"></div>
-    <div class="searchrow">
-      <input class="search" id="q" type="search" placeholder="Chercher une mesure : SMIC, nucléaire, Parcoursup…" aria-label="Chercher une mesure">
-      <button class="tool" id="toggleAll" type="button">Tout déplier</button>
-    </div>
-  </div>
-</nav>
-<main class="wrap">
-  <div class="bar"><h2 id="themeTitle"></h2><p class="sub" id="lede" hidden></p></div>
-  <div class="list" id="list"></div>
-</main>
+<div id="app"></div>
 <footer class="wrap">
-  <p>Mis à jour le 22 octobre 2026. Candidats classés par ordre alphabétique. Les couleurs reprennent celles des partis, à titre de repère.</p>
-  <p>Les mesures marquées « Programme 2022 » viennent d'un ancien programme, pas encore remplacé.</p>
+  <p>Mis à jour le 23 octobre 2026. Candidats classés par ordre alphabétique ; les couleurs reprennent celles des partis, à titre de repère.</p>
+  <p>Les arguments sans source précise sont signalés « argument courant ». Les mesures marquées « Programme 2022 » viennent d'un ancien programme, pas encore remplacé.</p>
 </footer>
 
 <script>
@@ -842,118 +917,1638 @@ th:["europe"],s:["anw","lfi"]}
 ];
 const NI={};N.forEach(g=>g.items.forEach(x=>NI[x.id]=x));
 
-const $=id=>document.getElementById(id);
-const chips=$("chips"),list=$("list"),title=$("themeTitle"),toggle=$("toggleAll"),lede=$("lede"),q=$("q"),ballots=$("ballots");
+// Sources ajoutées pour les débats
+Object.assign(S,{
+  cor26:["COR, rapport annuel (juin 2026)","https://www.cor-retraites.fr/sites/default/files/2026-06/Synth%C3%A8se_RA_2026_0.pdf"],
+  cor26b:["Journal du Net, la nouvelle hypothèse du COR (2026)","https://www.journaldunet.com/patrimoine/finances-personnelles/1553145-retraites-le-cor-vient-de-changer-une-hypothese-et-ca-invalide-dix-ans-de-projections/"],
+  unsa:["UNSA Retraités, sur le rapport du COR 2026","https://retraites.unsa.org/rapport-du-cor-2026-ne-cedons-pas-a-l-alarmisme"],
+  euro:["Euronews, l'âge de départ en Europe (31 juillet 2026)","https://fr.euronews.com/business/2026/07/31/age-de-depart-a-la-retraite-aujourdhui-et-demain-jusqua-quand-travailleront-les-europeens"],
+  tle:["Toute l'Europe, l'âge de la retraite en Europe","https://www.touteleurope.eu/?p=35560"],
+  fgde:["Frontaliers Grand Est, l'âge de départ en Allemagne","https://frontaliers-grandest.eu/accueil/retraite/age-de-depart/"],
+  efn:["EFN, l'âge cible suédois en 2026 (en suédois)","https://efn.se/2026-borjar-riktalder-for-pension-det-galler-for-din-arskull"],
+  corsue:["COR, le système suédois de comptes notionnels","https://www.cor-retraites.fr/sites/default/files/2019-06/doc-1108.pdf"],
+  ifrapage:["AdCF, « Supprimer l'âge légal : l'iFRAP dit non »","https://www.adcf.org/supprimer-age-legal-retraite-debat-presidentielle-2027/"],
+  harr:["Jean-Marie Harribey, note sur le rapport du COR 2026","https://harribey.u-bordeaux.fr/travaux/retraites/cor-2026.pdf"],
+  rens:["Renseignement Économique, financer un retour à 62 ans","https://renseignementeconomique.fr/le-rn-propose-la-retraite-a-62-voire-60-ans-comment-financer-la-promesse"],
+  fip:["Fipeco, la capitalisation (mars 2026)","https://fipeco.fr/pdf/Capitalisation.pdf"],
+  fip2:["Fipeco, faut-il développer la capitalisation ?","https://www.fipeco.fr/fiche/Faut-il-et-comment-d%C3%A9velopper-les-retraites-par-capitalisation-%3F"],
+  bdor:["BDOR, la capitalisation reste marginale en France","https://www.bdor.fr/actualites-or/retraites-la-capitalisation-une-piste-encore-marginale-en-france"],
+  usn:["L'Usine Nouvelle, les obstacles à la capitalisation","https://www.usinenouvelle.com/article/les-obstacles-sur-la-route-de-la-retraite-par-capitalisation-en-france.N2234849"],
+  pens:["Groupama, montants moyens des pensions (données DREES)","https://manouvellevie.groupama.fr/s-informer-retraite/essentiel-montant-pension-retraite/retraite-moyenne-france"]
+});
+
+// Débats par thème. Chaque texte sourcé = [texte, [clés de S]] ; un texte seul = argument courant, sans source précise.
+const DEB={
+retraites:[
+{id:"age",t:"L'âge de départ",q:"À quel âge pourra-t-on partir, et après combien d'années de travail ?",
+pos:{
+  melenchon:{s:"Retour à 62 ans dès 2027, puis 60 ans avec 40 années de cotisation.",m:["Retraite à 60 ans avec 40 annuités"]},
+  roussel:{s:"Retraite à 60 ans à taux plein.",m:["Retraite à 60 ans à taux plein"]},
+  tondelier:{s:"62 ans tout de suite, puis 60 ans à terme pour les métiers pénibles.",m:["Retour immédiat à 62 ans","Objectif 60 ans pour les métiers durs"]},
+  glucksmann:{s:"Abroger la réforme de 2023, puis un âge qui varie selon la pénibilité du métier. Aucun chiffre pour l'instant.",m:["Abroger la réforme de 2023","Pas d'âge unique de départ"]},
+  lepen:{s:"62 ans, et 60 ans pour ceux qui ont commencé à travailler avant 20 ans.",m:["Revenir à 62 ans","60 ans pour ceux qui ont commencé tôt"]},
+  attal:{s:"Plus d'âge légal : seule la durée de cotisation compte.",m:["Supprimer l'âge légal de départ"]},
+  philippe:{s:"65 ans et 45 années de cotisation, avec des exemptions pour environ un tiers des salariés.",m:["Âge légal porté à 65 ans"]}
+},
+scale:{label:"Âge minimum de départ proposé",min:60,max:66,now:62.75,nowLabel:"Aujourd'hui : 62 ans et 9 mois",
+  pts:{melenchon:60,roussel:60,tondelier:62,lepen:62,philippe:65},
+  offLabel:"Pas d'âge unique",off:{attal:"Seule la durée de cotisation compte.",glucksmann:"L'âge dépendrait de la pénibilité, sans chiffre."}},
+how:[
+  ["Le système fonctionne par répartition : les cotisations prélevées sur les salaires d'aujourd'hui paient les pensions des retraités d'aujourd'hui. Il n'y a pas de cagnotte individuelle. L'équilibre dépend donc du nombre de cotisants par retraité, qui baisse avec le vieillissement de la population.",["cor26"]],
+  "Deux règles décident du départ. L'âge légal est l'âge minimum pour partir. La durée de cotisation est le nombre de trimestres nécessaires pour toucher une pension complète, dite « à taux plein ». Partir sans tous ses trimestres fait perdre 1,25 % de pension par trimestre manquant (la décote) ; travailler plus longtemps en fait gagner autant (la surcote). À 67 ans, la décote disparaît dans tous les cas.",
+  ["La réforme de 2023 devait porter l'âge légal de 62 à 64 ans. Elle a été suspendue : l'âge est bloqué à 62 ans et 9 mois, avec 170 trimestres de cotisation, soit 42,5 ans.",["lcp"]],
+  ["Selon le Conseil d'orientation des retraites (COR), l'organisme public chargé des projections, le système a eu un déficit de 5,1 Md€ en 2025, soit 0,2 % du PIB. Ce déficit grandirait ensuite, surtout parce que le COR prévoit désormais moins de naissances (1,45 enfant par femme au lieu de 1,8) : il atteindrait 2,4 % du PIB en 2070. Des syndicats rappellent que des projections à 45 ans dépendent beaucoup des hypothèses retenues.",["cor26","cor26b","unsa"]]
+],
+facts:[["62 ans 9 mois","âge légal actuel"],["170 trimestres","pour le taux plein, soit 42,5 ans"],["1,7","cotisant par retraité en 2026"],["14,1 % du PIB","dépensés pour les retraites en 2025, soit 422 Md€"]],
+world:[
+  ["Allemagne","67 ans pour les personnes nées à partir de 1964, atteint progressivement. On peut partir plus tôt avec une pension réduite.",["fgde"]],
+  ["Italie","67 ans. L'âge est relevé automatiquement quand l'espérance de vie augmente.",["tle"]],
+  ["Danemark","67 ans aujourd'hui, 70 ans prévus en 2040. L'âge suit lui aussi l'espérance de vie.",["tle","euro"]],
+  ["Suède","Pas d'âge légal unique. Un « âge cible » de 67 ans sert de repère depuis 2026, et on peut toucher sa pension dès 64 ans. Plus on part tard, plus la pension est élevée : elle dépend de ce qu'on a cotisé et de l'espérance de vie de sa génération.",["efn","corsue"]]
+],
+worldNote:["Comparer seulement l'âge légal est trompeur : la durée de cotisation, la décote et les départs anticipés changent beaucoup d'un pays à l'autre.",["tle","euro"]],
+appr:[
+  {t:"Âge légal et durée de cotisation",d:"Le système actuel : deux curseurs, qu'on peut régler séparément.",who:["melenchon","roussel","lepen","philippe"]},
+  {t:"Âge modulé selon le métier",d:"On part plus tôt dans les métiers pénibles ou quand l'espérance de vie est plus courte.",who:["glucksmann","tondelier"]},
+  {t:"Durée de cotisation seule",d:"Plus d'âge minimum. Qui a commencé tôt part tôt, qui a fait de longues études part plus tard. Décote et surcote font le reste.",who:["attal"]},
+  {t:"Âge indexé sur l'espérance de vie",d:"L'âge monte automatiquement quand on vit plus longtemps, sans nouvelle loi. C'est le choix de l'Italie, du Danemark et de la Suède.",who:[]}
+],
+pc:[
+  {t:"Reculer l'âge ou allonger la durée",who:["philippe","attal"],
+   pro:[["Le COR prévoit un déficit qui se creuse avec le vieillissement. Travailler plus longtemps fait entrer plus de cotisations et réduit le nombre d'années de pension à payer.",["cor26"]],
+        ["Reculer l'âge rapporte environ deux fois plus qu'allonger la durée, selon des simulations du Sénat citées par l'iFRAP : environ 50 Md€ pour un âge porté à 67 ans, contre moins de 25 Md€ pour 184 trimestres.",["ifrapage"]],
+        ["La plupart des voisins européens sont déjà à 67 ans ou y vont.",["tle"]]],
+   con:[["Supprimer l'âge légal pénaliserait d'abord les carrières hachées et les femmes, qui ont moins de trimestres, selon l'iFRAP.",["ifrapage"]],
+        "Les métiers les plus durs ont une espérance de vie plus courte : un âge plus tardif réduit d'autant leur temps de retraite.",
+        ["L'équilibre peut aussi passer par les cotisations ou le niveau des pensions, rappelle l'économiste Jean-Marie Harribey : l'âge n'est qu'un des trois curseurs.",["harr"]]]},
+  {t:"Revenir à 62 ou 60 ans",who:["melenchon","roussel","tondelier","lepen"],
+   pro:[["Le déficit actuel est faible : 0,2 % du PIB en 2025, et moins encore une fois comptés les produits financiers, selon l'UNSA.",["cor26","unsa"]],
+        ["D'autres recettes sont possibles : hausse des cotisations, cotisations sur les revenus financiers des entreprises, hausse des salaires.",["harr","pcf"]],
+        "Partir plus tôt rend des années de retraite en bonne santé, surtout dans les métiers pénibles."],
+   con:[["Le coût est élevé : environ 9 Md€ par an pour revenir à 62 ans selon LFI et le RN, et jusqu'à 35 Md€ selon une estimation de l'Institut Montaigne.",["lfi14","rens"]],
+        "Financé par des cotisations, il renchérit le travail. Financé par l'impôt ou la dette, il pèse sur un budget public déjà en déficit de plus de 5 % du PIB.",
+        ["Avec moins de naissances, le COR projette un système plus déséquilibré à long terme.",["cor26"]]]}
+],
+impl:[
+  ["Toute décision joue sur trois curseurs : l'âge ou la durée de cotisation, le taux de cotisation, et le niveau des pensions. Bouger l'un oblige à ajuster les autres pour garder l'équilibre.",["harr"]],
+  ["Le niveau de vie des retraités est aujourd'hui égal à celui de l'ensemble de la population. À règles inchangées, le COR le voit descendre à 90 % en 2070, parce que les pensions suivent les prix et non les salaires.",["cor26"]],
+  "Un âge plus élevé touche surtout ceux qui ont commencé à travailler jeunes, souvent dans des métiers peu qualifiés. Une durée seule pèse sur les carrières incomplètes. Un retour à 60 ou 62 ans profite d'abord à ceux qui peuvent partir dès l'âge atteint, et se paie par les actifs ou les contribuables."
+]},
+
+{id:"cap",t:"Répartition ou capitalisation",q:"Faut-il ajouter une épargne placée sur les marchés à côté du système actuel ?",
+pos:{
+  attal:{s:"Un pilier de capitalisation, alimenté par l'intéressement des salariés, et 1 000 € versés par l'État à chaque naissance.",m:["Ajouter un pilier de capitalisation","1 000 € de l'État pour chaque enfant"]},
+  philippe:{s:"Un pilier obligatoire et collectif, qui fournirait 10 à 15 % des pensions d'ici quinze ans.",m:["Capitalisation : 10 à 15 % des pensions"]},
+  lepen:{s:"Un pilier de capitalisation annoncé, dont le détail reste à venir.",m:["Un pilier de capitalisation annoncé"]}
+},
+how:[
+  "Dans la répartition, les cotisations de l'année paient les pensions de l'année. Dans la capitalisation, chacun, ou un fonds collectif, épargne et place cet argent ; la pension dépend de ce qui a été épargné et du rendement obtenu.",
+  ["La France est presque entièrement en répartition : la capitalisation y représente environ 2 % des pensions, contre 18 % en moyenne dans les pays de l'OCDE. Elle existe déjà avec les plans d'épargne retraite (PER), individuels ou d'entreprise.",["bdor","fip2"]],
+  "Aucun candidat ne propose de remplacer la répartition : ceux qui veulent de la capitalisation parlent d'un pilier en plus."
+],
+facts:[["≈ 2 %","des pensions françaises viennent de la capitalisation"],["18 %","en moyenne dans les pays de l'OCDE"]],
+world:[
+  ["Suède","Environ 2,5 % du salaire va dans des fonds choisis par chaque salarié ; le reste des cotisations fonctionne en répartition.",["corsue"]],
+  ["Pays-Bas","Des fonds de pension collectifs, organisés par secteur, versent une grande part des retraites, en plus d'une pension publique de base."],
+  ["États-Unis","Une pension publique de base, complétée par une épargne d'entreprise individuelle (les plans « 401(k) ») dont le montant dépend des marchés."],
+  ["Chili","Passé en 1981 à une capitalisation individuelle presque totale. Des pensions jugées trop faibles ont conduit à plusieurs réformes, dont une en 2025 qui ajoute une cotisation des employeurs."]
+],
+appr:[
+  {t:"Répartition seule",d:"Le système actuel. L'épargne retraite reste un choix individuel.",who:"rest",whoLabel:"Pas de capitalisation dans les sources consultées"},
+  {t:"Capitalisation encouragée",d:"Des incitations sans obligation : versement automatique de l'intéressement, dotation à la naissance.",who:["attal"]},
+  {t:"Pilier collectif obligatoire",d:"Tous les salariés cotisent à des fonds collectifs, en plus de la répartition.",who:["philippe"]},
+  {t:"Annoncée, pas encore détaillée",d:"Le principe est posé, mais ni la taille ni le fonctionnement.",who:["lepen"]}
+],
+pc:[
+  {t:"Ajouter de la capitalisation",who:["attal","philippe","lepen"],
+   pro:[["Sur longue période, les placements rapportent en général plus que la hausse des salaires, qui fait le « rendement » de la répartition.",["fip"]],
+        ["Elle dépend moins du nombre de cotisants par retraité.",["fip"]],
+        ["Un système mixte répartit les risques, la répartition ayant aussi les siens (démographie, décisions politiques), selon Bertrand Martinot, de l'Institut Montaigne.",["usn"]],
+        ["L'épargne collectée peut financer les entreprises françaises.",["hor"]]],
+   con:[["Pendant la transition, les actifs paient deux fois : les pensions actuelles et leur propre épargne. Fipeco juge un basculement rapide irréaliste.",["fip"]],
+        ["Un krach juste avant le départ peut amputer l'épargne d'une génération.",["fip"]],
+        "Elle profite surtout à ceux qui ont les moyens d'épargner.",
+        ["Elle ne supprime pas la contrainte démographique : les pensions sont toujours payées par ce que produisent les actifs du moment, rappelle Jean-Marie Harribey.",["harr"]]]}
+],
+impl:[
+  ["Chaque euro épargné pour soi n'est plus disponible pour payer les retraités actuels, sauf à prélever davantage. C'est pourquoi les projets prévoient une montée progressive, sur quinze ans chez Édouard Philippe.",["fip","hor"]],
+  ["Les Français épargnent déjà beaucoup, mais surtout sur l'assurance-vie, plus souple et avantagée fiscalement. Selon Fipeco, la capitalisation ne décollerait vraiment que si ces avantages étaient réduits.",["fip2"]],
+  "Les jeunes salariés, qui ont des décennies de placement devant eux, en profiteraient le plus. La génération de la transition porterait le coût."
+]},
+
+{id:"pensions",t:"Le montant des pensions",q:"Combien touchent les retraités, et qui décide de l'équilibre du système ?",
+pos:{
+  melenchon:{s:"Aucune pension de carrière complète sous le SMIC (1 600 € net), minimum vieillesse au niveau du seuil de pauvreté.",m:["Aucune pension sous le SMIC"]},
+  lepen:{s:"Minimum vieillesse à 1 000 €, pensions indexées sur l'inflation, demi-part fiscale des veufs rétablie.",m:["Minimum vieillesse à 1 000 €"]},
+  roussel:{s:"Une hausse générale des pensions.",m:["Hausse générale des pensions"]},
+  glucksmann:{s:"Mieux compter les carrières hachées et la pénibilité, moins de régimes, et un pilotage confié aux syndicats et au patronat.",m:["Pensions dignes et régimes simplifiés","Un Haut Conseil de pilotage des retraites"]},
+  philippe:{s:"Gestion confiée aux syndicats et au patronat, avec l'obligation de garder le régime à l'équilibre.",m:["Gestion confiée aux partenaires sociaux"]},
+  tondelier:{s:"Une conférence avec les partenaires sociaux pour ramener le régime à l'équilibre d'ici 2050.",m:["Une conférence travail-retraite"]}
+},
+how:[
+  "Dans le privé, la pension de base vaut au maximum la moitié du salaire moyen des 25 meilleures années, dans la limite d'un plafond. S'y ajoute une retraite complémentaire calculée en points (Agirc-Arrco). Les fonctionnaires touchent jusqu'à 75 % de leur traitement des six derniers mois, hors primes.",
+  ["La pension moyenne était d'environ 1 670 € brut par mois fin 2023. Les femmes touchent en moyenne près de 40 % de moins que les hommes ; l'écart tombe à environ 25 % avec les pensions de réversion, versées au conjoint survivant.",["pens"]],
+  ["Les pensions sont revalorisées chaque année sur l'inflation, pas sur les salaires. Le niveau de vie des retraités est aujourd'hui égal à celui de l'ensemble de la population ; le COR le voit descendre à 90 % en 2070.",["cor26"]],
+  "Pour les retraités aux très faibles ressources, le minimum vieillesse (ASPA) garantit un peu plus de 1 000 € par mois à une personne seule."
+],
+facts:[["≈ 1 670 €","pension moyenne brute par mois (fin 2023)"],["≈ −38 %","écart femmes-hommes, hors réversion"],["100 %","niveau de vie des retraités rapporté à l'ensemble (2023)"],["≈ 1 000 €","minimum vieillesse, personne seule"]],
+appr:[
+  {t:"Relever les minimums",d:"Garantir un plancher plus haut aux petites pensions.",who:["melenchon","lepen","roussel"]},
+  {t:"Mieux compter les carrières incomplètes",d:"Temps partiel, chômage, enfants : réduire ce qui fait baisser la pension, surtout celle des femmes.",who:["glucksmann"]},
+  {t:"Confier le pilotage aux partenaires sociaux",d:"Syndicats et patronat gèrent le régime et doivent le garder à l'équilibre, comme ils le font déjà pour l'Agirc-Arrco.",who:["philippe","glucksmann","tondelier"]}
+],
+pc:[
+  {t:"Relever les petites pensions",who:["melenchon","lepen","roussel"],
+   pro:[["Cela réduit la pauvreté des retraités, en majorité des femmes aux carrières incomplètes.",["pens"]],
+        "Cela soutient la consommation des ménages modestes, qui dépensent l'essentiel de leur revenu."],
+   con:["Le coût monte vite si le plancher est haut.",
+        "Un minimum proche du SMIC réduit l'écart entre ceux qui ont cotisé toute leur vie et les autres, ce qui peut décourager de déclarer son activité."]},
+  {t:"Confier le pilotage aux partenaires sociaux",who:["philippe","glucksmann","tondelier"],
+   pro:["Ceux qui cotisent décident. L'Agirc-Arrco, géré ainsi, est à l'équilibre et dispose de réserves.",
+        "Les décisions sortent en partie du calendrier électoral."],
+   con:["Le régime de base reste garanti par l'État : en cas de crise, c'est le budget public qui paie.",
+        "Syndicats et patronat peuvent ne pas s'entendre, comme lors du « conclave » de 2025 sur les retraites."]}
+],
+impl:[
+  ["Revaloriser sur les prix plutôt que sur les salaires fait baisser peu à peu les pensions par rapport aux revenus des actifs. C'est l'un des principaux moyens par lesquels le système s'équilibre dans les projections du COR.",["cor26"]],
+  "Relever les minimums profite surtout aux femmes et aux anciens indépendants ou agriculteurs, dont les pensions sont souvent faibles. Le coût dépend du niveau du plancher et du nombre de personnes concernées."
+]}
+]
+};
+
+Object.assign(S,{
+  smic:["Ministère du Travail, revalorisation du SMIC (juin 2026)","https://travail-emploi.gouv.fr/revalorisation-du-smic-au-1er-juin-2026"],
+  smiceu:["Infos-entreprises, le salaire minimum en Europe (2026)","https://infos-entreprises.fr/dossiers/smic/europe/"],
+  chom:["Insee, chômage au 2e trimestre 2026","https://www.insee.fr/fr/statistiques/9032359"],
+  chomreg:["Sapiendo, l'indemnisation chômage en 2026","https://www.sapiendo-retraite.fr/information-retraite/assurance-chomage-on-en-est-on-avec-la-reforme"],
+  rc:["Éditions Tissot, chômage après une rupture conventionnelle (2026)","https://www.editions-tissot.fr/actualite/droit-du-travail/rupture-conventionnelle-reduction-de-la-duree-dindemnisation-chomage-adoptee"],
+  insdef:["Insee, déficit et dette publics en 2025","https://www.insee.fr/fr/statistiques/8997691"],
+  rte:["RTE, bilan électrique 2025","https://assets.rte-france.com/prod/public/2026-02/Bilan-electrique-2025-principaux-resultats.pdf"],
+  arenh:["Opéra Énergie, l'après-ARENH en 2026","https://opera-energie.com/arenh-2026/"],
+  citepa:["Ministère de la Transition écologique, baromètre Citepa 2025","https://www.ecologie.gouv.fr/presse/barometre-citepa-baisse-emissions-gaz-effet-serre-france-se-poursuit-2025-laction-climatique"]
+});
+
+Object.assign(DEB,{
+travail:[
+{id:"smic",t:"Les salaires",q:"Faut-il augmenter le SMIC, ou plutôt baisser ce qui est prélevé sur la fiche de paie ?",
+pos:{
+  melenchon:{s:"SMIC à 1 600 € net tout de suite, tous les salaires indexés sur l'inflation, et un écart maximal de 1 à 20 dans chaque entreprise.",m:["SMIC à 1 600 € net et indexation","Écart de salaire maximal de 1 à 20"]},
+  glucksmann:{s:"SMIC à 1 600 € net en deux ans, et salaire net augmenté par une baisse de la CSG financée par les gros héritages.",m:["SMIC à 1 600 € net","Hausse du net financée par les méga-héritages","Conférences salariales"]},
+  tondelier:{s:"Salaire minimum à 2 000 € brut (environ 1 560 € net), et aides aux entreprises réservées à celles qui augmentent les salaires.",m:["Salaire minimum à 2 000 € brut","Exonérations conditionnées aux hausses de salaire"]},
+  attal:{s:"Pas de coup de pouce au SMIC : baisser les cotisations payées par le salarié pour augmenter le net.",m:["Baisser les cotisations salariales"]},
+  lepen:{s:"Les employeurs pourraient augmenter les salaires de 10 % sans payer de cotisations patronales sur la hausse.",m:["+10 % de salaire sans cotisations patronales"]},
+  philippe:{s:"Alléger les cotisations sur le travail, et ne plus en prélever sur deux heures travaillées en plus chaque semaine.",m:["Alléger le poids des cotisations sur le travail","Deux heures de plus sans cotisations"]}
+},
+scale:{label:"SMIC net mensuel proposé",min:1450,max:1650,step:50,unit:" €",now:1478,nowLabel:"Aujourd'hui : 1 478 € net",
+  pts:{melenchon:1600,glucksmann:1600,tondelier:1560},
+  offLabel:"Plutôt des baisses de prélèvements",off:{attal:"Baisser les cotisations salariales.",lepen:"+10 % sans cotisations patronales.",philippe:"Moins de cotisations, deux heures de plus exonérées."}},
+how:[
+  ["Le SMIC est le salaire horaire minimum : 12,31 € brut depuis juin 2026, soit 1 867 € brut et 1 478 € net par mois pour 35 heures. Il est revalorisé chaque 1er janvier, et en cours d'année dès que les prix montent de plus de 2 %. Le gouvernement peut ajouter un « coup de pouce », ce qu'il n'a pas fait depuis 2012.",["smic"]],
+  "Entre le coût pour l'employeur et le net du salarié, il y a les cotisations patronales, puis les cotisations salariales et la CSG. Elles financent la retraite, le chômage et l'assurance maladie. Près du SMIC, l'État exonère déjà l'employeur d'une grande partie de ses cotisations, pour un coût de plusieurs dizaines de milliards d'euros par an.",
+  "Les candidats proposent donc deux chemins : relever le minimum légal, que l'employeur paie, ou baisser les prélèvements pour que le net monte sans coût pour lui. Dans ce second cas, il faut trouver une autre recette pour la Sécurité sociale."
+],
+facts:[["1 478 €","SMIC net mensuel (juin 2026)"],["12,31 €","SMIC brut horaire"],["9,2 %","CSG prélevée sur les salaires"],["≈ 22 %","du brut prélevés côté salarié au-dessus du SMIC"]],
+world:[
+  ["Allemagne","13,90 € brut de l'heure en 2026, et 14,60 € prévus en 2027 : plus que la France, mais avec moins d'exonérations patronales.",["smiceu"]],
+  ["Espagne","Le salaire minimum a fortement augmenté depuis 2018 ; il reste plus bas qu'en France en montant, mais l'écart se réduit en pouvoir d'achat.",["smiceu"]],
+  ["Italie, pays nordiques","Pas de salaire minimum légal : les minimums sont fixés branche par branche par les syndicats et le patronat.",["smiceu"]]
+],
+worldNote:["Comparer les montants est délicat : temps de travail, 13e mois et primes changent selon les pays.",["smiceu"]],
+appr:[
+  {t:"Relever le SMIC",d:"La loi fixe un minimum plus haut ; l'employeur paie la hausse.",who:["melenchon","glucksmann","tondelier"]},
+  {t:"Baisser les prélèvements du salarié",d:"Le net augmente, le coût employeur ne change pas ; l'État ou un autre impôt compense.",who:["attal","glucksmann","philippe"]},
+  {t:"Exonérer les hausses de salaire",d:"L'employeur qui augmente ne paie pas de cotisations sur la hausse.",who:["lepen","philippe"]},
+  {t:"Conditionner les aides existantes",d:"Les exonérations ne sont plus automatiques : elles sont réservées aux entreprises qui augmentent les salaires.",who:["tondelier"]}
+],
+pc:[
+  {t:"Relever fortement le SMIC",who:["melenchon","glucksmann","tondelier"],
+   pro:["Le gain est direct pour environ 3 millions de salariés payés au SMIC, sans coût pour le budget de l'État.",
+        "Les ménages modestes dépensent l'essentiel de leur revenu : la hausse soutient la consommation.",
+        ["Le SMIC français a perdu de l'avance sur ses voisins une fois le pouvoir d'achat pris en compte.",["smiceu"]]],
+   con:["Une hausse rapide pèse sur les petites entreprises et peut freiner l'embauche des moins qualifiés.",
+        "Elle tasse les salaires : ceux juste au-dessus du SMIC se retrouvent au minimum.",
+        "Elle rend plus coûteuses les exonérations de cotisations calculées en fonction du SMIC."]},
+  {t:"Baisser les cotisations pour augmenter le net",who:["attal","lepen","philippe"],
+   pro:["Le salarié gagne plus sans que l'employeur paie davantage.",
+        "Le travail coûte moins cher, ce qui peut aider l'emploi."],
+   con:["Les cotisations financent la retraite et le chômage : chaque baisse doit être compensée par l'impôt ou la dette.",
+        "Les exonérations patronales coûtent déjà des dizaines de milliards par an, avec un effet discuté sur l'emploi.",
+        "Elles ne changent pas le partage entre salaires et profits."]}
+],
+impl:[
+  "Toute hausse du net a un payeur : l'employeur (SMIC), l'État (exonérations), ou un autre contribuable (taxe sur les héritages dans le projet de Raphaël Glucksmann).",
+  ["Le chômage est remonté à 8,3 % au 2e trimestre 2026, son plus haut niveau depuis 2020 : l'effet des hausses de coût du travail sur l'emploi pèse davantage dans le débat.",["chom"]]
+]},
+
+{id:"temps",t:"Le temps de travail",q:"Faut-il travailler moins pour partager l'emploi, ou plus pour gagner davantage ?",
+pos:{
+  melenchon:{s:"Faire respecter les 35 heures, passer aux 32 heures dans les métiers pénibles puis partout par la négociation, et une 6e semaine de congés payés.",m:["35 heures réelles, puis 32 heures","Une 6e semaine de congés payés"]},
+  roussel:{s:"Semaine de 32 heures sans baisse de salaire.",m:["Semaine de 32 heures"]},
+  tondelier:{s:"32 heures dans les métiers pénibles, et 5 jours de « congé climatique » par an.",m:["32 heures dans les métiers pénibles","Un « congé climatique » de 5 jours"]},
+  attal:{s:"Supprimer le plafond d'heures supplémentaires et encourager la semaine de quatre jours, sans réduire le nombre d'heures.",m:["Supprimer le plafond d'heures supplémentaires","Semaine de quatre jours encouragée"]},
+  philippe:{s:"Travailler deux heures de plus par semaine, sans cotisations sur ces heures.",m:["Deux heures de plus sans cotisations"]}
+},
+how:[
+  "La durée légale est de 35 heures par semaine depuis les lois Aubry (1998 et 2000). C'est le seuil des heures supplémentaires, pas un maximum : les salariés à temps complet travaillent en moyenne autour de 39 heures. Un salarié ne peut pas dépasser 48 heures par semaine, ni 220 heures supplémentaires par an sauf accord collectif.",
+  "Les heures supplémentaires sont payées au moins 25 % de plus pour les huit premières, 50 % au-delà, et sont en partie exonérées d'impôt et de cotisations.",
+  "L'idée des 32 heures est de partager le travail : si chacun travaille moins, les entreprises embauchent. Le point décisif est le salaire. La gauche propose les 32 heures sans baisse de salaire, ce qui augmente le coût horaire, sauf si la productivité ou l'État compensent."
+],
+facts:[["35 h","durée légale depuis 1998-2000"],["≈ 39 h","durée moyenne à temps complet"],["220 h","plafond d'heures sup. par an, sauf accord"],["5 semaines","de congés payés"]],
+world:[
+  ["Islande, Royaume-Uni","Des expériences de semaine de quatre jours ont donné des résultats jugés positifs sur le bien-être, sans baisse de production dans les entreprises volontaires. Leur effet sur l'emploi d'un pays entier reste inconnu."],
+  ["Allemagne","Pas de durée légale unique : la durée se négocie par branche, 35 heures dans la métallurgie par exemple."],
+  ["Belgique","Depuis 2022, un salarié peut demander à travailler ses heures sur quatre jours au lieu de cinq."]
+],
+appr:[
+  {t:"Réduire la durée",d:"32 heures, d'abord dans les métiers pénibles, sans baisse de salaire.",who:["melenchon","roussel","tondelier"]},
+  {t:"Plus de congés",d:"Une semaine de congés supplémentaire ou des jours liés au climat.",who:["melenchon","tondelier"]},
+  {t:"Travailler plus, gagner plus",d:"Faciliter et alléger les heures supplémentaires.",who:["attal","philippe"]},
+  {t:"Réorganiser sans réduire",d:"Mêmes heures sur quatre jours au lieu de cinq.",who:["attal"]}
+],
+pc:[
+  {t:"Passer aux 32 heures",who:["melenchon","roussel","tondelier"],
+   pro:[["Partager le travail crée des emplois et réduit le chômage.",["lfi"]],
+        "Les gains de productivité peuvent profiter aux salariés sous forme de temps libre.",
+        "Moins de fatigue, moins d'arrêts maladie et d'accidents."],
+   con:["À salaire égal, le coût horaire du travail augmente d'environ 9 %, ce qui pèse sur la compétitivité.",
+        "Les petites entreprises peinent à réorganiser le travail et à recruter.",
+        "Les effets des 35 heures sur l'emploi restent discutés par les économistes."]},
+  {t:"Faciliter les heures supplémentaires",who:["attal","philippe"],
+   pro:["Ceux qui veulent gagner plus peuvent le faire.",
+        ["Un salarié au SMIC gagnerait environ 1 000 € de plus par an avec deux heures exonérées, selon Édouard Philippe.",["phe"]]],
+   con:["Les syndicats y voient un risque de pression sur les salariés et pour leur santé.",
+        "Les heures exonérées privent la Sécurité sociale de recettes.",
+        "Une entreprise peut préférer les heures sup. à une embauche."]}
+],
+impl:[
+  "Le choix porte autant sur la société voulue (plus de temps libre ou plus de revenu) que sur l'emploi. Les deux camps promettent des emplois : par le partage pour les uns, par une économie plus compétitive pour les autres.",
+  "La réduction du temps de travail se négocie souvent branche par branche ; une loi générale impose un calendrier unique à des secteurs très différents."
+]},
+
+{id:"chomage",t:"Chômage et contrats",q:"Comment indemniser les chômeurs, et faut-il limiter les contrats précaires ?",
+pos:{
+  attal:{s:"Une nouvelle réforme de l'assurance chômage pour encourager le retour à l'emploi.",m:["Réformer l'assurance chômage"]},
+  philippe:{s:"Indemnisation limitée à 12 mois pour les moins de 50 ans.",m:["Chômage : 12 mois maximum avant 50 ans"]},
+  glucksmann:{s:"Abroger les dernières réformes du chômage et généraliser « Territoires zéro chômeur ».",m:["Abroger la réforme de l'assurance chômage","Garantie à l'emploi"]},
+  melenchon:{s:"Limiter CDD et intérim à 10 % des effectifs dans les PME et 5 % dans les grandes entreprises.",m:["Limiter les contrats précaires"]},
+  roussel:{s:"Abroger les réformes du travail et du chômage, et supprimer les contrats précaires.",m:["Abroger les réformes du travail","Fin des contrats précaires"]},
+  lepen:{s:"Un chèque de 200 à 300 € par mois pour développer l'apprentissage.",m:["Chèque formation pour les apprentis"]}
+},
+how:[
+  ["L'assurance chômage, gérée par l'Unédic, est financée par les cotisations des employeurs. Pour être indemnisé, il faut avoir travaillé au moins six mois sur les deux dernières années. La durée maximale est de 18 mois avant 55 ans, et va jusqu'à 27 mois à partir de 57 ans.",["chomreg"]],
+  ["Les réformes récentes ont réduit les droits : durée baissée de 25 % en 2023, et depuis septembre 2026 une durée limitée à 15 mois après une rupture conventionnelle avant 55 ans.",["rc"]],
+  ["Le chômage atteint 8,3 % au 2e trimestre 2026, soit 2,7 millions de personnes, son plus haut niveau depuis 2020.",["chom"]]
+],
+facts:[["8,3 %","taux de chômage (2e trimestre 2026)"],["2,7 millions","de chômeurs"],["18 mois","durée maximale avant 55 ans"],["6 mois","de travail sur 24 pour ouvrir des droits"]],
+world:[
+  ["Danemark","La « flexisécurité » : licencier est facile, mais l'indemnisation est généreuse et l'accompagnement vers l'emploi très encadré."],
+  ["Allemagne","12 mois d'indemnisation en général avant 50 ans, puis un revenu minimum de solidarité."]
+],
+appr:[
+  {t:"Réduire la durée pour inciter à reprendre",d:"Moins de mois indemnisés, surtout quand l'emploi repart.",who:["attal","philippe"]},
+  {t:"Rétablir les droits",d:"Revenir sur les réformes de 2019 à 2026.",who:["glucksmann","roussel"]},
+  {t:"Limiter les contrats courts",d:"Quotas de CDD et d'intérim, ou suppression des contrats précaires.",who:["melenchon","roussel"]},
+  {t:"Créer des emplois ciblés",d:"Emplois financés pour les chômeurs de longue durée, apprentissage aidé.",who:["glucksmann","lepen"]}
+],
+pc:[
+  {t:"Réduire la durée d'indemnisation",who:["attal","philippe"],
+   pro:["Une indemnisation plus courte pousse à reprendre un emploi plus tôt, selon de nombreuses études économiques.",
+        "Le régime économise de l'argent, qui peut servir à baisser les cotisations."],
+   con:["Avec un chômage en hausse, les emplois manquent : réduire les droits appauvrit sans créer de postes.",
+        "Les chômeurs acceptent des emplois moins adaptés à leurs compétences.",
+        "Une partie des économies se reporte sur le RSA, payé par les départements."]},
+  {t:"Limiter les contrats précaires",who:["melenchon","roussel"],
+   pro:["La précarité touche surtout les jeunes et les moins qualifiés.",
+        "Les contrats courts coûtent cher à l'assurance chômage, qui indemnise les fins de contrat."],
+   con:["Certains secteurs (restauration, événementiel, agriculture) dépendent de pics d'activité.",
+        "Des entreprises pourraient embaucher moins plutôt qu'en CDI."]}
+],
+impl:[
+  "Les règles du chômage jouent sur deux leviers à la fois : la protection des chômeurs et l'incitation à reprendre un emploi. Chaque réforme déplace le curseur entre les deux.",
+  "Durcir l'indemnisation fait des économies pour l'Unédic, mais une partie se retrouve en RSA et en aides sociales."
+]}
+],
+
+fiscalite:[
+{id:"riches",t:"Taxer les plus riches ?",q:"Faut-il un impôt sur la fortune, taxer plus les gros héritages, ou au contraire ne rien augmenter ?",
+pos:{
+  melenchon:{s:"Taxe Zucman, ISF « climatique », impôt sur le revenu à 14 tranches, et héritage plafonné à 12 M€ par personne.",m:["Taxe Zucman","Retour d'un ISF « climatique »","Héritage plafonné à 12 M€","Impôt sur le revenu à 14 tranches"]},
+  tondelier:{s:"Impôt sur la grande fortune, taxe Zucman, et héritage plus progressif.",m:["Rétablir l'impôt sur la grande fortune","Taxe Zucman : 2 % au-delà de 100 M€","Héritage progressif"]},
+  roussel:{s:"ISF rétabli et renforcé, impôt sur le revenu à 15 tranches.",m:["ISF rétabli et renforcé","Impôt sur le revenu à 15 tranches"]},
+  glucksmann:{s:"Une grande réforme de l'impôt pour moins taxer le travail et plus l'héritage ; taxe sur les héritages de plus de 2 M€.",m:["Grande réforme fiscale","Hausse du net financée par les méga-héritages"]},
+  lepen:{s:"Pas d'ISF, mais un impôt sur la fortune financière à la place de l'IFI ; successions allégées pour les classes moyennes.",m:["Un impôt sur la fortune financière","Successions et donations allégées"]},
+  attal:{s:"Aucune hausse des droits de succession, donations facilitées.",m:["Pas de hausse des droits de succession"]},
+  philippe:{s:"Aucun nouvel impôt pendant cinq ans.",m:["Pas de nouvel impôt pendant cinq ans"]}
+},
+how:[
+  ["L'ISF taxait de 1989 à 2017 tout le patrimoine au-delà de 1,3 M€, de 0,5 % à 1,5 % par an. Depuis 2018, l'impôt sur la fortune immobilière (IFI) ne taxe plus que l'immobilier, pour garder en France les capitaux investis dans les entreprises.",["lfi"]],
+  ["La taxe Zucman est un impôt plancher : les foyers de plus de 100 M€ de patrimoine (environ 1 800) devraient payer au moins 2 % de leur fortune chaque année, tous impôts confondus. Adoptée à l'Assemblée en février 2025, elle a été rejetée par le Sénat en juin 2025.",["lfi14","fvt"]],
+  ["Pour l'héritage, chaque enfant reçoit 100 000 € de chaque parent sans droits ; au-delà, le barème va de 5 % à 45 %. Assurance-vie et pacte Dutreil allègent fortement la note des gros patrimoines. Environ 60 % du patrimoine des Français est aujourd'hui hérité, contre 35 % au début des années 1970.",["succ"]]
+],
+facts:[["1,3 M€","seuil de l'IFI (et de l'ancien ISF)"],["2 %","impôt plancher de la taxe Zucman"],["100 000 €","transmis sans droits par parent et par enfant"],["≈ 60 %","du patrimoine est hérité"]],
+world:[
+  ["Espagne, Norvège, Suisse","Ils gardent un impôt sur la fortune, à des taux et des seuils variables."],
+  ["Allemagne","Plus d'impôt sur la fortune depuis 1997 ; les droits de succession existent mais avec de fortes exonérations pour les entreprises familiales."],
+  ["Suède","Plus d'impôt sur la fortune ni sur les successions depuis 2005-2007."]
+],
+appr:[
+  {t:"Impôt annuel sur la fortune",d:"ISF, ISF climatique ou impôt plancher sur les très grandes fortunes.",who:["melenchon","tondelier","roussel"]},
+  {t:"Taxer davantage les gros héritages",d:"Barème plus progressif ou plafond sur ce qu'on peut recevoir.",who:["melenchon","tondelier","glucksmann"]},
+  {t:"Cibler la fortune financière",d:"Remplacer l'IFI par un impôt sur les placements.",who:["lepen"]},
+  {t:"Ne pas augmenter",d:"Stabilité fiscale, voire baisse des droits de succession.",who:["attal","philippe","lepen"]}
+],
+pc:[
+  {t:"Taxer plus la fortune et l'héritage",who:["melenchon","tondelier","roussel","glucksmann"],
+   pro:["Les plus grandes fortunes paient aujourd'hui, en proportion, moins d'impôts que les classes moyennes, parce que leur richesse ne devient pas un revenu imposable.",
+        "Un héritage n'est pas le fruit du travail de celui qui le reçoit.",
+        ["Les recettes (10 à 25 Md€ selon les mesures) aideraient à réduire le déficit.",["lfi14"]]],
+   con:["Les plus riches peuvent quitter la France avec leurs entreprises.",
+        "Un actionnaire peut devoir vendre des parts de son entreprise pour payer.",
+        "Évaluer chaque année des entreprises non cotées est complexe et source de litiges."]}
+],
+impl:[
+  ["Les rendements annoncés sont incertains : ils dépendent de la réaction des contribuables visés (départs, montages). LFI attend 15 Md€ de la taxe Zucman et 20 Md€ des héritages en 2027.",["lfi14"]],
+  "Supprimer l'ISF en 2018 visait à orienter l'épargne vers les entreprises ; son effet sur l'investissement reste débattu par les économistes chargés de l'évaluer."
+]},
+
+{id:"deficit",t:"Dette et dépenses publiques",q:"Faut-il réduire le déficit vite, et en coupant quoi ?",
+pos:{
+  attal:{s:"Déficit à zéro en dix ans sans hausse d'impôts : 120 à 150 Md€ d'économies, dont deux tiers sur le social, et 100 000 fonctionnaires en moins.",m:["Déficit à zéro en dix ans","100 000 fonctionnaires en moins"]},
+  philippe:{s:"Déficit ramené à 2 % du PIB, règle d'or dans la Constitution, 250 000 postes publics en moins.",m:["Déficit ramené à 2 %","250 000 postes de fonctionnaires en moins"]},
+  lepen:{s:"140 Md€ d'économies par an d'ici 2032 et 30 Md€ de baisses d'impôts, pour un déficit sous 3 % en 2030.",m:["Contre-budget : 140 Md€ d'économies"]},
+  melenchon:{s:"106 Md€ de recettes nouvelles et 82 Md€ de dépenses nouvelles en 2027, soit environ 25 Md€ de baisse du déficit.",m:["Plan d'investissement de 200 Md€"]},
+  roussel:{s:"Récupérer 80 à 100 Md€ de fraude fiscale et financer un fonds d'avenir de 500 Md€.",m:["80 à 100 Md€ de fraude à récupérer","Un fonds d'avenir de 500 Md€"]}
+},
+how:[
+  ["Le déficit public a atteint 5,1 % du PIB en 2025 (152,5 Md€) et la dette 115,6 % du PIB, soit environ 3 460 Md€. Le gouvernement vise 5 % en 2026.",["insdef"]],
+  "Le déficit est l'écart, chaque année, entre dépenses et recettes ; la dette est la somme des déficits passés. Plus la dette est élevée et les taux d'intérêt hauts, plus les intérêts pèsent sur le budget.",
+  "Les règles européennes demandent un déficit sous 3 % du PIB. La France fait l'objet d'une procédure pour déficit excessif et doit présenter une trajectoire de retour."
+],
+facts:[["5,1 %","du PIB : déficit public en 2025"],["115,6 %","du PIB : dette publique fin 2025"],["3 460 Md€","de dette"],["3 %","plafond de déficit fixé par l'UE"]],
+world:[
+  ["Allemagne","Une règle constitutionnelle limite le déficit fédéral ; elle a été assouplie en 2025 pour la défense et les infrastructures."],
+  ["Italie","Une dette plus élevée que la France, autour de 135 % du PIB, mais un déficit nettement réduit depuis 2023."],
+  ["Grèce","Après la crise de 2010, des coupes massives imposées par ses créanciers ont fait chuter le PIB d'environ un quart."]
+],
+appr:[
+  {t:"Économies fortes, pas de hausse d'impôts",d:"Moins de fonctionnaires, prestations sociales gelées ou réduites.",who:["attal","philippe","lepen"]},
+  {t:"Nouvelles recettes pour financer des dépenses",d:"Impôts sur les plus riches et les entreprises, lutte contre la fraude.",who:["melenchon","roussel"]},
+  {t:"Règle d'or dans la Constitution",d:"Interdire ou limiter les déficits par la loi fondamentale.",who:["attal","philippe","lepen"]}
+],
+pc:[
+  {t:"Réduire vite le déficit par les dépenses",who:["attal","philippe","lepen"],
+   pro:["Les intérêts de la dette prennent une part croissante du budget, au détriment des autres dépenses.",
+        "La France dépense plus que ses voisins (environ 57 % du PIB) pour des services jugés pas meilleurs.",
+        "Des marchés inquiets feraient monter les taux d'emprunt."],
+   con:["Des coupes rapides freinent la croissance, ce qui réduit les recettes et peut aggraver le déficit.",
+        ["Les économistes de l'Institut de l'Entreprise jugent environ 80 % des économies du RN mal documentées ou juridiquement fragiles.",["rnbud"]],
+        "Moins de fonctionnaires signifie moins de services, sauf gains d'efficacité difficiles à prouver."]},
+  {t:"Financer par de nouvelles recettes",who:["melenchon","roussel"],
+   pro:["Les baisses d'impôts depuis 2017 (ISF, impôt sur les sociétés, impôts de production) expliquent une partie du déficit.",
+        "Des dépenses utiles (rénovation, éducation) rapportent plus tard."],
+   con:["Les prélèvements obligatoires sont déjà parmi les plus élevés du monde.",
+        ["Les chiffrages indépendants trouvent souvent des coûts plus élevés que ceux annoncés : l'IFRAP estimait le programme LFI de 2022 entre 200 et 250 Md€ par an.",["ifrap"]],
+        "Les recettes de la lutte contre la fraude sont les plus incertaines."]}
+],
+impl:[
+  "Un programme se juge sur ce qu'il coûte et ce qu'il rapporte, mais aussi sur le calendrier : la première année ne dit pas ce qui se passe ensuite.",
+  "Les chiffres des candidats et ceux des chiffreurs indépendants divergent surtout sur les effets supposés (croissance, emplois, départs de contribuables) et sur le réalisme des recettes."
+]},
+
+{id:"prix",t:"Les prix et le pouvoir d'achat",q:"Faut-il bloquer les prix, baisser les taxes ou aider les ménages modestes ?",
+pos:{
+  melenchon:{s:"Bloquer par décret les prix de première nécessité, et TVA réduite sur l'essentiel.",m:["Bloquer les prix de première nécessité","TVA allégée sur l'essentiel"]},
+  roussel:{s:"Carburant bloqué à 1,60 € le litre, électricité et gaz 30 % moins chers.",m:["Carburant bloqué à 1,60 € le litre","Électricité et gaz –30 %"]},
+  tondelier:{s:"Encadrer les prix de l'énergie, du logement, de l'eau et de l'alimentation de qualité.",m:["Encadrer les prix des biens essentiels"]},
+  lepen:{s:"TVA à 5,5 % sur l'énergie et les carburants, supprimée sur 100 produits essentiels ; péages 15 % moins chers.",m:["TVA à 5,5 % sur l'énergie","Péages –15 %, fin de la redevance"]},
+  glucksmann:{s:"Pas de baisse générale des taxes : un chèque énergie de 500 € ciblé sur les ménages modestes et moyens.",m:["Chèque énergie à 500 € plutôt que baisse des taxes"]}
+},
+how:[
+  "Bloquer un prix, c'est interdire de vendre au-dessus d'un plafond fixé par l'État. Une ordonnance de 1945 le permettait largement, jusqu'à la liberté des prix de 1986. Aujourd'hui, l'État peut encore bloquer des prix en cas de crise.",
+  "Le bouclier tarifaire de 2022-2023 a limité la hausse de l'électricité et du gaz, l'État compensant les fournisseurs. En Outre-mer, un « bouclier qualité-prix » fixe depuis 2012 le prix d'un panier de produits.",
+  ["La TVA est de 20 % sur l'énergie et les carburants, auxquels s'ajoutent des accises. La baisser profite à tous les acheteurs, y compris les plus aisés.",["wg"]]
+],
+facts:[["20 %","TVA sur l'énergie et les carburants"],["5,5 %","taux réduit (alimentation, etc.)"],["1986","fin du contrôle général des prix"]],
+world:[
+  ["Espagne","TVA supprimée sur certains aliments de base en 2023-2024 pour contenir l'inflation."],
+  ["Hongrie","Prix plafonnés sur des produits alimentaires en 2022 : des pénuries et des hausses sur les produits non plafonnés ont suivi."]
+],
+appr:[
+  {t:"Bloquer ou encadrer les prix",d:"L'État fixe un plafond.",who:["melenchon","roussel","tondelier"]},
+  {t:"Baisser les taxes",d:"Moins de TVA ou d'accises sur l'énergie et les produits essentiels.",who:["lepen","melenchon","roussel"]},
+  {t:"Aider les ménages ciblés",d:"Un chèque pour ceux qui en ont le plus besoin.",who:["glucksmann"]}
+],
+pc:[
+  {t:"Bloquer les prix",who:["melenchon","roussel","tondelier"],
+   pro:["C'est rapide et concret pour les ménages.",
+        "Cela empêche certains acteurs de profiter d'une crise pour augmenter leurs marges.",
+        "Le bouclier tarifaire a nettement limité l'inflation en France en 2022."],
+   con:["Si le prix bloqué est sous le coût de production, les vendeurs cessent de vendre : risque de pénuries.",
+        "Quand l'État compense, cela coûte cher.",
+        "Les producteurs, surtout agricoles, peuvent être pris en étau."]},
+  {t:"Baisser les taxes ou cibler une aide",who:["lepen","glucksmann"],
+   pro:["Une baisse de TVA se répercute vite sur les prix.",
+        ["Une aide ciblée coûte beaucoup moins cher : environ 4 Md€ pour le chèque énergie élargi, contre 29 Md€ pour une baisse générale des taxes sur les carburants, selon Raphaël Glucksmann.",["wg"]]],
+   con:["Une baisse de taxe profite aussi aux gros consommateurs et aux plus aisés, et prive l'État de recettes.",
+        "Une aide ciblée oublie ceux qui sont juste au-dessus du seuil.",
+        "Baisser le prix des énergies fossiles va à l'encontre des objectifs climatiques."]}
+],
+impl:[
+  "Chaque option a un payeur différent : le producteur (blocage), le budget de l'État (baisse de taxe, compensation) ou les contribuables (chèque).",
+  "Les mesures sur les carburants touchent surtout les ménages qui dépendent de la voiture, en zone rurale et périurbaine."
+]}
+],
+
+ecologie:[
+{id:"nucleaire",t:"Nucléaire et renouvelables",q:"Avec quoi produire l'électricité des prochaines décennies ?",
+pos:{
+  attal:{s:"Garantir les 14 EPR prévus, avec un nouveau chantier chaque année.",m:["Nucléaire : un réacteur lancé par an"]},
+  philippe:{s:"Relancer le nucléaire, développer les renouvelables et électrifier les usages.",m:["Nucléaire, renouvelables et électrification"]},
+  lepen:{s:"Nouveaux réacteurs et barrages, arrêt de l'éolien et démontage progressif des parcs, moratoire sur le solaire.",m:["Relancer nucléaire et hydroélectricité","Stop à l'éolien"]},
+  roussel:{s:"Un mix 100 % public et décarboné, nucléaire et renouvelables.",m:["Nucléaire et pôle public de l'énergie"]},
+  tondelier:{s:"Pas de nouveaux réacteurs ; la part du nucléaire baisserait au profit des renouvelables, sans calendrier chiffré.",m:["Sortie progressive du nucléaire"]},
+  melenchon:{s:"Abandonner les EPR, sortir du nucléaire et viser 100 % de renouvelables.",m:["Sortir du nucléaire"]}
+},
+how:[
+  ["En 2025, 95 % de l'électricité produite en France était bas-carbone. Le nucléaire a produit 373 TWh, soit environ les deux tiers ; les renouvelables (hydraulique, éolien, solaire) environ 27 %. La France a exporté un record de 92 TWh vers ses voisins.",["rte"]],
+  "Les 57 réacteurs ont été construits pour la plupart dans les années 1970-1990. Leur durée de vie est en cours de prolongation au-delà de 40 ans. L'État a lancé un programme de 6 EPR2, avec 8 en option ; le premier est attendu dans les années 2030.",
+  "L'électricité ne fait qu'environ un quart de l'énergie consommée en France ; le reste vient surtout du pétrole et du gaz. Décarboner suppose donc d'électrifier voitures, chauffage et industrie, et de produire plus d'électricité."
+],
+facts:[["95 %","de l'électricité bas-carbone (2025)"],["≈ 2/3","produite par le nucléaire"],["≈ 27 %","par les renouvelables"],["92 TWh","exportés en 2025, un record"]],
+world:[
+  ["Allemagne","Sortie du nucléaire achevée en 2023 ; plus de la moitié de l'électricité vient des renouvelables, mais le charbon et le gaz restent importants."],
+  ["Espagne","Forte croissance du solaire et de l'éolien ; sortie du nucléaire prévue d'ici 2035."],
+  ["Royaume-Uni, Pologne","Construction ou projets de nouveaux réacteurs, à côté de l'éolien en mer."]
+],
+appr:[
+  {t:"Nucléaire et renouvelables ensemble",d:"Nouveaux réacteurs et développement des renouvelables.",who:["attal","philippe","roussel"]},
+  {t:"Nucléaire sans éolien",d:"Nouveaux réacteurs et barrages, arrêt de l'éolien.",who:["lepen"]},
+  {t:"Sortir du nucléaire",d:"Renouvelables, stockage et baisse de la consommation.",who:["melenchon","tondelier"]}
+],
+pc:[
+  {t:"Relancer le nucléaire",who:["attal","philippe","lepen","roussel"],
+   pro:["Production pilotable, disponible jour et nuit, très peu émettrice de CO₂.",
+        "Une filière industrielle française déjà en place, qui rend le pays moins dépendant des importations.",
+        "Les réacteurs existants produisent une électricité peu chère une fois construits."],
+   con:["Les chantiers récents ont accumulé retards et surcoûts : l'EPR de Flamanville a démarré avec plus de dix ans de retard.",
+        "Les nouveaux réacteurs arriveront trop tard pour les objectifs climatiques de 2030-2035.",
+        "Déchets à très longue durée de vie et risque d'accident."]},
+  {t:"Miser sur les renouvelables",who:["melenchon","tondelier","attal","philippe"],
+   pro:["Solaire et éolien sont devenus parmi les moyens de production les moins chers à construire.",
+        "Ils se déploient en quelques années, plus vite qu'un réacteur."],
+   con:["Leur production varie avec le vent et le soleil : il faut du stockage ou des centrales d'appoint.",
+        ["En 2025, la production solaire et éolienne a déjà dû être réduite environ 3 TWh lors d'épisodes de prix négatifs.",["rte"]],
+        "Ils occupent de la place et suscitent des oppositions locales."]}
+],
+impl:[
+  "Sortir du nucléaire suppose de remplacer environ les deux tiers de la production actuelle tout en électrifiant les usages ; arrêter l'éolien suppose de trouver ailleurs cette production qui augmente.",
+  "Les choix engagent sur 40 à 60 ans : un réacteur lancé en 2027 produira encore en 2090."
+]},
+
+{id:"prixelec",t:"Le prix de l'électricité",q:"Faut-il sortir du marché européen pour payer l'électricité à son coût de production ?",
+pos:{
+  lepen:{s:"Sortir du marché européen de l'électricité pour fixer des tarifs sur les coûts français.",m:["Sortir du marché européen de l'électricité"]},
+  roussel:{s:"Électricité et gaz 30 % moins chers, en sortant du marché européen et avec un pôle public de l'énergie.",m:["Électricité et gaz –30 %"]},
+  glucksmann:{s:"Une partie de la facture calée sur le coût réel du nucléaire et des renouvelables.",m:["Électricité payée au coût de production"]},
+  tondelier:{s:"Un prix de l'électricité qui ne suive plus celui du gaz.",m:["Électricité découplée des énergies fossiles"]},
+  attal:{s:"Un prix autour de 75 € le MWh, et moins de 50 € pour les industriels exposés.",m:["Électricité autour de 75 €/MWh"]},
+  melenchon:{s:"Renationaliser EDF et Engie, et mettre fin à la libéralisation de l'énergie.",m:["Renationaliser SNCF, EDF et Engie"]}
+},
+how:[
+  "Le prix de gros de l'électricité se fixe sur un marché européen commun. À chaque heure, il dépend de la dernière centrale nécessaire pour répondre à la demande, souvent une centrale au gaz. Quand le gaz flambe, comme en 2022, l'électricité flambe aussi, même dans un pays très nucléaire.",
+  ["Jusqu'à fin 2025, l'ARENH obligeait EDF à vendre une partie de sa production nucléaire à 42 € le MWh aux autres fournisseurs. Depuis janvier 2026, un nouveau mécanisme prélève une partie des revenus d'EDF quand les prix de marché sont très hauts, pour la reverser aux consommateurs.",["arenh"]],
+  "Les particuliers peuvent garder le tarif réglementé de vente, fixé chaque année sur proposition du régulateur (la CRE)."
+],
+facts:[["42 €/MWh","prix de l'ARENH jusqu'à fin 2025"],["2026","entrée en vigueur du nouveau mécanisme"],["≈ 75 €/MWh","prix visé par G. Attal"]],
+world:[
+  ["Espagne et Portugal","« Exception ibérique » en 2022-2023 : le prix du gaz servant à produire l'électricité a été plafonné, avec l'accord de l'UE."]
+],
+appr:[
+  {t:"Sortir du marché européen",d:"Fixer des tarifs nationaux à partir des coûts français.",who:["lepen","roussel"]},
+  {t:"Réformer le prix sans sortir",d:"Caler une partie de la facture sur les coûts de production, découpler du gaz.",who:["glucksmann","tondelier","attal"]},
+  {t:"Reprendre le contrôle public",d:"Nationaliser les grands énergéticiens.",who:["melenchon","roussel"]}
+],
+pc:[
+  {t:"Sortir du marché européen",who:["lepen","roussel"],
+   pro:["Les Français paieraient le coût de leur propre parc, nucléaire et hydraulique, moins cher que le gaz.",
+        "La facture deviendrait plus stable et prévisible."],
+   con:["La France exporte beaucoup : les interconnexions lui rapportent et la secourent en cas de manque, comme en 2022.",
+        "La sortie poserait des problèmes juridiques avec les traités européens.",
+        "Un prix trop bas ne financerait plus les investissements d'EDF (nouveaux réacteurs, réseaux)."]},
+  {t:"Réformer de l'intérieur",who:["glucksmann","tondelier","attal"],
+   pro:["La réforme européenne de 2024 autorise déjà des contrats à prix fixe sur la production bas-carbone.",
+        "On garde les échanges avec les voisins."],
+   con:["L'effet sur la facture est plus lent et plus difficile à garantir.",
+        "Les mécanismes de redistribution sont complexes et leur effet réel incertain."]}
+],
+impl:[
+  "Le prix de l'électricité doit couvrir l'entretien du parc existant, les nouveaux réacteurs et les réseaux. Un prix bas pour le consommateur se paie ailleurs : par EDF, donc l'État actionnaire, ou par moins d'investissement.",
+  "Pour l'industrie, un prix stable et bas est un argument décisif pour s'installer ou rester en France."
+]},
+
+{id:"climat",t:"Le rythme de la transition",q:"À quelle vitesse baisser les émissions, et qui fait l'effort ?",
+pos:{
+  melenchon:{s:"–65 % d'émissions en 2030, 200 Md€ d'investissement, et une « règle verte » dans la Constitution.",m:["–65 % d'émissions en 2030","Plan d'investissement de 200 Md€","Planification écologique et « règle verte »"]},
+  tondelier:{s:"Neutralité carbone dès 2040, 110 km/h sur autoroute, grands projets gelés et 7 Md€ par an pour l'adaptation.",m:["110 km/h sur autoroute","Geler les grands projets","7 Md€ par an pour l'adaptation"]},
+  glucksmann:{s:"Une grande loi climat : –90 % d'émissions en 2040, et un plan rail national.",m:["Une grande loi climat","Un plan rail national"]},
+  roussel:{s:"140 Md€ par an pour le climat et transports publics gratuits.",m:["140 Md€ par an pour le climat","Transports publics gratuits"]},
+  attal:{s:"Tripler le rythme de baisse des émissions, et réduire à moins de 30 % la part des fossiles en 2035.",m:["Tripler la baisse des émissions","Réduire les énergies fossiles","Voiture électrique d'occasion aidée"]},
+  philippe:{s:"Concentrer l'effort sur les gros émetteurs (fret, bâtiment, industrie) et taxer le carbone importé.",m:["Cibler les gros émetteurs","Prix du carbone aux frontières","S'adapter aux canicules"]},
+  lepen:{s:"Supprimer le Fonds vert et le plan vélo, sauf pour les inondations et les feux de forêt.",m:["Supprimer le Fonds vert et le plan vélo"]}
+},
+how:[
+  ["La France a émis environ 364 millions de tonnes de CO₂ équivalent en 2025, le plus bas niveau depuis 1990. Mais la baisse a ralenti : –1,5 % en 2025, après –6,8 % en 2023. Pour tenir l'objectif européen de 2030, il faudrait environ –5 % par an.",["citepa"]],
+  "Les transports sont le premier secteur émetteur (environ un tiers), devant l'agriculture, l'industrie et les bâtiments. L'objectif légal est la neutralité carbone en 2050 : ne pas émettre plus que ce que les forêts et les sols absorbent.",
+  "Au-delà de baisser les émissions, il faut s'adapter : canicules, sécheresses et inondations augmentent déjà, quoi qu'il arrive."
+],
+facts:[["364 Mt","de CO₂ équivalent émises en 2025"],["–1,5 %","de baisse en 2025"],["≈ –5 %","par an nécessaires d'ici 2030"],["2050","objectif de neutralité carbone"]],
+world:[
+  ["Royaume-Uni","Émissions divisées par deux depuis 1990, surtout grâce à la fin du charbon."],
+  ["Union européenne","Objectif de –55 % en 2030 par rapport à 1990, et un marché du carbone étendu aux carburants et au chauffage (ETS2) prévu à partir de 2028."]
+],
+appr:[
+  {t:"Accélérer fortement",d:"Objectifs plus ambitieux que ceux de l'UE, gros plans d'investissement public.",who:["melenchon","tondelier","roussel","glucksmann"]},
+  {t:"Suivre les objectifs européens",d:"Électrifier, rénover, cibler les grands émetteurs.",who:["attal","philippe"]},
+  {t:"Ralentir les contraintes",d:"Moins de normes et de dépenses de transition.",who:["lepen"]}
+],
+pc:[
+  {t:"Accélérer la transition",who:["melenchon","tondelier","roussel","glucksmann"],
+   pro:["Chaque année de retard rend l'effort suivant plus brutal et plus cher.",
+        "Les dégâts climatiques (sécheresses, inondations) coûtent déjà des milliards par an.",
+        "Rénovation, rail et renouvelables créent des emplois locaux."],
+   con:["Des investissements massifs dans un budget déjà en déficit.",
+        "Des mesures comme le 110 km/h ou la fin de grands projets touchent la vie quotidienne et l'activité locale.",
+        "La France pèse environ 1 % des émissions mondiales."]},
+  {t:"Freiner les contraintes",who:["lepen"],
+   pro:["Des normes rapides pèsent sur les ménages modestes et les agriculteurs.",
+        "L'électricité française est déjà très décarbonée."],
+   con:["Les objectifs européens s'imposent à la France, qui risque des sanctions.",
+        "Repousser l'effort ne le supprime pas : il revient plus tard et plus cher."]}
+],
+impl:[
+  "Les principales sources restantes sont la voiture, le chauffage au fioul et au gaz, l'élevage et l'industrie lourde : chaque mesure touche directement des modes de vie ou des emplois.",
+  "Qui paie ? Taxer le carbone pèse proportionnellement plus sur les ménages modestes ; financer par le budget pèse sur la dette."
+]}
+]
+});
+
+Object.assign(S,{
+  tsej:["Ministère de l'Intérieur, les titres de séjour en 2025","https://www.immigration.interieur.gouv.fr/documentation/etudes-et-statistiques/titres-de-sejour-en-2025-protections-subsidiaires-ont-plus-que-double.html"],
+  fiimm:["franceinfo, le rapport annuel sur l'immigration","https://www.franceinfo.fr/societe/immigration/expulsions-demandes-d-asile-titres-de-sejour-ce-qu-il-faut-retenir-du-rapport-annuel-sur-l-immigration-du-ministere-de-l-interieur_7765943.html"],
+  may:["Mayotte Hebdo, le droit du sol à Mayotte (2026)","https://www.mayottehebdo.com/actualite/politique/droit-du-sol-a-mayotte-la-reforme-de-2025-devient-effective/"],
+  pacte:["Conseil de l'UE, le pacte sur la migration et l'asile","https://www.consilium.europa.eu/fr/policies/eu-pact-migration-asylum/"],
+  fta:["France terre d'asile, veille de juin 2026","https://www.france-terre-asile.org/images/Veille_sociale_et_juridique_-_Juin_2026.pdf"],
+  prison:["franceinfo, la surpopulation carcérale (février 2026)","https://www.franceinfo.fr/societe/justice/prisons-avec-86-645-detenus-en-france-au-1er-fevrier-2026-la-surpopulation-carcerale-s-eleve-a-136-en-moyenne-un-nouveau-record_7840730.html"],
+  prison2:["Entrevue, nouveau record de détenus (2026)","https://entrevue.fr/police-justice/prisons-francaises-nouveau-record-historique-avec-89-668-detenus-pour-seulement-63-303-places/"],
+  plancher:["Barreau de Paris, rapport sur les peines planchers (2024)","https://avocatparis.org/sites/bdp/files/2024-10/Rapport%20sur%20la%20proposition%20de%20loi%20tendant%20%C3%A0%20l%27instauration%20de%20peines%20planchers%20pour%20certains%20crimes%20et%20d%C3%A9lits.pdf"],
+  narco:["Info.gouv, la loi contre le narcotrafic","https://www.info.gouv.fr/actualite/loi-contre-le-narcotrafic-ce-quil-faut-retenir"],
+  cdjnarco:["Le Club des juristes, le parquet anticriminalité organisée","https://www.leclubdesjuristes.com/societe/narcotrafic-le-parquet-national-anticriminalite-entre-en-service-1-5-13494/"],
+  cannde:["ICI, deux ans de cannabis légal en Allemagne","https://www.ici.fr/infos/societe/legalisation-du-cannabis-en-allemagne-un-bilan-plutot-positif-deux-ans-apres-l-entree-en-vigueur-9381190"]
+});
+
+Object.assign(DEB,{
+immigration:[
+{id:"niveau",t:"Combien d'immigration ?",q:"Faut-il réduire l'immigration légale, la choisir selon le travail, ou ouvrir plus de voies d'entrée ?",
+pos:{
+  philippe:{s:"Diviser par deux l'immigration légale, sous 200 000 titres par an, avec des quotas pour le travail.",m:["Diviser par deux l'immigration légale"]},
+  lepen:{s:"Supprimer le regroupement familial et organiser un référendum sur l'immigration.",m:["Fin du regroupement familial et référendum"]},
+  attal:{s:"Moins d'immigration familiale, et une immigration de travail choisie par un système à points.",m:["Moins de regroupement familial","« Préférence travail »"]},
+  glucksmann:{s:"Des voies légales d'immigration de travail, et une convention citoyenne pour décider de la politique migratoire.",m:["Voies légales d'immigration de travail","Une convention citoyenne sur l'immigration"]},
+  tondelier:{s:"Des voies d'entrée légales et sûres, par une révision du pacte européen.",m:["Voies légales et sûres"]},
+  melenchon:{s:"Visas facilités, régularisation des travailleurs, étudiants et parents d'enfants scolarisés.",m:["Régularisations et carte de 10 ans"]},
+  roussel:{s:"Une politique d'accueil et des voies d'accès légales et sûres.",m:["Une politique d'accueil d'humanité"]}
+},
+how:[
+  ["En 2025, la France a délivré environ 384 000 premiers titres de séjour, en hausse de 11 % (chiffre provisoire, révisé ensuite autour de 377 000). Les étudiants et les motifs familiaux en sont les deux premières sources, devant l'asile et le travail.",["fiimm","tsej"]],
+  ["L'immigration familiale représente environ 91 000 titres par an. Elle comprend le regroupement familial au sens strict (un étranger installé fait venir son conjoint et ses enfants, sous conditions de ressources et de logement), mais aussi les conjoints de Français et les parents d'enfants français.",["fiimm"]],
+  "Une partie de ces droits découle d'engagements internationaux, notamment le droit à mener une vie familiale normale protégé par la Convention européenne des droits de l'homme. Les supprimer entièrement suppose de modifier la Constitution ou de sortir de certains traités."
+],
+facts:[["≈ 384 000","premiers titres de séjour en 2025"],["≈ 91 000","titres pour motif familial"],["116 700","premières demandes d'asile en 2025"]],
+world:[
+  ["Canada","Un système à points sélectionne les immigrants économiques selon l'âge, le diplôme, la langue et l'emploi. Le pays accueille proportionnellement plus d'immigrés que la France."],
+  ["Danemark","Une politique parmi les plus restrictives d'Europe, avec des conditions de regroupement familial très strictes, menée aussi par la gauche au pouvoir."],
+  ["Allemagne","Ouverture à l'immigration de travail qualifiée depuis 2020 pour pallier le manque de main-d'œuvre, et durcissement sur l'asile depuis 2024."]
+],
+appr:[
+  {t:"Réduire fortement",d:"Moins de titres, regroupement familial réduit ou supprimé.",who:["philippe","lepen","attal"]},
+  {t:"Choisir selon les besoins",d:"Quotas ou système à points pour l'immigration de travail.",who:["attal","philippe","glucksmann"]},
+  {t:"Ouvrir des voies légales",d:"Plus d'entrées légales pour réduire l'immigration irrégulière, régularisations.",who:["glucksmann","tondelier","melenchon","roussel"]}
+],
+pc:[
+  {t:"Réduire l'immigration légale",who:["philippe","lepen","attal"],
+   pro:["Les capacités d'accueil (logement, école, intégration) sont sous tension.",
+        "Une immigration surtout familiale s'insère plus lentement dans l'emploi qu'une immigration de travail.",
+        "Une majorité de Français souhaite moins d'immigration, selon les sondages."],
+   con:["Plusieurs secteurs (bâtiment, soin, restauration, agriculture) manquent de main-d'œuvre.",
+        "Le vieillissement réduit le nombre d'actifs qui financent retraites et santé.",
+        "Le droit à vivre en famille est protégé par la Constitution et les traités."]},
+  {t:"Ouvrir des voies légales",who:["glucksmann","tondelier","melenchon","roussel"],
+   pro:["Des entrées légales privent les passeurs de leur marché.",
+        "Des étrangers en situation régulière cotisent et paient des impôts."],
+   con:["Des voies légales n'empêchent pas l'immigration irrégulière de continuer.",
+        "Les régularisations peuvent encourager de nouveaux départs."]}
+],
+impl:[
+  "L'effet de l'immigration sur les finances publiques dépend surtout de l'âge et de l'emploi des arrivants : un actif qui travaille rapporte, un inactif coûte. Les études la jugent globalement proche de la neutralité en France.",
+  "Réduire fortement l'immigration familiale toucherait aussi des conjoints de Français."
+]},
+
+{id:"nationalite",t:"Nationalité et droits des étrangers",q:"Qui devient français, et quels droits pour les étrangers qui vivent en France ?",
+pos:{
+  lepen:{s:"Supprimer le droit du sol, et réserver aides sociales, logement social et emploi en priorité aux Français.",m:["Supprimer le droit du sol","Priorité nationale"]},
+  melenchon:{s:"Droit du sol dès la naissance, droit de vote des étrangers aux élections locales, maintien de l'AME.",m:["Droit du sol intégral","Droit de vote des étrangers aux élections locales","Garder l'aide médicale d'État"]},
+  tondelier:{s:"Droit du sol garanti quelle que soit la situation des parents, et accès aux soins sans délai.",m:["Droit du sol garanti","Droits garantis aux exilés"]},
+  glucksmann:{s:"Vote des étrangers non européens aux élections locales, et abrogation de la loi immigration de 2024.",m:["Vote à 16 ans","Abroger la loi immigration de 2024"]}
+},
+how:[
+  "Le droit du sol français n'est pas automatique à la naissance. Un enfant né en France de parents étrangers devient français à 18 ans s'il y a vécu au moins cinq ans depuis ses 11 ans ; il peut le demander plus tôt, dès 13 ans, sous conditions. Un enfant né en France d'un parent lui-même né en France est français dès la naissance (double droit du sol).",
+  ["À Mayotte, une loi de 2025 a durci le droit du sol : depuis mai 2026, les deux parents doivent résider régulièrement en France depuis plus d'un an à la naissance.",["may"]],
+  "La « priorité nationale » réserverait certaines aides et emplois aux Français. La Constitution et les traités garantissent l'égalité devant la loi : la mesure suppose une révision constitutionnelle, et serait contestée devant les juridictions européennes."
+],
+facts:[["18 ans","âge où l'enfant né en France devient français"],["5 ans","de résidence requis depuis ses 11 ans"],["1 an","de résidence régulière des deux parents exigé à Mayotte depuis 2026"]],
+world:[
+  ["États-Unis, Canada","Droit du sol intégral : tout enfant né sur le territoire est citoyen dès la naissance."],
+  ["Allemagne","Droit du sol depuis 2000 si un parent réside légalement depuis au moins 5 ans (8 ans avant 2024)."],
+  ["Royaume-Uni","Droit du sol supprimé en 1983 : il faut un parent britannique ou installé durablement."]
+],
+appr:[
+  {t:"Supprimer le droit du sol",d:"La nationalité ne s'obtiendrait que par la filiation ou la naturalisation.",who:["lepen"]},
+  {t:"Étendre le droit du sol",d:"Tout enfant né en France serait français dès la naissance.",who:["melenchon","tondelier"]},
+  {t:"Préférence nationale",d:"Aides et logement social réservés en priorité aux Français.",who:["lepen"]},
+  {t:"Plus de droits pour les résidents étrangers",d:"Vote aux élections locales, accès aux soins.",who:["melenchon","glucksmann","tondelier"]}
+],
+pc:[
+  {t:"Supprimer le droit du sol et la priorité nationale",who:["lepen"],
+   pro:["La nationalité serait un choix explicite (naturalisation), pas un automatisme.",
+        "Les aides sociales iraient d'abord à ceux qui ont contribué le plus longtemps.",
+        "Moins d'attractivité de la France pour l'immigration irrégulière."],
+   con:["Le droit du sol est une tradition républicaine ancienne, inscrite dans la loi depuis 1889.",
+        "Des enfants nés et scolarisés en France resteraient étrangers toute leur vie.",
+        "La priorité nationale contredit le principe d'égalité de la Constitution."]},
+  {t:"Étendre le droit du sol et les droits",who:["melenchon","tondelier","glucksmann"],
+   pro:["Un enfant né et élevé en France s'identifie à elle : la nationalité facilite son intégration.",
+        "Les étrangers paient des impôts locaux : voter aux municipales serait cohérent, comme les Européens le font déjà."],
+   con:["Le vote des étrangers non européens supposerait une révision de la Constitution.",
+        "Une nationalité automatique pourrait être perçue comme un encouragement à venir accoucher en France."]}
+],
+impl:[
+  "Ces mesures touchent la Constitution : elles supposent un référendum ou une majorité des trois cinquièmes du Parlement réuni en Congrès, avec l'accord du Sénat.",
+  "L'aide médicale d'État (AME) coûte environ 1,2 Md€ par an ; la supprimer ou la réduire déplacerait une partie des soins vers les urgences."
+]},
+
+{id:"asile",t:"Asile, frontières et expulsions",q:"Comment traiter les demandes d'asile et faire partir ceux qui n'ont pas le droit de rester ?",
+pos:{
+  lepen:{s:"Demandes d'asile déposées depuis l'étranger, expulsions systématiques des irréguliers et délinquants, fin de l'accord franco-algérien de 1968.",m:["Asile demandé depuis l'étranger","Expulsions systématiques","Fin de l'accord franco-algérien de 1968"]},
+  philippe:{s:"Expulsion immédiate des étrangers délinquants, « centres de retour » hors UE, liste de pays sûrs votée chaque année.",m:["Expulsion immédiate des étrangers délinquants","Liste de pays sûrs votée chaque année","Dénoncer l'accord de 1968 avec l'Algérie"]},
+  attal:{s:"Permettre de refouler aux frontières intérieures de l'espace Schengen.",m:["Réformer Schengen"]},
+  glucksmann:{s:"Remplacer Dublin par une répartition des demandeurs en Europe, et une force européenne de sauvetage en mer.",m:["Fin du système de Dublin","Sauvetage en mer européen"]},
+  melenchon:{s:"Suspendre Dublin et renégocier les accords du Touquet avec le Royaume-Uni.",m:["Suspendre Dublin, renégocier le Touquet"]},
+  tondelier:{s:"Remplacer Frontex par une agence de sauvetage, et mettre fin aux refoulements aux frontières.",m:["Remplacer Frontex","Fin des refoulements aux frontières"]}
+},
+how:[
+  ["L'asile protège ceux qui fuient des persécutions. La demande est examinée par l'OFPRA, puis en appel par la Cour nationale du droit d'asile. En 2025, la France a reçu environ 116 700 premières demandes et accordé une protection dans environ 63 600 cas en première instance.",["fiimm"]],
+  ["Le règlement de Dublin rend le premier pays d'entrée dans l'UE responsable de la demande. Le nouveau pacte européen sur la migration et l'asile, appliqué depuis le 12 juin 2026, ajoute un filtrage aux frontières extérieures, des procédures accélérées à la frontière et un mécanisme de solidarité entre pays.",["pacte","fta"]],
+  "Une obligation de quitter le territoire (OQTF) n'est exécutée que dans une minorité de cas : le pays d'origine doit accepter le retour et délivrer un laissez-passer, ce que certains refusent."
+],
+facts:[["116 700","premières demandes d'asile en 2025"],["≈ 63 600","protections accordées par l'OFPRA"],["12 juin 2026","entrée en application du pacte européen"]],
+world:[
+  ["Italie","Accord avec l'Albanie pour y examiner des demandes d'asile ; le dispositif a été largement bloqué par les juges."],
+  ["Royaume-Uni","Le projet d'envoyer des demandeurs au Rwanda a été abandonné en 2024 après de lourdes dépenses."],
+  ["Danemark, Pays-Bas","Ils défendent l'idée de « centres de retour » hors de l'UE, désormais permise par le droit européen."]
+],
+appr:[
+  {t:"Asile hors du territoire",d:"Demandes déposées à l'étranger ou traitées dans des pays tiers.",who:["lepen","philippe"]},
+  {t:"Expulser plus et plus vite",d:"Expulsions systématiques, pression sur les pays d'origine.",who:["lepen","philippe","attal"]},
+  {t:"Partager l'accueil en Europe",d:"Répartir les demandeurs entre pays plutôt que le premier pays d'entrée.",who:["glucksmann","melenchon"]},
+  {t:"Priorité aux droits et au sauvetage",d:"Fin des refoulements, sauvetage en mer, accueil digne.",who:["tondelier","glucksmann","roussel"]}
+],
+pc:[
+  {t:"Durcir asile et expulsions",who:["lepen","philippe","attal"],
+   pro:["Une OQTF qui n'est pas exécutée affaiblit la crédibilité de toute la politique migratoire.",
+        "Traiter les demandes hors du territoire décourage les traversées dangereuses.",
+        "Le pacte européen va déjà dans le sens de procédures plus rapides aux frontières."],
+   con:["Les expulsions dépendent de l'accord des pays d'origine, que la loi française ne peut pas forcer.",
+        "Les expériences de traitement à l'étranger (Rwanda, Albanie) ont coûté cher pour peu de résultats.",
+        ["Des associations alertent sur un recul des droits des exilés avec les procédures à la frontière.",["fta"]]]},
+  {t:"Répartir et protéger",who:["glucksmann","melenchon","tondelier"],
+   pro:["Le système de Dublin fait peser l'essentiel de l'accueil sur l'Italie, la Grèce ou l'Espagne.",
+        "Le droit d'asile est une obligation internationale de la France."],
+   con:["Plusieurs pays d'Europe centrale refusent toute répartition obligatoire.",
+        "Sans retours effectifs des déboutés, le système reste engorgé."]}
+],
+impl:[
+  "L'essentiel des règles sur l'asile et les frontières est désormais européen : un président français peut peser dans les négociations, mais pas tout décider seul.",
+  "Dénoncer l'accord de 1968 avec l'Algérie supprimerait le régime spécial des Algériens, mais risque de compliquer encore la coopération sur les retours."
+]}
+],
+
+securite:[
+{id:"peines",t:"Peines et prisons",q:"Faut-il des peines plus sévères et plus de prisons, ou d'autres sanctions ?",
+pos:{
+  lepen:{s:"Peines planchers, ni réduction ni aménagement de peine, perpétuité réelle, et 85 000 places de prison.",m:["Peines planchers","Ni réduction ni aménagement de peine","85 000 places de prison"]},
+  philippe:{s:"Une sanction courte et rapide dès la première infraction, peines planchers pour les crimes les plus graves, fin du juge d'application des peines.",m:["Courtes peines dès la première infraction","Peines planchers","Supprimer le juge d'application des peines"]},
+  attal:{s:"Plus de places de prison imposées aux communes, fin du juge d'application des peines, justice des mineurs durcie.",m:["Plus de places de prison","Supprimer le juge d'application des peines","Justice des mineurs durcie"]},
+  glucksmann:{s:"Recruter dans la justice et réduire la surpopulation par des peines adaptées et la réinsertion.",m:["Justice et prisons"]},
+  tondelier:{s:"Plafonner le nombre de détenus au nombre de places, et recruter 9 000 magistrats en dix ans.",m:["Plafonner le nombre de détenus","Recruter dans la justice"]},
+  roussel:{s:"Plus de moyens pour la justice et des prisons plus humaines.",m:["Plan pour la justice et les prisons"]}
+},
+how:[
+  ["Les prisons françaises comptent plus de 90 000 détenus en septembre 2026 pour environ 63 300 places, soit un taux d'occupation de 142 % ; il dépasse 175 % dans les maisons d'arrêt, où sont les courtes peines et les personnes en attente de jugement. Près de 8 000 détenus dorment sur un matelas au sol.",["prison","prison2"]],
+  "Une peine prononcée n'est pas toujours exécutée telle quelle : le juge d'application des peines peut l'aménager (bracelet électronique, semi-liberté, libération conditionnelle). Les peines de moins d'un an sont, en principe, aménagées.",
+  ["Les peines planchers ont existé pour les récidivistes de 2007 à 2014. Le juge pouvait y déroger en motivant sa décision, ce qu'il a fait dans environ deux tiers des cas.",["plancher"]]
+],
+facts:[["≈ 90 000","détenus (septembre 2026)"],["≈ 63 300","places de prison"],["142 %","taux d'occupation moyen"],["2007–2014","période des peines planchers"]],
+world:[
+  ["Pays-Bas, pays nordiques","Peines courtes et rapides, beaucoup d'alternatives à la prison ; des prisons ont même fermé faute de détenus aux Pays-Bas."],
+  ["États-Unis","Peines minimales obligatoires généralisées depuis les années 1980 : le taux d'incarcération y est le plus élevé au monde, sans baisse proportionnelle de la récidive."]
+],
+appr:[
+  {t:"Sévérité et certitude de la peine",d:"Peines minimales, pas d'aménagement, plus de places.",who:["lepen","attal","philippe"]},
+  {t:"Sanction rapide dès le premier délit",d:"Courtes peines exécutées tout de suite.",who:["philippe"]},
+  {t:"Réguler la population carcérale",d:"Plafond de détenus, alternatives à la prison, réinsertion.",who:["tondelier","glucksmann"]},
+  {t:"Plus de moyens pour la justice",d:"Magistrats, greffiers, délais plus courts.",who:["tondelier","lepen","glucksmann","roussel"]}
+],
+pc:[
+  {t:"Peines planchers et fin des aménagements",who:["lepen","philippe","attal"],
+   pro:["La peine prononcée serait la peine exécutée : plus lisible pour les victimes et la société.",
+        "Une sanction certaine dissuade davantage qu'une sanction lourde mais incertaine.",
+        "Elle répond à un sentiment d'impunité très répandu."],
+   con:[["Les évaluations de 2007-2014 n'ont pas montré d'effet net sur la récidive, selon le barreau de Paris.",["plancher"]],
+        "Avec des prisons pleines à 142 %, plus de détenus aggrave une surpopulation déjà jugée indigne par la justice européenne.",
+        "Les aménagements et la libération progressive réduisent la récidive en préparant la sortie."]},
+  {t:"Plafonner le nombre de détenus",who:["tondelier"],
+   pro:["Mettre fin à des conditions jugées indignes, qui valent à la France des condamnations européennes.",
+        "La surpopulation favorise violences et radicalisation en détention."],
+   con:["Des condamnés attendraient une place ou sortiraient plus tôt.",
+        "Le message envoyé serait celui d'une justice moins sévère."]}
+],
+impl:[
+  "Une place de prison coûte cher à construire (souvent plus de 250 000 €) et prend des années : les programmes de construction ont toujours été dépassés par la hausse du nombre de détenus.",
+  "Les choix sur les peines touchent directement le travail des magistrats et des surveillants, déjà en sous-effectif."
+]},
+
+{id:"police",t:"La police",q:"Quelle police : plus de protection juridique pour les agents, ou plus de contrôle de leurs pratiques ?",
+pos:{
+  lepen:{s:"Présomption de légitime défense pour les policiers.",m:["Présomption de légitime défense pour les policiers"]},
+  melenchon:{s:"Police de proximité, récépissé de contrôle d'identité, interdiction des LBD et tasers, abrogation de la loi de 2017 sur le refus d'obtempérer.",m:["Police de proximité","Récépissé de contrôle d'identité","Interdire tasers et LBD","Abroger la loi sur le refus d'obtempérer"]},
+  glucksmann:{s:"Police de proximité et équipes mobiles avec éducateurs dans les quartiers.",m:["Police de proximité","Équipes d'intervention rapide"]},
+  tondelier:{s:"Police de proximité sans contrôles d'identité aléatoires, et contrôle de la police confié à un organisme indépendant.",m:["Police de proximité, sans contrôles aléatoires","Contrôler la police autrement"]},
+  roussel:{s:"Refonder la police et tolérance zéro pour le racisme dans ses rangs.",m:["Refonder la police"]}
+},
+how:[
+  "Police et gendarmerie comptent environ 250 000 agents. La police de proximité, créée en 1998, a été supprimée en 2003 au profit d'unités d'intervention ; plusieurs dispositifs de quartier l'ont depuis partiellement relancée.",
+  "La loi de 2017 a aligné les règles de tir des policiers sur celles des gendarmes, notamment face à un véhicule qui refuse de s'arrêter. Le nombre de tirs mortels sur des véhicules a augmenté les années suivantes, ce qui nourrit le débat.",
+  "L'IGPN, la « police des polices », enquête sur les fautes des agents ; elle dépend du ministère de l'Intérieur, ce qui fait douter certains de son indépendance."
+],
+facts:[["≈ 250 000","policiers et gendarmes"],["1998–2003","police de proximité"],["2017","loi sur l'usage des armes"]],
+world:[
+  ["Royaume-Uni","La plupart des policiers ne portent pas d'arme à feu ; les plaintes contre la police sont examinées par un organisme indépendant."],
+  ["Allemagne","La police dépend des Länder ; certains imposent un numéro d'identification visible sur les uniformes."]
+],
+appr:[
+  {t:"Protéger davantage les agents",d:"Présomption de légitime défense, peines plus lourdes pour les agressions de policiers.",who:["lepen","philippe"]},
+  {t:"Police de proximité",d:"Agents ancrés dans les quartiers, prévention et médiation.",who:["melenchon","glucksmann","tondelier"]},
+  {t:"Encadrer les pratiques",d:"Récépissé, fin des contrôles aléatoires, armes restreintes, contrôle indépendant.",who:["melenchon","tondelier","roussel"]}
+],
+pc:[
+  {t:"Présomption de légitime défense",who:["lepen"],
+   pro:["Les policiers affrontent des situations dangereuses et doivent décider en une seconde.",
+        "Elle sécuriserait juridiquement des agents qui hésitent à intervenir."],
+   con:["Elle inverserait la charge de la preuve au détriment des victimes de violences policières.",
+        "Elle pourrait encourager l'usage de l'arme dans des situations évitables."]},
+  {t:"Encadrer plus strictement la police",who:["melenchon","tondelier"],
+   pro:["Le récépissé et la fin des contrôles aléatoires visent les contrôles au faciès, dénoncés par le Défenseur des droits.",
+        "Un contrôle indépendant renforcerait la confiance entre police et population."],
+   con:["Les syndicats de police y voient de la défiance et une charge administrative supplémentaire.",
+        "Retirer LBD et tasers priverait les agents de moyens intermédiaires entre la parole et l'arme à feu."]}
+],
+impl:[
+  "La confiance envers la police varie fortement selon l'âge et le quartier : les mesures proposées visent soit à protéger les agents, soit à restaurer cette confiance.",
+  "La police de proximité demande beaucoup d'effectifs sur la durée, ce qui pose la question du recrutement."
+]},
+
+{id:"drogues",t:"Drogues et narcotrafic",q:"Faut-il légaliser le cannabis, ou durcir la lutte contre les trafics ?",
+pos:{
+  melenchon:{s:"Légaliser le cannabis sous monopole d'État, avec des moyens pour la prévention.",m:["Légaliser le cannabis"]},
+  tondelier:{s:"Légaliser production, vente et consommation de cannabis, encadrées par l'État.",m:["Légaliser le cannabis"]},
+  lepen:{s:"Tolérance zéro sur les stupéfiants et refus de la légalisation.",m:["Fermeté sur les drogues et l'islamisme"]},
+  philippe:{s:"Un « état d'urgence narco » avec des moyens d'exception, et les grands trafiquants traités comme des terroristes.",m:["État d'urgence « narco »"]},
+  glucksmann:{s:"Plus d'enquêteurs, un renseignement criminel national, et la lutte contre le blanchiment renforcée.",m:["Contre le narcotrafic"]}
+},
+how:[
+  "La France a l'une des législations les plus sévères d'Europe sur le cannabis, et l'une des consommations les plus élevées. Depuis 2020, l'usage peut être sanctionné par une amende forfaitaire de 200 €.",
+  ["La loi du 13 juin 2025 contre le narcotrafic a créé un parquet national anticriminalité organisée, en fonction depuis janvier 2026, un délit de recrutement de mineurs par les réseaux, et renforcé le statut des repentis.",["narco","cdjnarco"]],
+  "Le trafic s'est étendu à des villes moyennes, avec des règlements de comptes plus fréquents. La cocaïne, en forte hausse, est devenue un marché majeur."
+],
+facts:[["200 €","amende forfaitaire pour usage"],["2025","loi contre le narcotrafic"],["janvier 2026","création du parquet national anticriminalité organisée"]],
+world:[
+  ["Allemagne","Cannabis légal depuis avril 2024 pour les adultes, avec culture personnelle et clubs. Une évaluation de 2026 ne constate pas de hausse notable de la consommation ; les réseaux criminels restent actifs.",["cannde"]],
+  ["Canada","Légalisation complète depuis 2018, avec vente en magasins agréés."],
+  ["Pays-Bas","Vente tolérée dans les coffee shops depuis les années 1970, mais production restée illégale, ce qui alimente des réseaux."]
+],
+appr:[
+  {t:"Légaliser le cannabis",d:"Production et vente encadrées par l'État, argent réorienté vers la prévention.",who:["melenchon","tondelier"]},
+  {t:"Moyens d'exception contre les réseaux",d:"Procédures proches de l'antiterrorisme, renseignement, saisie des avoirs.",who:["philippe","glucksmann"]},
+  {t:"Tolérance zéro",d:"Sanctionner aussi les consommateurs pour assécher la demande.",who:["lepen"]}
+],
+pc:[
+  {t:"Légaliser le cannabis",who:["melenchon","tondelier"],
+   pro:["Cela retire aux trafiquants une grande partie de leur chiffre d'affaires.",
+        "L'État contrôle la qualité et la teneur des produits, et touche des taxes.",
+        "Police et justice se concentrent sur les drogues dures et les réseaux."],
+   con:["Les réseaux se reportent sur la cocaïne et les drogues de synthèse.",
+        "Le cannabis est nocif pour le cerveau des adolescents ; la légalisation peut le banaliser.",
+        "Un marché noir moins cher peut subsister à côté du marché légal."]},
+  {t:"Durcir la répression",who:["lepen","philippe"],
+   pro:["Les violences liées au trafic menacent des quartiers entiers.",
+        "Frapper les patrimoines des trafiquants touche le cœur du système."],
+   con:["Des décennies de répression n'ont pas fait baisser la consommation en France.",
+        "Des moyens d'exception comme la reconnaissance faciale posent des questions de libertés publiques."]}
+],
+impl:[
+  "Les deux approches ne s'excluent pas entièrement : la plupart des pays qui ont légalisé le cannabis continuent de lutter contre les trafics d'autres drogues.",
+  "Une légalisation suppose de construire une filière (production, vente, contrôle), ce qui prend plusieurs années."
+]}
+],
+
+institutions:[
+{id:"scrutin",t:"Le mode de scrutin",q:"Faut-il élire les députés à la proportionnelle ?",
+pos:{
+  tondelier:{s:"Proportionnelle intégrale, sans prime majoritaire, par circonscriptions régionales.",m:["Proportionnelle intégrale"]},
+  melenchon:{s:"Assemblée élue à la proportionnelle.",m:["Proportionnelle et fin du 49.3"]},
+  glucksmann:{s:"Proportionnelle par circonscriptions régionales, et vote dès 16 ans.",m:["Proportionnelle aux législatives","Vote à 16 ans"]},
+  lepen:{s:"Proportionnelle pour élire les députés.",m:["RIC et proportionnelle"]},
+  attal:{s:"Moins de parlementaires : 350 députés et 200 sénateurs.",m:["350 députés et 200 sénateurs"]}
+},
+how:[
+  "Les 577 députés sont élus au scrutin majoritaire à deux tours, dans autant de circonscriptions : le candidat arrivé en tête au second tour gagne le siège. Ce système favorise les grands partis et les alliances, et vise à dégager une majorité claire ; il n'en a pourtant pas produit depuis 2022.",
+  "Avec la proportionnelle, les sièges sont répartis selon le pourcentage de voix de chaque liste, souvent avec un seuil minimum. Elle n'a été utilisée qu'une fois sous la 5e République, en 1986. Changer le mode de scrutin relève d'une loi ordinaire, sans révision de la Constitution."
+],
+facts:[["577","députés"],["2 tours","scrutin majoritaire actuel"],["1986","seule élection à la proportionnelle sous la 5e République"]],
+world:[
+  ["Allemagne","Système mixte : la moitié des députés élus dans des circonscriptions, mais la répartition finale est proportionnelle."],
+  ["Espagne, Pays-Bas, Italie","Proportionnelle, avec des gouvernements de coalition parfois longs à former."],
+  ["Royaume-Uni","Scrutin majoritaire à un tour : un parti peut avoir la majorité des sièges avec environ un tiers des voix."]
+],
+appr:[
+  {t:"Proportionnelle intégrale",d:"Les sièges suivent exactement les voix.",who:["tondelier","melenchon"]},
+  {t:"Proportionnelle par régions",d:"Plus proche des territoires, avec un effet de seuil.",who:["glucksmann","tondelier"]},
+  {t:"Proportionnelle (modalités à préciser)",d:"Principe acquis, détails à venir.",who:["lepen"]},
+  {t:"Garder le scrutin majoritaire",d:"Avec moins d'élus.",who:["attal"]}
+],
+pc:[
+  {t:"Passer à la proportionnelle",who:["tondelier","melenchon","glucksmann","lepen"],
+   pro:["Chaque voix compte : l'Assemblée ressemble au pays.",
+        "Les partis doivent négocier des coalitions, comme dans la plupart des pays européens.",
+        "Moins de vote « utile » au premier tour."],
+   con:["Elle dégage plus rarement une majorité stable pour gouverner.",
+        "Le lien entre un député et son territoire s'affaiblit.",
+        "Les coalitions se négocient après le vote, sans que les électeurs les aient choisies."]}
+],
+impl:[
+  "Le mode de scrutin change directement le poids des partis : à voix égales, la proportionnelle donne plus de sièges aux formations qui ne passent pas les seconds tours aujourd'hui.",
+  "Réduire le nombre de parlementaires agrandit les circonscriptions et éloigne l'élu des électeurs."
+]},
+
+{id:"referendum",t:"Référendums et RIC",q:"Les citoyens doivent-ils pouvoir déclencher eux-mêmes un référendum ?",
+pos:{
+  melenchon:{s:"RIC pour proposer ou abroger une loi, modifier la Constitution ou révoquer un élu, avec 900 000 signatures.",m:["Le référendum d'initiative citoyenne"]},
+  lepen:{s:"Un RIC sur tous les sujets.",m:["RIC et proportionnelle"]},
+  glucksmann:{s:"Référendums locaux et nationaux à l'initiative des citoyens, et conventions citoyennes généralisées.",m:["Référendums d'initiative citoyenne"]},
+  attal:{s:"Une journée référendaire chaque année, avec des questions préparées avec les partis et les syndicats.",m:["Une journée référendaire chaque année"]},
+  roussel:{s:"Des citoyens associés à l'écriture des lois.",m:["Participation citoyenne"]}
+},
+how:[
+  ["Depuis 2008, la Constitution prévoit un référendum d'initiative partagée (RIP). Il doit être lancé par 185 parlementaires puis soutenu par environ 4,7 millions d'électeurs en neuf mois. Il n'a jamais abouti : la tentative sur Aéroports de Paris en 2019 a réuni 1,09 million de signatures.",["adp"]],
+  "Le référendum d'initiative citoyenne (RIC), réclamé par les Gilets jaunes, serait déclenché par les seuls citoyens, sans parlementaires. Il suppose une révision de la Constitution."
+],
+facts:[["4,7 millions","de signatures pour un RIP"],["1,09 million","obtenues sur ADP en 2019"],["900 000","signatures pour le RIC proposé par LFI"]],
+world:[
+  ["Suisse","100 000 signatures suffisent pour soumettre une modification de la Constitution au vote ; les Suisses votent plusieurs fois par an."],
+  ["Italie","500 000 signatures permettent un référendum pour abroger une loi, valable seulement si plus de la moitié des électeurs votent."]
+],
+appr:[
+  {t:"RIC large",d:"Proposer, abroger, réviser la Constitution, voire révoquer un élu.",who:["melenchon","lepen"]},
+  {t:"Initiative citoyenne encadrée",d:"Référendums et conventions citoyennes.",who:["glucksmann","roussel"]},
+  {t:"Référendums réguliers sans initiative citoyenne",d:"Questions fixées par les partis et syndicats.",who:["attal"]}
+],
+pc:[
+  {t:"Instaurer un RIC",who:["melenchon","lepen","glucksmann"],
+   pro:["Les citoyens gardent la main entre deux élections.",
+        "La révocation oblige les élus à tenir leurs promesses.",
+        "La Suisse pratique la démocratie directe depuis longtemps sans chaos."],
+   con:["Une minorité très mobilisée peut imposer un vote, voire défaire une loi récente.",
+        "Un référendum se joue souvent sur la popularité du pouvoir plutôt que sur la question posée.",
+        "Sans garde-fous, il pourrait remettre en cause des droits fondamentaux ou des minorités."]}
+],
+impl:[
+  "Le seuil de signatures décide de tout : trop bas, les votes se multiplient ; trop haut, comme le RIP, l'outil ne sert jamais.",
+  "Le RIC voulu par le RN porterait sur tous les sujets, y compris l'immigration : c'est aussi un moyen de contourner les juges constitutionnels."
+]},
+
+{id:"republique",t:"Changer de République ?",q:"Faut-il réécrire la Constitution, ou seulement rééquilibrer les pouvoirs ?",
+pos:{
+  melenchon:{s:"Une 6e République écrite par une Assemblée constituante, et la fin du 49.3.",m:["Passer à la 6e République","Proportionnelle et fin du 49.3"]},
+  tondelier:{s:"Une « Première République écologique » par une Constituante, et les limites planétaires inscrites dans la Constitution.",m:["Une « Première République écologique »","L'habitabilité dans la Constitution"]},
+  glucksmann:{s:"Garder la 5e République mais supprimer le 49.3 et l'article 16, et investir le Premier ministre par un vote.",m:["Fin du 49.3","Moins de pouvoirs exceptionnels"]},
+  lepen:{s:"Opposée à une 6e République et à un affaiblissement du président.",m:["RIC et proportionnelle"]},
+  attal:{s:"Le président nommerait les directeurs des grandes administrations, et l'administration devrait répondre en deux mois.",m:["Un « spoil system » à la française","Administration plus rapide"]},
+  philippe:{s:"Revoir la justice : composition du Conseil supérieur de la magistrature et autorité du garde des Sceaux sur les procureurs.",m:["Juges plus responsables","Plus d'autorité au garde des Sceaux"]}
+},
+how:[
+  "La Constitution de 1958 donne au président un rôle central : il nomme le Premier ministre, peut dissoudre l'Assemblée et recourir au référendum. L'article 49.3 permet au gouvernement de faire adopter un texte sans vote, sauf motion de censure.",
+  ["Pour la réviser, la voie normale est l'article 89 : les deux chambres votent le même texte, puis référendum ou Congrès à la majorité des trois cinquièmes. Le Sénat peut donc tout bloquer. LFI veut passer par l'article 11, comme de Gaulle en 1962, une voie que beaucoup de juristes jugent contraire à la Constitution.",["cdj","pscst"]],
+  "La Constituante proposée par LFI se ferait en trois étapes : un référendum sur ses règles, deux ans de rédaction par une assemblée en partie tirée au sort, puis un référendum sur le texte."
+],
+facts:[["1958","date de la Constitution actuelle"],["25","révisions depuis"],["3/5","majorité requise au Congrès"]],
+world:[
+  ["Allemagne","Le chancelier est élu par le Bundestag et ne peut être renversé que si une majorité désigne un remplaçant (« censure constructive »)."],
+  ["Chili","Deux projets de nouvelle Constitution rédigés par des assemblées élues ont été rejetés par référendum en 2022 et 2023."]
+],
+appr:[
+  {t:"Nouvelle Constitution par une Constituante",d:"Une assemblée dédiée réécrit tout, validée par référendum.",who:["melenchon","tondelier"]},
+  {t:"Réformer la 5e République",d:"Moins de pouvoirs exceptionnels, plus de pouvoir au Parlement.",who:["glucksmann"]},
+  {t:"Garder ou renforcer l'exécutif",d:"Président fort, administration plus soumise au pouvoir élu.",who:["lepen","attal","philippe"]}
+],
+pc:[
+  {t:"Passer par une Constituante",who:["melenchon","tondelier"],
+   pro:["La 5e République donne trop de pouvoir au président et pas assez au Parlement et aux citoyens.",
+        "Une Constitution écrite par une assemblée dédiée serait plus légitime qu'une révision par les élus en place.",
+        "Les citoyens décident deux fois : sur les règles du jeu, puis sur le texte."],
+   con:[["Le recours à l'article 11 pour changer de Constitution est juridiquement contesté.",["cdj"]],
+        "Deux ans de flou institutionnel pèseraient sur la stabilité du pays et la confiance des marchés.",
+        "L'exemple du Chili montre qu'un texte écrit ainsi peut être rejeté."]},
+  {t:"Renforcer l'exécutif sur l'administration",who:["attal","philippe"],
+   pro:["Un gouvernement élu doit pouvoir appliquer son programme sans être freiné par une administration qui ne change pas.",
+        "Des délais de réponse garantis protègent les citoyens et les entreprises."],
+   con:["Le « spoil system » politise la haute administration, comme aux États-Unis.",
+        "Plus d'autorité du ministre sur les procureurs réduit l'indépendance de la justice."]}
+],
+impl:[
+  "Toute révision touche à l'équilibre entre président, Parlement, juges et citoyens : renforcer l'un affaiblit un autre.",
+  "Une révision par l'article 89 suppose l'accord du Sénat, aujourd'hui à droite : c'est l'obstacle principal des projets de gauche."
+]}
+]
+});
+
+Object.assign(S,{
+  lpm:["Légifrance, programmation militaire actualisée (août 2026)","https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000054694832"],
+  lpmlcp:["LCP, la programmation militaire en 5 points","https://lcp.fr/actualites/armees-budget-priorites-tout-comprendre-sur-l-actualisation-de-la-programmation"],
+  pfl26:["Ministère des Armées, le budget 2026","https://www.defense.gouv.fr/actualites/projet-loi-finances-2026-ce-quil-faut-retenir"],
+  ukr:["France 24, l'aide à l'Ukraine (août 2026)","https://www.france24.com/fr/france/20260821-la-france-ne-va-pas-verser-seule-140-milliards-d-euros-%C3%A0-l-ukraine"],
+  ukrfi:["franceinfo, combien coûte l'aide française à l'Ukraine","https://www.franceinfo.fr/monde/europe/manifestations-en-ukraine/combien-coute-l-aide-de-la-france-a-l-ukraine-remise-en-cause-par-marine-le-pen-et-le-rn_8209307.html"],
+  mt:["Info.gouv, les déserts médicaux","https://www.info.gouv.fr/actualite/lutte-contre-les-deserts-medicaux-un-medecin-pres-de-chez-vous"],
+  drees:["DREES, combien coûte la santé et qui paie","https://drees.solidarites-sante.gouv.fr/actualites-evenements/combien-coute-la-sante-en-france-qui-paie"],
+  aam:["Légifrance, loi du 18 août 2026 sur l'aide à mourir","https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000054706877"],
+  aams:["Sénat, dossier sur le droit à l'aide à mourir","https://www.senat.fr/dossier-legislatif/ppl24-661.html"],
+  ocde:["OCDE, Regards sur l'éducation 2025 : France","https://www.oecd.org/en/publications/2025/09/education-at-a-glance-2025-country-notes_9749f4ff/france_0639c7fb.html"],
+  cafe:["Café pédagogique, salaires des enseignants (octobre 2026)","https://www.cafepedagogique.net/2026/10/16/salaires-enseignants-la-france-decroche-locde-confirme/"],
+  pss:["Public Sénat, le salaire des enseignants (2025)","https://www.publicsenat.fr/actualites/education/salaire-des-enseignants-le-rendez-vous-manque-de-la-rentree-2025"]
+});
+
+Object.assign(DEB,{
+europe:[
+{id:"ukraine",t:"Ukraine et Russie",q:"Faut-il augmenter l'aide militaire à l'Ukraine, ou privilégier la négociation ?",
+pos:{
+  glucksmann:{s:"Aide militaire fortement augmentée, à l'Ukraine comme à la Moldavie et à l'Arménie.",m:["Aide militaire à l'Ukraine"]},
+  tondelier:{s:"Aide militaire, avoirs russes gelés pour l'Ukraine, et arrêt immédiat des achats de gaz, d'uranium et d'engrais russes.",m:["Soutien à l'Ukraine","Avoirs russes pour l'Ukraine","Stop au gaz, à l'uranium et aux engrais russes"]},
+  attal:{s:"Poursuivre le soutien, saisir les avoirs russes gelés.",m:["Réarmement et Ukraine"]},
+  melenchon:{s:"Une voie diplomatique : cessez-le-feu, retrait des troupes russes et négociations de paix.",m:["Ukraine : une voie diplomatique"]}
+},
+how:[
+  "La Russie a envahi l'Ukraine en février 2022. L'aide occidentale prend trois formes : armes et munitions, argent pour faire fonctionner l'État ukrainien, et sanctions contre la Russie.",
+  ["L'aide française est difficile à chiffrer. Le ministère des Armées retient environ 6,5 Md€ d'aide militaire cumulée fin 2025 ; l'Institut de Kiel estime l'aide bilatérale française à 7,9 Md€, et 26 Md€ en ajoutant la part française de l'aide européenne.",["ukr","ukrfi"]],
+  "Environ 200 Md€ d'avoirs de la banque centrale russe sont gelés en Europe, surtout en Belgique. Leurs intérêts financent déjà l'Ukraine ; saisir le capital lui-même pose des questions juridiques."
+],
+facts:[["≈ 6,5 Md€","aide militaire française cumulée (ministère)"],["26 Md€","aide totale avec la part européenne (Kiel)"],["Février 2022","début de l'invasion"]],
+world:[
+  ["Allemagne","Deuxième contributeur mondial d'aide militaire après les États-Unis."],
+  ["États-Unis","Premier contributeur en 2022-2024, puis forte réduction et conditions nouvelles depuis 2025."],
+  ["Hongrie","Refuse de livrer des armes et freine les sanctions européennes."]
+],
+appr:[
+  {t:"Augmenter l'aide militaire",d:"Plus d'armes et d'argent pour que l'Ukraine négocie en position de force.",who:["glucksmann","tondelier","attal"]},
+  {t:"Saisir les avoirs russes",d:"Faire payer la Russie pour la reconstruction.",who:["tondelier","attal"]},
+  {t:"Priorité à la négociation",d:"Cessez-le-feu et diplomatie plutôt qu'escalade.",who:["melenchon"]}
+],
+pc:[
+  {t:"Augmenter l'aide militaire",who:["glucksmann","tondelier","attal"],
+   pro:["Un pays envahi a le droit de se défendre, et l'aide lui permet de tenir.",
+        "Une victoire russe encouragerait de nouvelles agressions en Europe.",
+        "L'aide finance en partie l'industrie de défense européenne."],
+   con:["La guerre dure sans issue militaire claire, et l'aide pèse sur des budgets déjà tendus.",
+        "Le risque d'escalade avec une puissance nucléaire.",
+        ["Certaines voix, comme Jean-Luc Mélenchon, lient la montée de la menace russe en Europe aux frappes ukrainiennes en Russie.",["anw"]]]},
+  {t:"Priorité à la négociation",who:["melenchon"],
+   pro:["Seule une négociation mettra fin aux morts.",
+        "La France peut jouer un rôle de médiateur."],
+   con:["Une négociation sans rapport de force reviendrait à valider l'annexion de territoires.",
+        "La Russie n'a pas montré de volonté de négocier sur un retrait."]}
+],
+impl:[
+  "L'Ukraine est au cœur des relations entre la France, l'Europe et les États-Unis : les choix pèsent sur la défense européenne et le budget des armées.",
+  "Saisir les avoirs russes rapporterait beaucoup, mais pourrait inquiéter d'autres pays qui placent leurs réserves en Europe."
+]},
+
+{id:"defense",t:"Défense et OTAN",q:"Combien dépenser pour l'armée, et faut-il rester dans l'OTAN ?",
+pos:{
+  philippe:{s:"Réarmement massif : 250 000 réservistes, 50 000 places de service volontaire par an, 700 000 obus par an.",m:["Réarmement massif"]},
+  glucksmann:{s:"Un fonds européen de défense de 500 Md€, et la dissuasion nucléaire française proposée aux partenaires.",m:["Fonds de défense de 500 Md€","Dissuasion nucléaire étendue"]},
+  attal:{s:"Poursuivre le réarmement et faire de la dissuasion « avancée » un outil européen.",m:["Réarmement et Ukraine"]},
+  lepen:{s:"Budget des armées à 55 Md€.",m:["Défense à 55 Md€"]},
+  melenchon:{s:"Sortir du commandement intégré de l'OTAN puis de l'organisation, pas d'armée européenne, conscription citoyenne de 9 mois.",m:["Quitter l'OTAN","Pas d'armée européenne","Une conscription citoyenne de 9 mois"]},
+  roussel:{s:"Quitter l'OTAN et signer le traité d'interdiction des armes nucléaires.",m:["Quitter l'OTAN","Signer le traité d'interdiction des armes nucléaires"]}
+},
+how:[
+  ["La loi de programmation militaire actualisée en août 2026 prévoit environ 436 Md€ pour les armées sur 2024-2030, soit 36 Md€ de plus que prévu. Le budget 2026 de la mission Défense est d'environ 57 Md€ hors pensions.",["lpm","lpmlcp","pfl26"]],
+  "L'OTAN est l'alliance militaire née en 1949 : une attaque contre un membre est une attaque contre tous. De Gaulle a quitté son commandement intégré en 1966, Nicolas Sarkozy l'a réintégré en 2009.",
+  ["En 2025, les membres se sont fixé 5 % du PIB pour la défense et la sécurité d'ici 2035, dont 3,5 % pour les armées. La France y consacre environ 2 % aujourd'hui.",["otan5"]]
+],
+facts:[["≈ 57 Md€","budget de la Défense en 2026, hors pensions"],["436 Md€","prévus sur 2024-2030"],["5 % du PIB","objectif OTAN pour 2035"],["≈ 290","têtes nucléaires françaises"]],
+world:[
+  ["Pologne","Plus de 4 % du PIB consacrés à la défense, le niveau le plus élevé de l'OTAN."],
+  ["Allemagne","Règle budgétaire assouplie en 2025 pour financer un réarmement massif."],
+  ["Suède, Finlande","Entrées dans l'OTAN en 2023-2024 après l'invasion de l'Ukraine, en rompant avec des décennies de neutralité."]
+],
+appr:[
+  {t:"Réarmer fortement",d:"Plus de budget, de réservistes et de munitions.",who:["philippe","attal","glucksmann"]},
+  {t:"Défense européenne commune",d:"Emprunt européen, dissuasion française partagée.",who:["glucksmann","attal"]},
+  {t:"Défense nationale renforcée",d:"Budget en hausse, sans intégration européenne.",who:["lepen"]},
+  {t:"Sortir de l'OTAN, non-alignement",d:"Indépendance vis-à-vis des États-Unis.",who:["melenchon","roussel"]}
+],
+pc:[
+  {t:"Réarmer et européaniser la défense",who:["philippe","glucksmann","attal"],
+   pro:["La guerre en Ukraine montre qu'un conflit de haute intensité est possible en Europe.",
+        "Les États-Unis se désengagent : l'Europe doit pouvoir se défendre seule.",
+        "Un emprunt commun répartit l'effort entre pays européens."],
+   con:["Chaque point de PIB en plus pour la défense représente environ 30 Md€ à trouver.",
+        "Partager la dissuasion nucléaire pose la question de qui décide.",
+        "Une course aux armements peut accroître les tensions."]},
+  {t:"Sortir de l'OTAN",who:["melenchon","roussel"],
+   pro:["La France gagnerait en indépendance vis-à-vis des États-Unis.",
+        "Elle pourrait parler à tous, dans la tradition gaulliste du non-alignement.",
+        "Le budget serait fixé selon ses besoins, pas par un objectif commun."],
+   con:["C'est la seule alliance militaire crédible en Europe face à la Russie.",
+        "Une défense seule coûterait plus cher.",
+        "La France perdrait de l'influence sur les décisions de ses alliés."]}
+],
+impl:[
+  "Atteindre 3,5 % du PIB pour les armées doublerait presque le budget actuel : un effort qui entre en concurrence avec les autres priorités et la réduction du déficit.",
+  "Le service militaire et les réserves posent la question de la place des jeunes dans la défense, au-delà du budget."
+]},
+
+{id:"ue",t:"Quelle Union européenne ?",q:"Faut-il plus d'Europe, ou reprendre des pouvoirs à Bruxelles ?",
+pos:{
+  attal:{s:"Des « États-Unis d'Europe » créés par référendum dans les pays volontaires, et avancer sans attendre l'unanimité.",m:["Des « États-Unis d'Europe »","Avancer sans l'unanimité","Un marché unique des capitaux"]},
+  glucksmann:{s:"Un nouveau traité d'ici 2030 : majorité qualifiée au lieu de l'unanimité, initiative législative pour le Parlement européen.",m:["Un traité de refondation de l'UE d'ici 2030"]},
+  tondelier:{s:"Budget européen porté à 2 % du PIB en 2035, avec une étape fédérale.",m:["Budget européen à 2 % du PIB"]},
+  philippe:{s:"Achever le marché unique et protéger l'industrie européenne face à la Chine.",m:["Achever le marché unique","Protéger le marché européen face à la Chine"]},
+  lepen:{s:"Constitution française au-dessus du droit européen, contribution française plafonnée à 5 Md€, non au Mercosur.",m:["Primauté du droit français","Contribution à l'UE plafonnée à 5 Md€","Non au Mercosur"]},
+  melenchon:{s:"Rester dans l'UE à ses conditions : renégocier les traités, et désobéir aux règles jugées bloquantes.",m:["Désobéir à certaines règles européennes","Veto contre le libre-échange"]},
+  roussel:{s:"Fin de la règle des 3 % de déficit et contrôle démocratique de la Banque centrale européenne.",m:["Fin de la règle des 3 % de déficit"]}
+},
+how:[
+  "L'UE décide surtout de deux façons : à la majorité qualifiée (55 % des pays représentant 65 % de la population) pour la plupart des sujets, et à l'unanimité pour les impôts, la politique étrangère ou l'élargissement. Le droit européen prime sur les lois nationales, ce que la Cour de justice fait respecter.",
+  "Le budget européen représente environ 1 % du revenu des pays membres. La France y verse un peu moins de 30 Md€ par an et reçoit moins en retour, notamment par la politique agricole commune.",
+  ["Plusieurs programmes de gauche ne sont pas compatibles avec les règles actuelles (déficit sous 3 %, concurrence, aides d'État). LFI propose de les renégocier tout en cessant de les appliquer ; le RN propose de faire primer la Constitution française.",["gc"]]
+],
+facts:[["27","pays membres"],["≈ 1 %","du revenu européen : taille du budget de l'UE"],["≈ 29 Md€","versés chaque année par la France"]],
+world:[
+  ["Hongrie, Pologne","Des conflits avec Bruxelles sur l'État de droit ont conduit à des gels de fonds européens."],
+  ["Royaume-Uni","Seul pays à avoir quitté l'UE, en 2020, après le référendum de 2016."]
+],
+appr:[
+  {t:"Plus d'Europe, vers le fédéralisme",d:"Moins d'unanimité, plus de budget commun, institutions renforcées.",who:["attal","glucksmann","tondelier"]},
+  {t:"Approfondir le marché commun",d:"Marché unique achevé et protection face à la Chine.",who:["philippe","attal"]},
+  {t:"Primauté nationale",d:"Constitution au-dessus du droit européen, contribution réduite.",who:["lepen"]},
+  {t:"Désobéir et renégocier",d:"Cesser d'appliquer certaines règles pendant la renégociation.",who:["melenchon","roussel"]}
+],
+pc:[
+  {t:"Approfondir l'intégration",who:["attal","glucksmann","tondelier"],
+   pro:["Face aux États-Unis et à la Chine, les pays européens pèsent plus ensemble.",
+        "L'unanimité permet à un seul pays de tout bloquer."],
+   con:["Les citoyens se sentent loin des institutions européennes, et un traité doit être ratifié par tous les pays.",
+        "Un budget commun plus gros suppose de nouveaux impôts européens ou plus de contributions nationales."]},
+  {t:"Reprendre des pouvoirs ou désobéir",who:["lepen","melenchon"],
+   pro:["Un vote national ne doit pas être bloqué par des règles décidées ailleurs.",
+        "La France pèse assez lourd pour forcer une renégociation.",
+        "D'autres pays ont déjà dépassé les règles budgétaires sans être exclus."],
+   con:["La Commission peut lancer des procédures d'infraction, et la Cour de justice condamner la France à payer.",
+        "Les partenaires pourraient riposter, et les taux d'intérêt de la dette monter.",
+        "Faire primer le droit national revient, pour beaucoup de juristes, à sortir de fait de l'UE."]}
+],
+impl:[
+  "La plupart des changements de traités exigent l'accord des 27 pays : un président français peut proposer, pas imposer.",
+  "Plafonner unilatéralement la contribution française est contraire aux traités et toucherait aussi ce que la France reçoit, notamment pour l'agriculture."
+]}
+],
+
+sante:[
+{id:"acces",t:"L'accès aux soins",q:"Comment trouver un médecin et garder hôpitaux et maternités près de chez soi ?",
+pos:{
+  lepen:{s:"Plan d'urgence de 20 Md€, arrêt des fermetures de lits et maternités, incitations pour s'installer, suppression des ARS.",m:["Plan d'urgence de 20 Md€","Déserts médicaux","Supprimer les ARS"]},
+  melenchon:{s:"Urgences, maternités et Ehpad publics à moins de 30 minutes de chacun.",m:["Soins à moins de 30 minutes","10 000 places en Ehpad public par an"]},
+  tondelier:{s:"2 000 centres de santé avec des médecins salariés, et dépassements d'honoraires limités.",m:["2 000 centres de santé","Dépassements d'honoraires limités"]},
+  glucksmann:{s:"Financer l'hôpital autrement que par la tarification à l'acte, et faire de la santé mentale des jeunes une priorité.",m:["Fin de la tarification à l'acte","Santé mentale des jeunes"]},
+  roussel:{s:"Un plan pour l'hôpital public et une loi-cadre sur la psychiatrie.",m:["Plan pour l'hôpital et la psychiatrie"]},
+  attal:{s:"Un assistant médical fondé sur l'IA pour chaque Français.",m:["Un assistant médical IA pour tous"]},
+  philippe:{s:"Stabiliser les dépenses en misant sur la prévention et la technologie.",m:["Stabiliser les dépenses de santé"]}
+},
+how:[
+  ["Environ 6,4 millions de personnes n'avaient pas de médecin traitant début 2026. Le nombre de médecins augmente de nouveau, mais celui des généralistes reste sous son niveau de 2012, et beaucoup partent à la retraite.",["mt"]],
+  "Le numerus clausus, qui limitait le nombre d'étudiants en médecine, a été supprimé en 2020 ; il faut une dizaine d'années pour former un médecin, donc l'effet n'arrivera qu'après 2030.",
+  "Les médecins libéraux choisissent librement où s'installer. Les incitations financières existent depuis longtemps, avec des résultats limités ; la régulation de l'installation est réclamée par certains élus et refusée par les syndicats de médecins."
+],
+facts:[["6,4 millions","de personnes sans médecin traitant"],["2020","fin du numerus clausus"],["≈ 10 ans","pour former un médecin"]],
+world:[
+  ["Allemagne","Installation des médecins régulée par zones depuis les années 1990 : on ne peut pas s'installer là où l'offre est jugée suffisante."],
+  ["Royaume-Uni","Les généralistes du NHS sont rattachés à une zone, mais les délais d'attente restent très longs."]
+],
+appr:[
+  {t:"Investir massivement à l'hôpital",d:"Plans d'urgence, arrêt des fermetures.",who:["lepen","melenchon","roussel"]},
+  {t:"Médecins salariés en centres de santé",d:"L'État ou les collectivités embauchent là où il manque des médecins.",who:["tondelier"]},
+  {t:"Inciter à l'installation",d:"Aides financières et maisons de santé.",who:["lepen"]},
+  {t:"Mieux dépenser",d:"Prévention, technologie, financement réformé.",who:["philippe","attal","glucksmann"]}
+],
+pc:[
+  {t:"Plus de moyens publics",who:["lepen","melenchon","tondelier","roussel"],
+   pro:["Les fermetures de lits et de maternités ont allongé les trajets, surtout en zone rurale.",
+        "Des médecins salariés répondent aux jeunes médecins qui ne veulent plus exercer seuls en libéral."],
+   con:["L'argent ne suffit pas sans soignants : il manque des médecins et des infirmiers à former.",
+        "Les dépenses de santé augmentent déjà plus vite que la richesse nationale."]},
+  {t:"Réguler l'installation des médecins",who:[],
+   pro:["Les incitations seules n'ont pas réduit les déserts médicaux.",
+        "L'Allemagne régule depuis longtemps."],
+   con:["Les jeunes médecins pourraient se détourner de la médecine générale libérale.",
+        "Il n'y a pas assez de médecins : réguler déplace la pénurie sans la résoudre."]}
+],
+impl:[
+  "Les effets des réformes de formation n'arriveront qu'après la fin du prochain quinquennat : à court terme, l'enjeu est de mieux répartir et de mieux utiliser les soignants existants.",
+  "Toute hausse des dépenses de santé passe par l'Assurance maladie, déjà en déficit."
+]},
+
+{id:"remboursement",t:"Remboursements et Sécurité sociale",q:"Faut-il rembourser les soins à 100 % par la Sécu et supprimer les mutuelles ?",
+pos:{
+  melenchon:{s:"« 100 % Sécu » : soins prescrits remboursés à 100 %, mutuelles intégrées à la Sécurité sociale.",m:["« 100 % Sécu »"]},
+  roussel:{s:"Remboursement intégral par la Sécu, gérée par des représentants élus des cotisants.",m:["Vers le 100 % Sécurité sociale"]},
+  glucksmann:{s:"Fusionner tous les régimes pour une couverture identique pour tous.",m:["Une Sécurité sociale unique"]},
+  lepen:{s:"Médicaments délivrés à l'unité et production relocalisée.",m:["Médicaments à l'unité"]},
+  philippe:{s:"Stabiliser les dépenses de santé.",m:["Stabiliser les dépenses de santé"]}
+},
+how:[
+  "Une consultation ou un médicament est payé en partie par l'Assurance maladie, en partie par une complémentaire (mutuelle), le reste par le patient. Environ 96 % des Français ont une complémentaire ; une complémentaire santé solidaire gratuite existe pour les plus modestes.",
+  ["La France est l'un des pays où les ménages paient le moins de leur poche : environ 9 à 10 % de la dépense de santé. Les complémentaires en financent environ 12 %, avec des frais de gestion plus élevés que la Sécu.",["drees"]],
+  "Le « 100 % Sécu » supprimerait ce second étage : la Sécu rembourserait tout, financée par des cotisations plus élevées à la place des primes de mutuelle."
+],
+facts:[["≈ 9-10 %","de la dépense restant à la charge des ménages"],["≈ 96 %","des Français ont une complémentaire"],["≈ 12 %","de la dépense financée par les complémentaires"]],
+world:[
+  ["Royaume-Uni","Le NHS, financé par l'impôt, soigne gratuitement, mais avec des délais d'attente longs."],
+  ["Allemagne","Des caisses d'assurance maladie en concurrence, obligatoires, avec peu de reste à charge."]
+],
+appr:[
+  {t:"100 % Sécurité sociale",d:"Fin des complémentaires, une seule assurance publique.",who:["melenchon","roussel"]},
+  {t:"Unifier les régimes",d:"Même couverture pour salariés, indépendants et agriculteurs.",who:["glucksmann"]},
+  {t:"Maîtriser les dépenses",d:"Moins de gaspillage, prévention.",who:["philippe","lepen"]}
+],
+pc:[
+  {t:"Passer au 100 % Sécu",who:["melenchon","roussel"],
+   pro:["Les frais de gestion des mutuelles disparaîtraient, et tout le monde serait couvert pareil.",
+        "Les primes de mutuelle augmentent fortement, surtout pour les retraités, qui paient plus cher."],
+   con:["Les cotisations ou la CSG devraient augmenter de plusieurs dizaines de milliards d'euros.",
+        "Les mutuelles emploient des dizaines de milliers de personnes.",
+        "Un remboursement total sans reste à charge peut augmenter la consommation de soins."]}
+],
+impl:[
+  "Le 100 % Sécu ne crée pas d'argent : il remplace des primes de mutuelle par des prélèvements obligatoires, en changeant qui paie (selon les revenus plutôt que selon l'âge ou le contrat).",
+  "Le déficit de l'Assurance maladie limite toute extension sans nouvelle recette."
+]},
+
+{id:"findevie",t:"La fin de vie",q:"Faut-il aller au-delà de la loi de 2026 sur l'aide à mourir ?",
+pos:{
+  melenchon:{s:"Inscrire dans la Constitution le droit de mourir dans la dignité, y compris avec une aide active, et garantir l'accès aux soins palliatifs.",m:["Droit de mourir dans la dignité"]},
+  tondelier:{s:"Adopter les lois sur le droit à mourir dans la dignité.",m:["Fin de vie"]}
+},
+how:[
+  ["La loi du 18 août 2026 crée un droit à l'aide à mourir. Rejetée deux fois par le Sénat, elle a été adoptée définitivement par l'Assemblée nationale le 15 juillet 2026, puis validée par le Conseil constitutionnel.",["aam","aams"]],
+  "Avant, la loi Claeys-Leonetti de 2016 permettait seulement une sédation profonde et continue jusqu'au décès, pour des malades en fin de vie dont la souffrance ne pouvait être soulagée.",
+  "Une loi sur les soins palliatifs l'accompagne. Une partie des départements n'a toujours pas d'unité de soins palliatifs."
+],
+facts:[["18 août 2026","promulgation de la loi sur l'aide à mourir"],["2016","loi Claeys-Leonetti"]],
+world:[
+  ["Belgique, Pays-Bas","Euthanasie autorisée depuis 2002, y compris dans certaines conditions pour des souffrances psychiques."],
+  ["Suisse","Suicide assisté toléré depuis longtemps, accompagné par des associations."],
+  ["Oregon (États-Unis)","Suicide assisté pour les malades en phase terminale depuis 1997."]
+],
+appr:[
+  {t:"Inscrire le droit dans la Constitution",d:"Rendre l'aide à mourir plus difficile à remettre en cause.",who:["melenchon"]},
+  {t:"Appliquer la loi de 2026",d:"Mettre en œuvre le nouveau droit et les soins palliatifs.",who:["tondelier"]}
+],
+pc:[
+  {t:"Le droit à l'aide à mourir",who:["melenchon","tondelier"],
+   pro:["Chacun doit pouvoir décider de sa fin de vie face à une souffrance insupportable.",
+        "La plupart des Français y sont favorables selon les sondages.",
+        "Des Français partaient déjà en Belgique ou en Suisse."],
+   con:["Des soignants et des religions s'y opposent pour des raisons éthiques.",
+        "Le risque de pression sur les personnes âgées, malades ou handicapées, qui pourraient se sentir un fardeau.",
+        "Les soins palliatifs restent insuffisants : la demande de mourir peut venir d'une douleur mal soulagée."]}
+],
+impl:[
+  "Les autres candidats n'en font pas un axe de programme ; une majorité différente pourrait toutefois restreindre la loi de 2026.",
+  "Les décrets d'application et la clause de conscience des soignants vont décider de l'accès réel au nouveau droit."
+]}
+],
+
+education:[
+{id:"classes",t:"La taille des classes",q:"Faut-il moins d'élèves par classe, et comment le financer ?",
+pos:{
+  melenchon:{s:"19 élèves par classe en moyenne à la fin du quinquennat, avec 160 000 enseignants recrutés.",m:["19 élèves par classe, 160 000 enseignants"]},
+  tondelier:{s:"19 élèves par classe en primaire d'ici 2032, et 12 en éducation prioritaire.",m:["19 élèves par classe en primaire"]},
+  attal:{s:"Moins de 20 élèves par classe, grâce à la baisse du nombre d'élèves.",m:["Moins de 20 élèves par classe"]},
+  glucksmann:{s:"Moins d'élèves par enseignant, d'abord en primaire, avec du tutorat.",m:["Moins d'élèves par enseignant"]}
+},
+scale:{label:"Élèves par classe visés",min:18,max:23,step:1,unit:"",now:21.6,nowLabel:"Aujourd'hui : 21,6 en primaire",
+  pts:{melenchon:19,tondelier:19,attal:20},
+  offLabel:"Sans chiffre",off:{glucksmann:"Moins d'élèves par enseignant, d'abord en primaire."}},
+how:[
+  ["En primaire, la France compte en moyenne 21,6 élèves par classe, contre 21 dans l'OCDE. Le nombre d'élèves par enseignant y est plus élevé que chez la plupart des voisins.",["ocde"]],
+  "Le nombre de naissances baisse depuis 2010 : l'école primaire perd des dizaines de milliers d'élèves chaque année. C'est une occasion de réduire les classes sans recruter, ou au contraire de supprimer des postes.",
+  "Depuis 2017, les classes de CP et CE1 en éducation prioritaire ont été dédoublées, à environ 12 élèves."
+],
+facts:[["21,6","élèves par classe en primaire"],["21","moyenne OCDE"],["≈ 12","en CP-CE1 d'éducation prioritaire"]],
+world:[
+  ["Finlande","Des classes souvent autour de 20 élèves, et des enseignants très sélectionnés et bien considérés."],
+  ["Japon, Corée","Des classes nombreuses (plus de 25) avec de très bons résultats aux évaluations internationales."]
+],
+appr:[
+  {t:"Recruter massivement",d:"Créer des postes pour baisser les effectifs partout.",who:["melenchon"]},
+  {t:"Profiter de la baisse démographique",d:"Garder les postes et réduire les classes.",who:["attal","tondelier"]},
+  {t:"Cibler le primaire",d:"Concentrer l'effort sur les premières années.",who:["glucksmann","tondelier"]}
+],
+pc:[
+  {t:"Réduire la taille des classes",who:["melenchon","tondelier","attal","glucksmann"],
+   pro:["Moins d'élèves permet plus d'attention à chacun, surtout pour les plus fragiles.",
+        "Les évaluations du dédoublement des CP en éducation prioritaire montrent des progrès en lecture et en calcul."],
+   con:["Recruter 160 000 enseignants est difficile : les concours peinent déjà à pourvoir les postes.",
+        "L'effet de la taille des classes est surtout net en dessous de 15-17 élèves ; à 19 ou 20, il est plus discuté.",
+        "Le coût se chiffre en milliards par an."]}
+],
+impl:[
+  "La baisse démographique libère des moyens : le choix est de les garder dans l'école ou de les économiser.",
+  ["Le budget 2027 prévoit des suppressions de postes d'enseignants, contestées par plusieurs candidats.",["re"]]
+]},
+
+{id:"salaires",t:"Le salaire des enseignants",q:"Faut-il augmenter tous les enseignants, et de combien ?",
+pos:{
+  philippe:{s:"+20 % du salaire moyen sur le quinquennat.",m:["Professeurs : +20 % en moyenne"]},
+  tondelier:{s:"+15 % en cinq ans.",m:["Enseignants +15 % en cinq ans"]},
+  glucksmann:{s:"+10 % pour tous, jusqu'à +25 % avec la carrière, pour environ 6 Md€.",m:["Enseignants : +10 %, jusqu'à +25 %"]},
+  attal:{s:"+200 à 500 € net par mois en milieu de carrière.",m:["Professeurs : +200 à 500 € net"]},
+  lepen:{s:"Mieux payer, sans hausse chiffrée, et suppression du « Pacte enseignant ».",m:["Enseignants : pas de hausse chiffrée"]}
+},
+scale:{label:"Hausse de salaire proposée",min:0,max:25,step:5,unit:" %",
+  pts:{glucksmann:10,tondelier:15,philippe:20},
+  offLabel:"Autre forme",off:{attal:"+200 à 500 € net en milieu de carrière.",lepen:"Pas de hausse chiffrée."}},
+how:[
+  ["Un enseignant gagne en moyenne environ 2 900 € net par mois, de 2 680 € pour un professeur des écoles à 3 930 € pour un agrégé.",["pss"]],
+  ["Selon l'OCDE, les enseignants français gagnent 18 à 26 % de moins que les autres diplômés du supérieur, contre 13 à 17 % de moins en moyenne dans l'OCDE. Le salaire de début est proche de la moyenne, mais l'écart se creuse en milieu de carrière.",["ocde","cafe"]],
+  "Le « Pacte enseignant », créé en 2023, paie des missions supplémentaires (remplacements, soutien) à ceux qui les acceptent."
+],
+facts:[["≈ 2 900 €","net : salaire moyen d'un enseignant"],["–18 à –26 %","par rapport aux autres diplômés"],["≈ 6 Md€","coût annoncé de +10 % (R. Glucksmann)"]],
+world:[
+  ["Allemagne","Parmi les enseignants les mieux payés d'Europe, souvent fonctionnaires à vie."],
+  ["Moyenne OCDE","Les salaires de début ont progressé de 14 à 17 % en dix ans, contre 8 % en France."]
+],
+appr:[
+  {t:"Hausse générale en pourcentage",d:"Tous les enseignants augmentés.",who:["glucksmann","tondelier","philippe"]},
+  {t:"Hausse ciblée sur le milieu de carrière",d:"Là où l'écart avec l'OCDE est le plus grand.",who:["attal"]},
+  {t:"Payer davantage pour des missions en plus",d:"Pacte enseignant, ou réforme non chiffrée.",who:["lepen"]}
+],
+pc:[
+  {t:"Augmenter fortement les salaires",who:["glucksmann","tondelier","philippe"],
+   pro:["Le métier attire moins : de nombreux postes restent vacants aux concours.",
+        "Un salaire plus élevé aide à garder les enseignants expérimentés."],
+   con:["Chaque point de hausse coûte environ 600 M€ par an pour l'ensemble des enseignants.",
+        "Le salaire n'est qu'une partie du problème : conditions de travail, autorité, formation."]}
+],
+impl:[
+  "Les hausses générales profitent aussi aux enseignants déjà en fin de carrière ; les hausses ciblées visent les points faibles mais créent des écarts.",
+  "Une hausse sans contrepartie et une hausse liée à des missions en plus traduisent deux visions du métier."
+]},
+
+{id:"parcoursup",t:"Parcoursup et l'entrée dans le supérieur",q:"Faut-il garder, réformer ou supprimer la sélection à l'entrée de l'université ?",
+pos:{
+  melenchon:{s:"Démanteler Parcoursup, accès sans sélection à la formation choisie, enseignement supérieur gratuit.",m:["Fin de Parcoursup"]},
+  roussel:{s:"Fin de la sélection à l'université et revenu étudiant de 850 €.",m:["Fin de la sélection à l'université","Revenu étudiant de 850 €"]},
+  tondelier:{s:"Remplacer Parcoursup par une plateforme sans lettre de motivation ni mention du lycée, et 150 000 logements étudiants.",m:["Remplacer Parcoursup","150 000 logements étudiants"]},
+  glucksmann:{s:"Remplacer les bourses par un capital formation utilisable toute la vie, et repenser Parcoursup.",m:["Un capital formation universel"]},
+  lepen:{s:"100 000 logements étudiants, et frais d'inscription plus élevés pour les étudiants étrangers.",m:["Logements étudiants"]},
+  philippe:{s:"Former 100 000 ingénieurs par an d'ici cinq ans.",m:["100 000 ingénieurs par an"]}
+},
+how:[
+  ["Depuis 2018, les lycéens formulent leurs vœux sur Parcoursup ; chaque formation classe les dossiers. La plateforme a remplacé APB, qui tirait au sort dans les filières trop demandées.",["cidj"]],
+  ["En 2026, environ 866 000 candidats l'ont utilisée. Neuf lycéens sur dix ont eu au moins une proposition, mais plus de 126 000 candidats étaient encore sans proposition au 11 juillet.",["cidj"]],
+  ["Parcoursup est l'une des cibles de la mobilisation lycéenne de l'automne 2026. Le gouvernement se dit prêt à la faire évoluer, sans la supprimer.",["sdl","etu"]]
+],
+facts:[["≈ 866 000","candidats en 2026"],["9 sur 10","lycéens avec une proposition"],["126 000+","sans proposition au 11 juillet 2026"]],
+world:[
+  ["Allemagne","Le bac (Abitur) donne accès à l'université, avec un numerus clausus par la note dans les filières très demandées."],
+  ["Royaume-Uni","Les universités sélectionnent sur dossier, avec des frais d'inscription élevés."]
+],
+appr:[
+  {t:"Supprimer la sélection",d:"Chaque bachelier accède à la formation de son choix ; créer les places manquantes.",who:["melenchon","roussel"]},
+  {t:"Remplacer la plateforme",d:"Affectation par secteur, sans lettres de motivation.",who:["tondelier","glucksmann"]},
+  {t:"Garder et ajuster",d:"Plus de places dans les filières utiles, logements.",who:["philippe","lepen"]}
+],
+pc:[
+  {t:"Supprimer ou remplacer Parcoursup",who:["melenchon","roussel","tondelier"],
+   pro:["Chaque été, des dizaines de milliers de jeunes restent sans place.",
+        "Les lettres de motivation et l'opacité des critères créent du stress, et le lycée d'origine peut peser.",
+        "Des recalés se tournent vers des écoles privées coûteuses."],
+   con:["Sans tri, les formations demandées devraient revenir au tirage au sort, comme avec APB.",
+        "Le vrai problème est le manque de places et de moyens, pas l'outil.",
+        "Supprimer la sélection augmente l'échec en première année."]}
+],
+impl:[
+  "Toute réforme sans création de places déplace le problème : il manque des places dans les filières les plus demandées (santé, psychologie, STAPS, droit).",
+  "Le coût de la vie étudiante (logement surtout) pèse autant que l'affectation dans la réussite."
+]},
+
+{id:"ecole",t:"Niveau et autorité à l'école",q:"Comment relever le niveau et restaurer le calme dans les classes ?",
+pos:{
+  attal:{s:"Rétablir les groupes de niveau, un certificat d'études en CM2, réseaux sociaux interdits avant 15 ans, et des sanctions dès le primaire.",m:["Rétablir le « choc des savoirs »","Un certificat d'études en CM2","Réseaux sociaux interdits avant 15 ans","Formation à l'IA et discipline"]},
+  lepen:{s:"Retour aux fondamentaux, uniforme, fin du collège unique et apprentissage dès 14 ans.",m:["Retour aux fondamentaux","Uniforme et autorité","Collège modulable"]},
+  philippe:{s:"Chefs d'établissement libres de leurs méthodes et de recruter, journées plus courtes et soutien scolaire pour tous.",m:["Des chefs d'établissement « patrons »","Journées plus courtes, vacances d'été raccourcies","Soutien scolaire pour tous"]},
+  glucksmann:{s:"Intégrer le privé sous contrat à la carte scolaire pour plus de mixité, et éducation aux médias.",m:["Le privé dans la carte scolaire","Éducation aux médias"]},
+  melenchon:{s:"École réellement gratuite et scolarité obligatoire jusqu'à 18 ans.",m:["École réellement gratuite","Scolarité obligatoire jusqu'à 18 ans"]},
+  roussel:{s:"Faire du harcèlement scolaire une grande cause nationale, repas à 1 €.",m:["Harcèlement scolaire, grande cause nationale","Repas à 1 €"]}
+},
+how:[
+  "Les évaluations internationales (PISA, TIMSS) placent la France sous la moyenne en mathématiques, avec l'un des liens les plus forts entre l'origine sociale et les résultats.",
+  "Le « choc des savoirs » lancé en 2023-2024 a créé des groupes de niveau en français et en mathématiques au collège ; il a été en partie assoupli depuis. Le collège unique, en place depuis 1975, accueille tous les élèves dans le même cursus jusqu'à la 3e.",
+  "Environ 17 % des élèves sont dans le privé sous contrat, financé en grande partie par l'État mais libre de choisir ses élèves. Ces établissements accueillent en moyenne des élèves plus favorisés."
+],
+facts:[["1975","création du collège unique"],["≈ 17 %","des élèves dans le privé sous contrat"]],
+world:[
+  ["Allemagne","Orientation dès 10 ans entre plusieurs types de collèges ; de bons résultats en apprentissage, mais des inégalités sociales fortes."],
+  ["Finlande","Tronc commun jusqu'à 16 ans, très peu de privé, et des résultats longtemps parmi les meilleurs."],
+  ["Australie","Réseaux sociaux interdits aux moins de 16 ans depuis fin 2025."]
+],
+appr:[
+  {t:"Exigence et autorité",d:"Fondamentaux, examens, sanctions, groupes de niveau.",who:["attal","lepen","philippe"]},
+  {t:"Orientation plus précoce",d:"Fin du collège unique, apprentissage plus tôt.",who:["lepen"]},
+  {t:"Mixité et gratuité",d:"Réduire les inégalités sociales entre établissements.",who:["glucksmann","melenchon","roussel"]},
+  {t:"Autonomie des établissements",d:"Les chefs d'établissement décident davantage.",who:["philippe"]}
+],
+pc:[
+  {t:"Groupes de niveau et orientation précoce",who:["attal","lepen"],
+   pro:["Les élèves en difficulté reçoivent un enseignement adapté à leur rythme.",
+        "Les bons élèves progressent sans être freinés.",
+        "L'apprentissage tôt peut motiver des élèves qui décrochent."],
+   con:["Les recherches montrent que les groupes de niveau figés creusent les écarts et enferment les plus faibles.",
+        "Orienter tôt renforce le poids de l'origine sociale.",
+        "Ils demandent plus d'enseignants pour un même nombre d'élèves."]},
+  {t:"Plus de mixité sociale",who:["glucksmann","melenchon"],
+   pro:["La concentration des élèves défavorisés dans certains établissements pèse sur leurs résultats.",
+        "Le privé, financé par l'État, ne partage pas les mêmes obligations que le public."],
+   con:["Les familles tiennent à la liberté de choisir l'école.",
+        "Imposer une sectorisation au privé relancerait la « guerre scolaire » de 1984."]}
+],
+impl:[
+  "Les mesures sur l'autorité et le niveau coûtent peu, mais demandent l'adhésion des enseignants pour fonctionner.",
+  "Les réformes successives depuis vingt ans sont souvent défaites avant d'être évaluées : la stabilité est en soi un enjeu."
+]}
+]
+});
+
+const app=document.getElementById("app");
 const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const norm=s=>String(s).normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+const CI={};CANDS.forEach(c=>CI[c.id]=c);
+const last=c=>c.name.split(" ").slice(1).join(" ");
+const pv=id=>`style="--p:var(--c-${id})"`;
+const MI={};Object.values(D).forEach(t=>Object.entries(t.c).forEach(([cid,ms])=>ms.forEach(m=>MI[cid+"|"+m[0]]=m)));
+
+// État : mode d'affichage, sélection, face-à-face, thème courant
+const st={view:"home",mode:"all",sel:new Set(CANDS.map(c=>c.id)),vs:[],theme:"retraites"};
+try{const s=JSON.parse(store.get("app2027")||"{}");
+  if(["all","sel","vs"].includes(s.mode))st.mode=s.mode;
+  if(Array.isArray(s.sel))st.sel=new Set(s.sel.filter(id=>CI[id]));
+  if(Array.isArray(s.vs))st.vs=s.vs.filter(id=>CI[id]).slice(0,2);
+  if(D[s.theme])st.theme=s.theme;}catch(e){}
+const save=()=>store.set("app2027",JSON.stringify({mode:st.mode,sel:[...st.sel],vs:st.vs,theme:st.theme}));
+const ready=()=>st.mode==="all"||(st.mode==="sel"&&st.sel.size>0)||(st.mode==="vs"&&st.vs.length===2);
+const shown=()=>st.mode==="vs"?st.vs.map(id=>CI[id]):st.mode==="sel"?CANDS.filter(c=>st.sel.has(c.id)):CANDS;
+const dtab={};
+
+// Sources
+const short=k=>S[k][0].split(/,|«/)[0].trim();
+const cite=keys=>keys&&keys.length?` <span class="cite">— ${keys.filter(k=>S[k]).map(k=>`<a href="${S[k][1]}" target="_blank" rel="noopener" title="${esc(S[k][0])}">${esc(short(k))}</a>`).join(", ")}</span>`:"";
+const T=x=>Array.isArray(x)?x[0]:x, K=x=>Array.isArray(x)?x[1]:null;
+const para=x=>`<p class="para">${esc(T(x))}${cite(K(x))}</p>`;
+const arg=x=>`<li>${esc(T(x))}${K(x)?cite(K(x)):` <span class="cite gen">— argument courant</span>`}</li>`;
 const srcLine=src=>src&&src.length?`<p class="src">Source : `+src.map(k=>`<a href="${S[k][1]}" target="_blank" rel="noopener">${esc(S[k][0])}</a>`).join(" · ")+`</p>`:"";
+const pin=c=>`<span class="pin" ${pv(c.id)}>${esc(last(c))}</span>`;
 
-let current="comprendre";
-{const s=store.get("theme2027");if(s&&(D[s]||s==="comprendre"))current=s}
-{const h=location.hash.slice(1);if(h&&(D[h]||h==="comprendre"))current=h}
-let hidden=new Set();
-try{const h=JSON.parse(store.get("hidden2027")||"[]");if(Array.isArray(h))hidden=new Set(h.filter(id=>CANDS.some(c=>c.id===id)))}catch(e){}
-
-// Candidate toggles
-CANDS.forEach(c=>{
-  const b=document.createElement("button");b.type="button";b.className="ballot";b.dataset.id=c.id;
-  b.style.setProperty("--p",`var(--c-${c.id})`);
-  b.innerHTML=`<span class="sw" aria-hidden="true"></span>${esc(c.name)}`;
-  b.addEventListener("click",()=>{hidden.has(c.id)?hidden.delete(c.id):hidden.add(c.id);saveHidden();render()});
-  ballots.appendChild(b);
-});
-function saveHidden(){store.set("hidden2027",JSON.stringify([...hidden]))}
-function syncBallots(){
-  ballots.querySelectorAll(".ballot").forEach(b=>b.setAttribute("aria-pressed",hidden.has(b.dataset.id)?"false":"true"));
-  $("hint").innerHTML=hidden.size?`${CANDS.length-hidden.size} candidat${CANDS.length-hidden.size>1?"s":""} sur ${CANDS.length} affiché${CANDS.length-hidden.size>1?"s":""} · <button type="button" id="showAll">Tout afficher</button>`:"Touchez un nom pour le masquer ou l'afficher.";
-  const sa=$("showAll");if(sa)sa.addEventListener("click",()=>{hidden.clear();saveHidden();render()});
+/* ---------- Accueil ---------- */
+function renderHome(focusSel){
+  st.view="home";
+  try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}
+  const M=[["all","Tous les candidats","Les sept programmes, thème par thème."],["sel","Ma sélection","Choisissez les candidats à afficher."],["vs","Face-à-face","Deux candidats côte à côte, débat par débat."]];
+  let h=`<section class="home wrap"><p class="eyebrow">Présidentielle 2027</p><h1>Qui voulez-vous comparer ?</h1>
+  <div class="modes" role="radiogroup" aria-label="Mode de comparaison">`+M.map(([k,t,d])=>`<button type="button" class="mode" role="radio" aria-checked="${st.mode===k}" data-mode="${k}"><b>${t}</b><span>${d}</span></button>`).join("")+`</div>`;
+  if(st.mode==="sel"){
+    h+=`<div class="picker"><p class="lab">Cochez les candidats à afficher</p><div class="ballots">`+CANDS.map(c=>`<button type="button" class="ballot" data-id="${c.id}" aria-pressed="${st.sel.has(c.id)}" ${pv(c.id)}><span class="sw" aria-hidden="true"></span><span>${esc(c.name)}<small>${esc(c.party.split(" · ")[0])}</small></span></button>`).join("")+`</div></div>`;
+  }else if(st.mode==="vs"){
+    const slot=i=>{const c=CI[st.vs[i]];return c?`<div class="vss on" ${pv(c.id)}>${esc(c.name)}</div>`:`<div class="vss">Candidat ${i+1}</div>`};
+    h+=`<div class="picker"><div class="vsbar">${slot(0)}<span class="vsx">VS</span>${slot(1)}</div><p class="lab">Choisissez deux candidats</p><div class="ballots">`+CANDS.map(c=>{const i=st.vs.indexOf(c.id);return `<button type="button" class="ballot" data-id="${c.id}" aria-pressed="${i>=0}" ${pv(c.id)}><span class="sw" aria-hidden="true"></span><span>${esc(c.name)}<small>${esc(c.party.split(" · ")[0])}</small></span>${i>=0?`<span class="slot">${i+1}</span>`:""}</button>`}).join("")+`</div></div>`;
+  }
+  h+=`<button type="button" class="go" id="go" ${ready()?"":"disabled"}>Voir les programmes →</button>
+  <p class="homenote">Dix thèmes, découpés en grands débats. Pour chacun : ce que veut chaque candidat, comment ça marche aujourd'hui, ce qui se fait ailleurs, et les arguments pour et contre.</p></section>`;
+  app.innerHTML=h;
+  if(focusSel){const f=app.querySelector(focusSel);if(f)f.focus()}
 }
 
-// Theme tabs
-{const b=document.createElement("button");b.type="button";b.className="tab learn";b.id="chip-comprendre";b.dataset.key="comprendre";b.textContent="Comprendre";b.addEventListener("click",()=>select("comprendre"));chips.appendChild(b);
-const sp=document.createElement("span");sp.className="sep";sp.setAttribute("aria-hidden","true");chips.appendChild(sp)}
-Object.entries(D).forEach(([k,t])=>{const b=document.createElement("button");b.type="button";b.className="tab";b.id="chip-"+k;b.dataset.key=k;b.textContent=t.label;b.addEventListener("click",()=>select(k));chips.appendChild(b)});
-
-function measureHTML([mt,md,src,tag,ctx],theme){
-  let h=`<details class="m"><summary><span class="chev" aria-hidden="true"></span><span class="mt">${esc(mt)}</span>${theme?`<span class="ttag">${esc(theme)}</span>`:""}${tag?`<span class="tag">Programme ${esc(tag)}</span>`:""}</summary><div class="md">`;
-  if(md) h+=`<p>${esc(md)}</p>`;
-  if(ctx) h+=`<p class="ctx"><b>Aujourd'hui</b>${esc(ctx)}</p>`;
-  h+=srcLine(src);
-  if(LINK[mt]&&NI[LINK[mt]]) h+=`<button type="button" class="nlink" data-n="${LINK[mt]}">Comprendre : ${esc(NI[LINK[mt]].t)} →</button>`;
-  return h+`</div></details>`;
-}
-function candSection(c,rows,emptyMsg){
-  const s=document.createElement("section");s.className="cand";s.id="c-"+c.id;s.style.setProperty("--p",`var(--c-${c.id})`);
-  let h=`<header class="ch"><div class="who"><h3>${esc(c.name)}</h3><p class="party">${esc(c.party)}</p></div><span class="count">${rows.length} mesure${rows.length>1?"s":""}</span></header><div class="measures">`;
-  h+=rows.length?rows.join(""):`<p class="empty">${emptyMsg}</p>`;
-  s.innerHTML=h+`</div>`;return s;
-}
-const visible=()=>CANDS.filter(c=>!hidden.has(c.id));
-
-function renderNotions(){
-  title.textContent="Comprendre";lede.hidden=false;
-  lede.textContent="Les notions et mécanismes utiles pour lire les programmes : comment fonctionnent les institutions, d'où viennent les débats, et ce que chaque camp avance.";
-  N.forEach(g=>{
-    const h=document.createElement("h3");h.className="grp";h.textContent=g.g;list.appendChild(h);
-    g.items.forEach(x=>{
-      const d=document.createElement("details");d.className="notion";d.id="n-"+x.id;
-      let o=`<summary><span class="chev" aria-hidden="true"></span><span class="nt"><b>${esc(x.t)}</b><span>${esc(x.k)}</span></span></summary><div class="nb">`;
-      if(x.f) o+=`<ul class="facts">`+x.f.map(([v,l])=>`<li><b>${esc(v)}</b>${esc(l)}</li>`).join("")+`</ul>`;
-      x.p.forEach(t=>o+=`<p>${esc(t)}</p>`);
-      if(x.a) o+=`<h4>Ce qui fait débat</h4><div class="sides">`+[x.a,x.b].map(([hh,l])=>`<div class="side"><h5>${esc(hh)}</h5><ul>${l.map(i=>`<li>${esc(i)}</li>`).join("")}</ul></div>`).join("")+`</div>`;
-      if(x.th&&x.th.length) o+=`<div class="jump">`+x.th.map(k=>`<button type="button" class="jb" data-theme="${k}">Voir les programmes : ${esc(D[k].label)} →</button>`).join("")+`</div>`;
-      d.innerHTML=o+srcLine(x.s)+`</div>`;list.appendChild(d);
-    });
-  });
+/* ---------- Vue thème ---------- */
+function modeChip(){
+  const cs=shown();
+  const txt=st.mode==="all"?"Tous les candidats (7)":st.mode==="vs"?`${last(cs[0])} vs ${last(cs[1])}`:`Sélection : ${cs.map(last).join(", ")}`;
+  return `<button type="button" class="modechip" id="change" aria-label="Changer de candidats (${esc(txt)})"><span class="dots" aria-hidden="true">${cs.map(c=>`<i ${pv(c.id)}></i>`).join("")}</span><span class="txt">${esc(txt)}</span><u>Changer</u></button>`;
 }
 function renderTheme(){
-  const t=D[current];title.textContent=t.label;lede.hidden=true;
-  visible().forEach(c=>list.appendChild(candSection(c,(t.c[c.id]||[]).map(m=>measureHTML(m)),"Aucune mesure recensée sur ce thème dans les sources consultées.")));
+  st.view="theme";
+  app.innerHTML=`<nav class="strip" aria-label="Thèmes"><div class="wrap">
+    <div class="toprow"><button type="button" class="brand" id="brand">Programmes 2027</button>${modeChip()}</div>
+    <div class="tabs" role="toolbar">`+Object.entries(D).map(([k,t])=>`<button type="button" class="tab" data-key="${k}">${esc(t.label)}</button>`).join("")+`</div>
+    <div class="searchrow"><input class="search" id="q" type="search" placeholder="Chercher une mesure : SMIC, nucléaire, Parcoursup…" aria-label="Chercher une mesure"><button class="tool" id="toggleAll" type="button">Tout déplier</button></div>
+  </div></nav><main class="wrap"><div class="bar" id="bar"></div><div class="list" id="list"></div></main>`;
+  document.getElementById("q").addEventListener("input",()=>{clearTimeout(qt);qt=setTimeout(renderList,150)});
+  renderList();
 }
-function renderSearch(term){
-  const n=norm(term);let total=0;
-  title.textContent=`Recherche : « ${term} »`;lede.hidden=false;
-  visible().forEach(c=>{
-    const rows=[];
-    Object.values(D).forEach(t=>(t.c[c.id]||[]).forEach(m=>{if(norm(m[0]+" "+(m[1]||"")+" "+(m[4]||"")).includes(n))rows.push(measureHTML(m,t.label))}));
-    total+=rows.length;
-    if(rows.length)list.appendChild(candSection(c,rows));
-  });
-  lede.textContent=total?`${total} mesure${total>1?"s":""} trouvée${total>1?"s":""}, tous thèmes confondus.`:"";
-  if(!total){const p=document.createElement("p");p.className="none";p.textContent="Aucune mesure ne correspond. Essayez un autre mot.";list.appendChild(p)}
+let qt;
+function selectTheme(k){
+  st.theme=k;save();
+  const q=document.getElementById("q");if(q)q.value="";
+  try{history.replaceState(null,"","#"+k)}catch(e){}
+  renderList();
+  const b=app.querySelector(`.tab[data-key="${k}"]`);if(b&&b.scrollIntoView)b.scrollIntoView({inline:"center",block:"nearest",behavior:"smooth"});
+  const strip=app.querySelector(".strip");if(strip&&window.scrollY>strip.offsetTop)window.scrollTo({top:strip.offsetTop});
 }
-function render(){
-  list.innerHTML="";syncBallots();
-  const term=q.value.trim();
-  if(term.length>=2) renderSearch(term);
-  else if(current==="comprendre") renderNotions();
-  else {
-    renderTheme();
-    if(!visible().length){const p=document.createElement("p");p.className="none";p.textContent="Aucun candidat affiché. Touchez un nom plus haut.";list.appendChild(p)}
+function renderList(){
+  const bar=document.getElementById("bar"),list=document.getElementById("list"),term=document.getElementById("q").value.trim();
+  list.innerHTML="";
+  app.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-pressed",term.length<2&&b.dataset.key===st.theme?"true":"false"));
+  if(term.length>=2){renderSearch(term,bar,list);upd();return}
+  const t=D[st.theme],deb=DEB[st.theme];
+  if(deb){
+    bar.innerHTML=`<h2>${esc(t.label)}</h2><p class="sub">${deb.length} grands débats. Pour chacun : la position des candidats, puis de quoi comprendre.</p><div class="dnav">`+deb.map(d=>`<button type="button" data-goto="${d.id}">${esc(d.t)}</button>`).join("")+`</div>`;
+    deb.forEach(d=>list.appendChild(debateEl(d)));
+    // Mesures du thème qui ne relèvent d'aucun débat
+    const used=new Set();deb.forEach(d=>Object.entries(d.pos).forEach(([cid,p])=>p.m.forEach(t=>used.add(cid+"|"+t))));
+    const rest=shown().map(c=>[c,(t.c[c.id]||[]).filter(m=>!used.has(c.id+"|"+m[0]))]).filter(([,ms])=>ms.length);
+    if(rest.length){
+      const h=document.createElement("div");h.className="bar";h.style.margin="10px 0 0";
+      h.innerHTML=`<h3 class="resth">Autres mesures du thème</h3><p class="sub">Les propositions qui ne relèvent d'aucun des débats ci-dessus.</p>`;list.appendChild(h);
+      const cards=rest.map(([c,ms])=>candCard(c,ms.map(m=>measureHTML(m,{cid:c.id}))));
+      if(st.mode==="vs"){const g=document.createElement("div");g.className="vs";cards.forEach(x=>g.appendChild(x));list.appendChild(g)}
+      else cards.forEach(x=>list.appendChild(x));
+    }
+  }else{
+    bar.innerHTML=`<h2>${esc(t.label)}</h2>`;
+    const cards=shown().map(c=>candCard(c,(t.c[c.id]||[]).map(m=>measureHTML(m,{cid:c.id}))));
+    if(st.mode==="vs"){const g=document.createElement("div");g.className="vs";cards.forEach(x=>g.appendChild(x));list.appendChild(g)}
+    else cards.forEach(x=>list.appendChild(x));
   }
-  chips.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-pressed",term.length<2&&b.dataset.key===current?"true":"false"));
   upd();
 }
-function select(k){
-  current=k;q.value="";store.set("theme2027",k);
-  try{history.replaceState(null,"","#"+k)}catch(e){}
-  render();
-  const b=$("chip-"+k);if(b&&b.scrollIntoView)b.scrollIntoView({inline:"center",block:"nearest",behavior:"smooth"});
-  const top=document.querySelector(".strip").offsetTop;if(window.scrollY>top)window.scrollTo({top});
+function candCard(c,rows,empty="Aucune mesure recensée sur ce thème dans les sources consultées."){
+  const s=document.createElement("section");s.className="cand";s.style.setProperty("--p",`var(--c-${c.id})`);
+  s.innerHTML=`<p class="who">${esc(c.name)}</p><p class="party">${esc(c.party)}</p><div class="ms">${rows.length?rows.join(""):`<p class="empty">${empty}</p>`}</div>`;
+  return s;
 }
-const items=()=>[...list.querySelectorAll("details")];
-function upd(){const a=items();toggle.hidden=!a.length;toggle.textContent=a.length&&a.every(d=>d.open)?"Tout replier":"Tout déplier"}
-function openNotion(id){
-  select("comprendre");const d=$("n-"+id);if(!d)return;d.open=true;upd();
-  d.scrollIntoView({block:"start",behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
-  d.classList.remove("flash");void d.offsetWidth;d.classList.add("flash");
+function renderSearch(term,bar,list){
+  const n=norm(term);let total=0;
+  shown().forEach(c=>{
+    const rows=[];
+    Object.values(D).forEach(t=>(t.c[c.id]||[]).forEach(m=>{if(norm(m[0]+" "+(m[1]||"")+" "+(m[4]||"")).includes(n))rows.push(measureHTML(m,{cid:c.id,theme:t.label}))}));
+    total+=rows.length;if(rows.length)list.appendChild(candCard(c,rows));
+  });
+  bar.innerHTML=`<h2>Recherche : « ${esc(term)} »</h2><p class="sub">${total?`${total} mesure${total>1?"s":""} trouvée${total>1?"s":""}, tous thèmes confondus.`:"Aucune mesure ne correspond. Essayez un autre mot."}</p>`;
 }
-list.addEventListener("toggle",upd,true);
-list.addEventListener("click",e=>{const n=e.target.closest(".nlink");if(n){openNotion(n.dataset.n);return}const j=e.target.closest(".jb");if(j)select(j.dataset.theme)});
-toggle.addEventListener("click",()=>{const a=items();const o=!a.every(d=>d.open);a.forEach(d=>d.open=o);upd()});
-let qt;q.addEventListener("input",()=>{clearTimeout(qt);qt=setTimeout(render,150)});
-render();
+function measureHTML(m,o={}){
+  const [mt,md,src,tag,ctx]=m;
+  let h=`<details class="m"><summary><span class="chev" aria-hidden="true"></span><span class="mt">${esc(mt)}</span>${o.theme?`<span class="ttag">${esc(o.theme)}</span>`:""}${tag?`<span class="tag">Programme ${esc(tag)}</span>`:""}</summary><div class="md">`;
+  if(md)h+=`<p>${esc(md)}</p>`;
+  if(ctx)h+=`<p class="ctx"><b>Aujourd'hui</b>${esc(ctx)}</p>`;
+  h+=srcLine(src);
+  if(!o.inDebate&&LINK[mt]&&NI[LINK[mt]])h+=`<button type="button" class="nlink" data-n="${LINK[mt]}" aria-expanded="false">Comprendre : ${esc(NI[LINK[mt]].t)}</button>`;
+  return h+`</div></details>`;
+}
+
+/* ---------- Débats ---------- */
+const DT=[["pos","Positions"],["how","Comment ça marche"],["world","Ailleurs"],["appr","Les approches"],["pc","Pour et contre"],["impl","Effets"]];
+function debateEl(d){
+  const s=document.createElement("section");s.className="debate";s.id="d-"+d.id;
+  const tabs=DT.filter(([k])=>k==="pos"||(d[k]&&d[k].length));
+  const cur=dtab[d.id]||"pos";
+  s.innerHTML=`<header class="dh"><h3>${esc(d.t)}</h3><p class="q">${esc(d.q)}</p></header>
+  <div class="dtabs" role="tablist">`+tabs.map(([k,l])=>`<button type="button" class="dtab" role="tab" data-d="${d.id}" data-k="${k}" aria-selected="${k===cur}">${l}</button>`).join("")+`</div>
+  <div class="dp" role="tabpanel">${panel(d,cur)}</div>`;
+  return s;
+}
+function panel(d,k){
+  const cs=shown(),ids=new Set(cs.map(c=>c.id));
+  if(k==="pos")return scaleHTML(d,cs,ids)+positionsHTML(d,cs);
+  if(k==="how")return (d.facts?`<ul class="facts">`+d.facts.map(([v,l])=>`<li><b>${esc(v)}</b>${esc(l)}</li>`).join("")+`</ul>`:"")+d.how.map(para).join("");
+  if(k==="world")return `<ul class="world">`+d.world.map(([p,t,s])=>`<li><b>${esc(p)}</b><div>${esc(t)}${s?cite(s):""}</div></li>`).join("")+`</ul>`+(d.worldNote?`<p class="caution">${esc(T(d.worldNote))}${cite(K(d.worldNote))}</p>`:"");
+  if(k==="appr"){
+    const inDeb=new Set(Object.keys(d.pos));
+    return `<div class="appr">`+d.appr.map(a=>{
+      const who=a.who==="rest"?cs.filter(c=>!inDeb.has(c.id)):cs.filter(c=>a.who.includes(c.id));
+      const none=a.who==="rest"?"Tous les candidats affichés ont une proposition sur ce point.":(a.who.length?"Aucun des candidats affichés.":"Aucun candidat ne le propose dans les sources consultées.");
+      return `<div class="ap"><b>${esc(a.t)}</b><p>${esc(a.d)}</p><div class="chips">${a.whoLabel&&who.length?`<span class="wl">${esc(a.whoLabel)}</span>`:""}${who.length?who.map(pin).join(""):`<span class="nobody">${none}</span>`}</div></div>`}).join("")+`</div>`;
+  }
+  if(k==="pc")return d.pc.map(b=>{
+    const who=cs.filter(c=>b.who.includes(c.id));
+    return `<div class="pcb"><h5>${esc(b.t)}${who.length?`<span class="chips" style="margin:0;padding:0">${who.map(pin).join("")}</span>`:""}</h5><div class="pcg">
+      <div class="pcc pro"><h6><i aria-hidden="true">+</i>Arguments pour</h6><ul>${b.pro.map(arg).join("")}</ul></div>
+      <div class="pcc con"><h6><i aria-hidden="true">−</i>Arguments contre</h6><ul>${b.con.map(arg).join("")}</ul></div></div></div>`}).join("");
+  if(k==="impl")return d.impl.map(para).join("");
+  return "";
+}
+function scaleHTML(d,cs,ids){
+  const sc=d.scale;if(!sc)return "";
+  const pts=Object.entries(sc.pts).filter(([id])=>ids.has(id)),off=Object.entries(sc.off||{}).filter(([id])=>ids.has(id));
+  if(!pts.length&&!off.length)return "";
+  const pct=v=>(v-sc.min)/(sc.max-sc.min)*100;
+  const B={};pts.forEach(([id,v])=>(B[v]=B[v]||[]).push(id));
+  // Les groupes proches sur l'axe sont décalés en hauteur pour que leurs étiquettes ne se chevauchent pas
+  const bk=Object.keys(B).map(Number).sort((a,b)=>a-b).map(v=>({v,p:pct(v),ids:B[v],base:0}));
+  bk.forEach((b,i)=>{for(let j=0;j<i;j++)if(b.p-bk[j].p<30)b.base=Math.max(b.base,bk[j].base+bk[j].ids.length)});
+  const stack=Math.max(1,...bk.map(b=>b.base+b.ids.length));
+  const top=stack*27+14,H=top+30;
+  let h=`<div class="scale"><p class="sl">${esc(sc.label)}</p><div class="track" style="height:${H}px"><div class="axis" style="top:${top}px"></div>`;
+  const step=sc.step||1,unit=sc.unit!=null?sc.unit:" ans",fmt=v=>v.toLocaleString("fr-FR");
+  for(let v=sc.min;v<=sc.max;v+=step)h+=`<span class="tick" style="left:${pct(v)}%;top:${top+12}px">${fmt(v)}${v===sc.min?esc(unit):""}</span>`;
+  if(sc.now!=null)h+=`<span class="now" style="left:${pct(sc.now)}%;top:${top-4}px" title="${esc(sc.nowLabel)}"></span>`;
+  bk.forEach(({p,ids,base})=>{const cls=p>70?"r":"l";
+    h+=`<div class="bucket ${cls}" style="left:${p}%;bottom:${H-top-6}px;transform:translateX(${cls==="l"?"-5px":"calc(-100% + 5px)"})"><span class="dot"></span>${base?`<span class="stem" style="height:${base*27-4}px"></span>`:""}${ids.map(id=>pin(CI[id])).join("")}</div>`});
+  h+=`</div>`;
+  if(sc.now!=null)h+=`<p class="legend"><span><i class="lnow" aria-hidden="true"></i>${esc(sc.nowLabel)}</span></p>`;
+  if(off.length)h+=`<div class="off"><span class="ol">${esc(sc.offLabel)}</span>`+off.map(([id,t])=>`<p>${pin(CI[id])}<span>${esc(t)}</span></p>`).join("")+`</div>`;
+  return h+`</div>`;
+}
+function positionsHTML(d,cs){
+  const ms=(c,p)=>p.m.map(t=>MI[c.id+"|"+t]).filter(Boolean).map(m=>measureHTML(m,{inDebate:1})).join("");
+  if(st.mode==="vs")return `<div class="vs">`+cs.map(c=>{const p=d.pos[c.id];
+    return `<div class="vcol" ${pv(c.id)}><p class="who">${esc(c.name)}</p>${p?`<p class="stance">${esc(p.s)}</p><div class="ms">${ms(c,p)}</div>`:`<p class="none">Pas de mesure recensée sur ce point.</p>`}</div>`}).join("")+`</div>`;
+  const has=cs.filter(c=>d.pos[c.id]),abs=cs.filter(c=>!d.pos[c.id]);
+  return `<div class="pos">`+has.map(c=>{const p=d.pos[c.id];
+    return `<div class="prow" ${pv(c.id)}><span class="bar4"></span><p class="who">${esc(c.name)}<small>${esc(c.party.split(" · ")[0])}</small></p><p class="stance">${esc(p.s)}</p><div class="ms">${ms(c,p)}</div></div>`}).join("")+`</div>`
+    +(abs.length?`<p class="absent">Pas de mesure recensée sur ce point : ${abs.map(c=>esc(c.name)).join(", ")}.</p>`:"");
+}
+
+/* ---------- Notions (thèmes sans débats) ---------- */
+function notionHTML(x){
+  let o=`<div class="notion"><b class="nt">${esc(x.t)}</b>`;
+  if(x.f)o+=`<ul class="facts">`+x.f.map(([v,l])=>`<li><b>${esc(v)}</b>${esc(l)}</li>`).join("")+`</ul>`;
+  x.p.forEach(t=>o+=`<p>${esc(t)}</p>`);
+  if(x.a)o+=`<div class="sides">`+[x.a,x.b].map(([hh,l])=>`<div class="side"><h6>${esc(hh)}</h6><ul>${l.map(i=>`<li>${esc(i)}</li>`).join("")}</ul></div>`).join("")+`</div>`;
+  return o+srcLine(x.s)+`</div>`;
+}
+
+/* ---------- Événements ---------- */
+function upd(){const t=document.getElementById("toggleAll");if(!t)return;const a=[...app.querySelectorAll("main details.m")];t.hidden=!a.length;t.textContent=a.length&&a.every(d=>d.open)?"Tout replier":"Tout déplier"}
+app.addEventListener("toggle",upd,true);
+app.addEventListener("click",e=>{
+  const el=e.target.closest("button");if(!el)return;
+  if(el.dataset.mode){st.mode=el.dataset.mode;save();renderHome(`[data-mode="${st.mode}"]`);return}
+  if(el.classList.contains("ballot")&&st.view==="home"){
+    const id=el.dataset.id;
+    if(st.mode==="sel"){st.sel.has(id)?st.sel.delete(id):st.sel.add(id)}
+    else{const i=st.vs.indexOf(id);if(i>=0)st.vs.splice(i,1);else if(st.vs.length<2)st.vs.push(id);else st.vs[1]=id}
+    save();renderHome(`.ballot[data-id="${id}"]`);return;
+  }
+  if(el.id==="go"){if(!ready())return;save();try{history.replaceState(null,"","#"+st.theme)}catch(e){}renderTheme();window.scrollTo({top:0});return}
+  if(el.id==="brand"||el.id==="change"){renderHome(".mode[aria-checked=\"true\"]");window.scrollTo({top:0});return}
+  if(el.classList.contains("tab")){selectTheme(el.dataset.key);return}
+  if(el.dataset.goto){const s=document.getElementById("d-"+el.dataset.goto);if(s)s.scrollIntoView({block:"start",behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});return}
+  if(el.classList.contains("dtab")){
+    const d=DEB[st.theme].find(x=>x.id===el.dataset.d);dtab[d.id]=el.dataset.k;
+    const sec=document.getElementById("d-"+d.id);
+    sec.querySelectorAll(".dtab").forEach(b=>b.setAttribute("aria-selected",b===el?"true":"false"));
+    sec.querySelector(".dp").innerHTML=panel(d,el.dataset.k);upd();return;
+  }
+  if(el.classList.contains("nlink")){
+    const open=el.getAttribute("aria-expanded")==="true";
+    if(open){el.nextElementSibling&&el.nextElementSibling.classList.contains("notion")&&el.nextElementSibling.remove()}
+    else el.insertAdjacentHTML("afterend",notionHTML(NI[el.dataset.n]));
+    el.setAttribute("aria-expanded",open?"false":"true");return;
+  }
+  if(el.id==="toggleAll"){const a=[...app.querySelectorAll("main details.m")];const o=!a.every(d=>d.open);a.forEach(d=>d.open=o);upd();return}
+});
+
+{const h=location.hash.slice(1);if(D[h]){st.theme=h;if(!ready())st.mode="all";renderTheme()}else renderHome()}
 </script>
 
 </body>
