@@ -1,0 +1,16 @@
+{
+  "name": "Atelier Voix",
+  "short_name": "Voix",
+  "description": "Chant et communication : une séance par jour.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f3f2f7",
+  "theme_color": "#0d6b67",
+  "lang": "fr",
+  "icons": [
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}
