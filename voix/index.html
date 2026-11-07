@@ -317,7 +317,7 @@ function micHelp(el,retry){
   const box=document.createElement("div");box.className="warn";
   const framed=window.top!==window.self;
   box.innerHTML="<b>Le micro n'est pas accessible.</b>"+(framed
-    ?"<span>Cette page est affichée dans une autre appli qui bloque le micro. Ouvre directement l'adresse <span class='mono'>gcourri.github.io/programmes-2027/voix/</span> dans Chrome ou Safari.</span>"
+    ?"<span>Cette page est affichée dans une autre appli qui bloque le micro. Ouvre directement l'adresse <span class='mono'>gaspardcourrier.com/exercice/</span> dans Chrome ou Safari.</span>"
     :!window.isSecureContext?"<span>La page doit être ouverte en https.</span>"
     :"<span>Autorise le micro pour ce site. <b>Chrome</b> : touche l'icône à gauche de l'adresse → Autorisations → Micro → Autoriser. <b>iPhone</b> : Réglages → Safari → Micro → Autoriser. Puis réessaie.</span>");
   const b=document.createElement("button");b.className="btn sm";b.textContent="Réessayer";b.onclick=()=>{box.remove();retry()};
