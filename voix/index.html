@@ -297,7 +297,7 @@ async function startMic(){
   try{
     if(!window.isSecureContext)throw Object.assign(new Error("https"),{name:"Insecure"});
     if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw Object.assign(new Error("api"),{name:"NoApi"});
-    try{A.stream=await gUM({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}})}
+    try{A.stream=await gUM({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:true}})}
     catch(e){if(e.name==="OverconstrainedError"||e.name==="TypeError"||e.name==="NotReadableError")A.stream=await gUM({audio:true});else throw e}
   }catch(e){micError=e;return false}
   try{await c.resume()}catch(e){}
@@ -311,7 +311,7 @@ function loop(){
   A.an.getFloatTimeDomainData(A.buf);
   const t=nowS();let rms=0;for(let i=0;i<A.buf.length;i++)rms+=A.buf[i]*A.buf[i];rms=Math.sqrt(rms/A.buf.length);
   let midi=null;
-  if(t>A.muteUntil&&rms>0.01){const r=yin(A.buf,A.ctx.sampleRate);if(r&&r.p>0.8&&r.f>60&&r.f<1200){A.raw.push(f2m(r.f));if(A.raw.length>5)A.raw.shift();midi=median(A.raw);A.silent=0}}
+  if(t>A.muteUntil&&rms>0.003){const r=yin(A.buf,A.ctx.sampleRate);if(r&&r.p>0.8&&r.f>60&&r.f<1200){A.raw.push(f2m(r.f));if(A.raw.length>5)A.raw.shift();midi=median(A.raw);A.silent=0}}
   if(midi===null&&++A.silent>3)A.raw.length=0;
   const s={t,midi,rms};A.hist.push(s);while(A.hist.length&&t-A.hist[0].t>10)A.hist.shift();
   A.fn.forEach(f=>f(s));
@@ -833,17 +833,38 @@ async function renderProgCom(){
   now.insertAdjacentHTML("beforeend",`<p class="small" style="margin-top:8px"><b>Aujourd'hui</b></p>`);
   recorder(now,{max:75,label:"Enregistrer maintenant",onBlob:b=>idbPut("actuel",b)});
 }
+/* Test + diagnostic du micro : chaque étape est vérifiée et affichée */
 $("#mtGo").onclick=async()=>{
-  const out=$("#mtOut");out.innerHTML="";
-  if(!(await startMic())){micHelp(out,()=>$("#mtGo").click());return}
-  out.innerHTML='<div class="meter"><i></i></div><p class="small mt-s">Micro autorisé. Parle ou chante : la barre doit bouger.</p>';
-  let max=0;const t0=nowS();
-  const f=s=>{if(!out.isConnected||$("#home").hidden){A.fn.delete(f);return}
-    out.querySelector("i").style.width=Math.min(100,Math.max(0,(20*Math.log10(s.rms+1e-6)+60)/50*100))+"%";max=Math.max(max,s.rms);
-    const p=out.querySelector(".mt-s");
-    if(s.midi!=null)p.textContent="Ça marche : j'entends un "+nom(s.midi)+". Tu peux commencer une séance.";
-    else if(s.t-t0>4&&max<0.002)p.textContent="Le micro est autorisé mais ne capte aucun son. Vérifie qu'aucune autre appli ne l'utilise (appel, dictaphone), puis recharge la page.";
-  };A.fn.add(f);
+  const out=$("#mtOut");out.innerHTML="";const lines=[];let verdict="";
+  const ua=navigator.userAgent,and=(ua.match(/Android [\d.]+/)||[""])[0],chr=(ua.match(/(Chrome|CriOS|Firefox|SamsungBrowser|Version)\/[\d.]+/)||[""])[0];
+  const add=(ok,label,detail)=>{lines.push((ok===true?"✓ ":ok===false?"✗ ":"• ")+label+(detail?" : "+detail:""));render()};
+  const render=()=>{out.innerHTML=`<div class="meter"><i></i></div><p class="small mt-s">${verdict}</p><pre class="mono small" style="white-space:pre-wrap;margin:0;background:var(--sunk);padding:10px;border-radius:8px">${lines.join("\n")}</pre><div class="row"><button class="btn sm cp">Copier le rapport</button></div>`;
+    out.querySelector(".cp").onclick=()=>{const t="Atelier Voix · diagnostic micro\n"+lines.join("\n");navigator.clipboard?.writeText(t).then(()=>out.querySelector(".cp").textContent="Copié ✓",()=>{})}};
+  add(null,"Appareil",(and||"?")+" · "+(chr||"?")+(/; wv\)/.test(ua)?" · navigateur intégré à une appli":""));
+  add(window.isSecureContext,"Connexion sécurisée (https)",location.protocol);
+  add(window.top===window.self,"Page ouverte directement",window.top===window.self?"oui":"dans une autre page");
+  const pol=document.permissionsPolicy||document.featurePolicy;
+  if(pol&&pol.allowsFeature){const ok=pol.allowsFeature("microphone");add(ok,"Le site autorise le micro",ok?"oui":"non, bloqué par le réglage du site")}
+  try{const st=await navigator.permissions.query({name:"microphone"});add(st.state!=="denied","Autorisation du navigateur",{granted:"accordée",prompt:"pas encore demandée",denied:"refusée"}[st.state]||st.state)}catch(e){add(null,"Autorisation du navigateur","inconnue")}
+  const okMic=await startMic();
+  if(!okMic){const e=micError||{};add(false,"Ouverture du micro",(e.name||"?")+(e.message?" – "+e.message:""));
+    verdict="Le micro n'a pas pu s'ouvrir. Copie le rapport et envoie-le moi.";render();micHelp(out,()=>$("#mtGo").click());return}
+  add(true,"Ouverture du micro","ok");
+  try{const devs=(await navigator.mediaDevices.enumerateDevices()).filter(d=>d.kind==="audioinput");add(devs.length>0,"Micros détectés",String(devs.length))}catch(e){}
+  try{const tr=A.stream.getAudioTracks()[0],st=tr.getSettings();add(tr.readyState==="live","Piste audio",tr.readyState+" · "+(st.sampleRate||A.ctx.sampleRate)+" Hz · gain auto "+(st.autoGainControl?"oui":"non")+(tr.muted?" · coupée par le système":""))}catch(e){}
+  add(A.ctx.state==="running","Moteur audio",A.ctx.state);
+  verdict="Parle ou chante pendant 5 secondes : la barre doit bouger.";render();
+  let max=0,notes=0;const t0=nowS();
+  await new Promise(done=>{const f=s=>{
+    if(!out.isConnected){A.fn.delete(f);done();return}
+    const i=out.querySelector(".meter i");if(i)i.style.width=Math.min(100,Math.max(0,(20*Math.log10(s.rms+1e-6)+60)/50*100))+"%";
+    max=Math.max(max,s.rms);if(s.midi!=null)notes++;
+    if(s.t-t0>5){A.fn.delete(f);done()}
+  };A.fn.add(f)});
+  add(max>0.003,"Son capté","niveau max "+(20*Math.log10(max+1e-9)).toFixed(0)+" dB");
+  add(notes>5,"Notes reconnues",notes+" mesures");
+  verdict=notes>5?"Tout fonctionne : tu peux commencer une séance.":max>0.003?"Le micro capte du son mais je ne reconnais pas de note. Chante une voyelle tenue (« aaa ») plus près du téléphone, puis refais le test.":"Le micro est ouvert mais ne capte rien. Copie le rapport et envoie-le moi.";
+  render();
 };
 let libreW=null;
 $("#lStart").onclick=async()=>{if(!(await startMic())){micHelp($("#lBody"),()=>$("#lStart").click());return}$("#lStart").hidden=true;if(!libreW||!$("#lBody").firstChild){$("#lBody").innerHTML="";libreW=pitchWidget($("#lBody"),{half:12,tol:20})}};
