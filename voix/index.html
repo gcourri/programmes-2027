@@ -1,0 +1,968 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font-family:system-ui,sans-serif;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
+<title>Atelier Voix</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Entraînement quotidien : justesse du chant en direct, routines d'échauffement, diction, débit et prise de parole.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: header with streak strip, sticky tab bar + mic bar, one view per tab; the pitch roll (note lanes × time) is the hero of the Justesse tab */
+:root{
+  --bg:#f3f2f7; --surface:#ffffff; --sunk:#eae8f1; --ink:#1a1726; --muted:#5f5a72; --line:#dad7e4;
+  --accent:#0d6b67; --accent-soft:#dcefed; --hot:#c2410c; --hot-soft:#fbe7dc;
+  --ok:#1d8048; --near:#a86b0c; --off:#c0392b; --focus:#2d55c8;
+  --display:"Instrument Serif",Georgia,"Times New Roman",serif;
+  --body:"Figtree","Helvetica Neue",Arial,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --gut-l:max(16px,env(safe-area-inset-left,0px)); --gut-r:max(16px,env(safe-area-inset-right,0px));
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#121119; --surface:#1b1a24; --sunk:#24222f; --ink:#ecebf3; --muted:#a39db8; --line:#302d3d;
+  --accent:#4fd1c5; --accent-soft:#163533; --hot:#fb923c; --hot-soft:#3a2416;
+  --ok:#4ade80; --near:#facc15; --off:#f87171; --focus:#8aa8ff; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121119; --surface:#1b1a24; --sunk:#24222f; --ink:#ecebf3; --muted:#a39db8; --line:#302d3d;
+  --accent:#4fd1c5; --accent-soft:#163533; --hot:#fb923c; --hot-soft:#3a2416;
+  --ok:#4ade80; --near:#facc15; --off:#f87171; --focus:#8aa8ff; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:960px;margin:0 auto;padding-left:var(--gut-l);padding-right:var(--gut-r)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+h1,h2,h3{margin:0;text-wrap:balance}
+p{margin:0}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.muted{color:var(--muted)}
+.small{font-size:.9rem}
+
+/* Header */
+header.top{padding-block:28px 18px;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px}
+.brand h1{font-family:var(--display);font-weight:400;font-size:clamp(2.4rem,7vw,3.6rem);line-height:.95;letter-spacing:-.01em}
+.brand h1 em{color:var(--accent)}
+.brand p{color:var(--muted);margin-top:6px;max-width:46ch}
+.streak{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+.streak .count{font-family:var(--mono);font-size:.85rem}
+.streak .count b{font-size:1.3rem;color:var(--accent)}
+.days{display:grid;grid-template-columns:repeat(14,14px);gap:4px}
+.day{width:14px;height:20px;border-radius:3px;background:var(--sunk);display:flex;flex-direction:column;overflow:hidden;border:1px solid var(--line)}
+.day i{flex:1}
+.day i.c{background:var(--accent)}
+.day i.d{background:var(--hot)}
+.day.today{outline:2px solid var(--ink);outline-offset:1px}
+.legend{display:flex;gap:12px;font-size:.78rem;color:var(--muted)}
+.legend span::before{content:"";display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:-1px;background:var(--accent)}
+.legend span.d::before{background:var(--hot)}
+
+/* Sticky bar */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.tabs{display:flex;gap:4px;overflow-x:auto;padding-block:8px 0;scrollbar-width:none}
+.tab{background:none;border:0;border-bottom:3px solid transparent;padding:8px 12px 10px;font-weight:600;color:var(--muted);white-space:nowrap}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.mic{display:flex;align-items:center;gap:12px;padding-block:8px;flex-wrap:wrap}
+.mic .state{font-size:.88rem;color:var(--muted);display:flex;align-items:center;gap:8px}
+.mic .dot{width:9px;height:9px;border-radius:50%;background:var(--line)}
+.mic.on .dot{background:var(--off);box-shadow:0 0 0 4px color-mix(in srgb,var(--off) 25%,transparent)}
+.meter{flex:1;min-width:80px;max-width:240px;height:6px;border-radius:3px;background:var(--sunk);overflow:hidden}
+.meter i{display:block;height:100%;width:0;background:var(--accent);transition:width .08s linear}
+
+/* Buttons */
+.btn{border:1.5px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 14px;font-weight:600;line-height:1.2}
+.btn:hover{border-color:var(--muted)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.btn.hot{background:var(--hot);border-color:var(--hot);color:var(--bg)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.sm{padding:5px 10px;font-size:.88rem}
+select,input[type="number"],textarea{background:var(--surface);border:1.5px solid var(--line);border-radius:8px;padding:7px 10px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+
+/* Views */
+main{padding-block:22px 64px}
+.view{display:flex;flex-direction:column;gap:22px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.panel h2{font-family:var(--display);font-weight:400;font-size:1.75rem;line-height:1.1}
+.panel h3{font-size:1.02rem;font-weight:700}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.note{background:var(--sunk);border-radius:8px;padding:10px 12px;font-size:.92rem;color:var(--muted)}
+.warn{background:var(--hot-soft);border-radius:8px;padding:12px 14px;font-size:.93rem}
+.warn b{color:var(--hot)}
+
+/* Pitch hero */
+.hero{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:16px;align-items:stretch}
+@media (max-width:640px){.hero{grid-template-columns:1fr}}
+.readout{display:flex;flex-direction:column;gap:8px;justify-content:center}
+.readout .n{font-family:var(--display);font-size:4.2rem;line-height:.9}
+.readout .n small{font-family:var(--mono);font-size:1rem;color:var(--muted);margin-left:6px}
+.readout .hz{font-family:var(--mono);color:var(--muted);font-size:.9rem}
+.needle{position:relative;height:34px;border-radius:6px;background:linear-gradient(90deg,var(--sunk),var(--sunk));overflow:hidden;border:1px solid var(--line)}
+.needle .zone{position:absolute;top:0;bottom:0;left:41.67%;width:16.67%;background:var(--accent-soft)}
+.needle .mid{position:absolute;top:0;bottom:0;left:50%;width:2px;background:var(--muted)}
+.needle .pin{position:absolute;top:4px;bottom:4px;width:6px;margin-left:-3px;left:50%;border-radius:3px;background:var(--muted);transition:left .06s linear,background .1s}
+.needle-l{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.72rem;color:var(--muted)}
+.cents{font-family:var(--mono);font-weight:700}
+.roll{width:100%;height:280px;display:block;border-radius:8px;background:var(--surface);border:1px solid var(--line)}
+.modes{display:flex;gap:4px;background:var(--sunk);padding:4px;border-radius:10px;flex-wrap:wrap}
+.modes button{border:0;background:none;padding:7px 12px;border-radius:7px;font-weight:600;color:var(--muted)}
+.modes button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgb(0 0 0/.12)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-family:var(--mono);font-size:.82rem;padding:4px 9px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface)}
+.chip.cur{border-color:var(--hot);color:var(--hot)}
+.chip.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 14%,transparent)}
+.chip.ko{border-color:var(--off);background:color-mix(in srgb,var(--off) 12%,transparent)}
+.result{font-size:1.02rem}
+.result b{font-family:var(--mono)}
+.bars{display:flex;align-items:flex-end;gap:4px;height:70px;border-bottom:1px solid var(--line);padding-top:4px}
+.bars i{flex:1;max-width:22px;border-radius:3px 3px 0 0;background:var(--accent);min-height:2px}
+.bars i.g{background:var(--hot)}
+.empty{font-size:.9rem;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.stat{background:var(--sunk);border-radius:8px;padding:10px 12px}
+.stat b{display:block;font-family:var(--mono);font-size:1.15rem}
+.stat span{font-size:.82rem;color:var(--muted)}
+
+/* Routine */
+.routine{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:16px}
+@media (max-width:700px){.routine{grid-template-columns:1fr}}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px;counter-reset:s}
+.steps li{counter-increment:s;display:flex;gap:10px;align-items:baseline;padding:8px 10px;border-radius:8px;cursor:pointer;border:1px solid transparent}
+.steps li::before{content:counter(s);font-family:var(--mono);font-size:.78rem;color:var(--muted);width:1.2em;flex:0 0 auto}
+.steps li .t{flex:1;min-width:0}
+.steps li .d{font-family:var(--mono);font-size:.8rem;color:var(--muted)}
+.steps li.cur{background:var(--accent-soft);border-color:var(--accent)}
+.steps li.done .t{text-decoration:line-through;color:var(--muted)}
+.clock{font-family:var(--mono);font-size:3.4rem;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.progress{height:6px;background:var(--sunk);border-radius:3px;overflow:hidden}
+.progress i{display:block;height:100%;width:0;background:var(--accent)}
+.how{font-size:.98rem;line-height:1.6}
+.how ul{margin:6px 0 0;padding-left:1.2em}
+.donebanner{background:var(--accent-soft);border-radius:8px;padding:10px 12px;font-weight:600}
+
+/* Diction */
+.twister{font-family:var(--display);font-size:clamp(1.6rem,4.6vw,2.3rem);line-height:1.15;min-height:2.4em}
+.tag{font-family:var(--mono);font-size:.75rem;padding:2px 7px;border-radius:4px;background:var(--sunk);color:var(--muted)}
+.reading{font-size:1.08rem;line-height:1.75;max-height:280px;overflow:auto;padding:12px 14px;background:var(--sunk);border-radius:8px}
+textarea{width:100%;min-height:150px;resize:vertical}
+.big{font-family:var(--mono);font-size:2.4rem;font-weight:700;line-height:1}
+.gauge{position:relative;height:12px;border-radius:6px;display:flex;overflow:hidden}
+.gauge i{flex:1}
+.gauge .g1{background:color-mix(in srgb,var(--near) 45%,transparent)}
+.gauge .g2{background:color-mix(in srgb,var(--ok) 55%,transparent);flex:1.3}
+.gauge .g3{background:color-mix(in srgb,var(--near) 45%,transparent)}
+.gauge .g4{background:color-mix(in srgb,var(--off) 45%,transparent)}
+.gauge-wrap{position:relative;padding-top:14px}
+.gauge-pin{position:absolute;top:0;width:2px;height:28px;background:var(--ink);left:0;display:none}
+.gauge-l{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.7rem;color:var(--muted)}
+.euh{width:100%;padding:22px;font-size:1.3rem;border-radius:12px;border:2px dashed var(--hot);background:var(--hot-soft);font-weight:700;color:var(--hot)}
+.euh:disabled{opacity:.45}
+.check{display:flex;flex-direction:column;gap:6px}
+.check label{display:flex;gap:8px;align-items:baseline;font-size:.95rem}
+audio{width:100%}
+
+/* Programme */
+.weeks{display:flex;flex-direction:column;gap:8px}
+details.wk{background:var(--surface);border:1px solid var(--line);border-radius:10px}
+details.wk[open]{border-color:var(--muted)}
+details.wk summary{list-style:none;cursor:pointer;padding:12px 14px;display:flex;gap:12px;align-items:baseline}
+details.wk summary::-webkit-details-marker{display:none}
+details.wk summary .w{font-family:var(--mono);font-size:.78rem;color:var(--muted);flex:0 0 auto;width:4.2em}
+details.wk summary b{flex:1;min-width:0}
+details.wk summary .now{font-family:var(--mono);font-size:.7rem;padding:2px 7px;border-radius:4px;background:var(--accent);color:var(--bg)}
+details.wk .body{padding:0 14px 14px calc(14px + 4.2em + 12px);font-size:.96rem}
+@media (max-width:560px){details.wk .body{padding-left:14px}}
+details.wk ul{margin:6px 0 0;padding-left:1.2em}
+.methods{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.method{border-top:3px solid var(--accent);padding-top:10px}
+.method.h{border-top-color:var(--hot)}
+.method h3{font-size:1rem;margin-bottom:4px}
+.method p{font-size:.94rem}
+.apps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.app{background:var(--sunk);border-radius:8px;padding:10px 12px}
+.app b{display:block}
+.app span{font-size:.88rem;color:var(--muted)}
+.prog-head{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <p class="eyebrow">Chant · diction · prise de parole</p>
+      <h1>Atelier <em>Voix</em></h1>
+      <p>Quinze minutes de chant et douze de diction par jour. La justesse s'affiche en direct, note par note.</p>
+    </div>
+    <div class="streak" aria-label="Séances des 14 derniers jours">
+      <div class="count">Série en cours : <b id="streakN">0</b> jour<span id="streakS">s</span></div>
+      <div class="days" id="days"></div>
+      <div class="legend"><span>chant</span><span class="d">diction</span></div>
+    </div>
+  </header>
+</div>
+
+<div class="bar">
+  <div class="wrap">
+    <nav class="tabs" role="tablist" aria-label="Sections">
+      <button class="tab" role="tab" data-v="justesse" id="t-justesse">Justesse</button>
+      <button class="tab" role="tab" data-v="routine" id="t-routine">Routine chant</button>
+      <button class="tab" role="tab" data-v="diction" id="t-diction">Diction & parole</button>
+      <button class="tab" role="tab" data-v="programme" id="t-programme">Programmes</button>
+    </nav>
+    <div class="mic" id="micbar">
+      <span class="state"><span class="dot"></span><span id="micTxt">Micro coupé</span></span>
+      <button class="btn sm pri" id="micBtn">Activer le micro</button>
+      <span class="meter" aria-hidden="true"><i id="lvl"></i></span>
+    </div>
+  </div>
+</div>
+
+<main class="wrap">
+
+<!-- JUSTESSE -->
+<section class="view" id="v-justesse" role="tabpanel" aria-labelledby="t-justesse">
+  <div class="warn" id="micErr" hidden></div>
+
+  <div class="panel">
+    <div class="row" style="justify-content:space-between">
+      <div class="modes" role="group" aria-label="Mode">
+        <button data-m="libre" aria-pressed="true">Libre</button>
+        <button data-m="cible" aria-pressed="false">Note cible</button>
+        <button data-m="gamme" aria-pressed="false">Gamme guidée</button>
+        <button data-m="tessiture" aria-pressed="false">Tessiture</button>
+      </div>
+      <span class="small muted mono" id="tolTxt">Juste à ±25 cents</span>
+    </div>
+
+    <div class="hero">
+      <div class="readout">
+        <div class="eyebrow" id="refLbl">Note la plus proche</div>
+        <div class="n" id="noteN">–<small id="noteSci"></small></div>
+        <div class="hz" id="noteHz">Chante une voyelle tenue, « a » ou « o »</div>
+        <div>
+          <div class="needle" aria-hidden="true"><span class="zone"></span><span class="mid"></span><span class="pin" id="pin"></span></div>
+          <div class="needle-l"><span>−50 trop bas</span><span class="cents" id="centsTxt">0</span><span>trop haut +50</span></div>
+        </div>
+      </div>
+      <canvas class="roll" id="roll" aria-label="Courbe de hauteur des 8 dernières secondes sur les lignes de notes"></canvas>
+    </div>
+
+    <!-- mode panels -->
+    <div id="m-libre" class="small muted">Mode libre : chante, parle ou siffle, la courbe suit ta voix. Vert = juste (moins de 15 cents d'écart avec la note la plus proche), jaune = presque, rouge = à côté. En parlant, regarde si ta courbe bouge : une ligne plate signale une voix monocorde.</div>
+
+    <div id="m-cible" hidden>
+      <div class="row">
+        <label for="tgtSel" class="small">Note</label>
+        <select id="tgtSel"></select>
+        <button class="btn" id="tgtPlay">Écouter</button>
+        <button class="btn pri" id="tgtHold">Tenir 5 secondes</button>
+      </div>
+      <p class="small muted">Écoute la note, puis tiens-la sur « a » ou « ou ». Le score est la part du temps passée à moins de 25 cents. Vise 80 % avant de changer de note.</p>
+      <p class="result" id="tgtRes"></p>
+    </div>
+
+    <div id="m-gamme" hidden>
+      <div class="row">
+        <label for="gTon" class="small">Départ</label>
+        <select id="gTon"></select>
+        <label for="gPat" class="small">Exercice</label>
+        <select id="gPat">
+          <option value="0,2,4,5,7,5,4,2,0">5 notes : do ré mi fa sol fa mi ré do</option>
+          <option value="0,4,7,12,7,4,0">Arpège : do mi sol do sol mi do</option>
+          <option value="0,2,4,5,7,9,11,12,11,9,7,5,4,2,0">Gamme majeure complète</option>
+          <option value="0,7,0,5,0,4,0">Intervalles : quinte, quarte, tierce</option>
+        </select>
+        <button class="btn pri" id="gGo">Lancer</button>
+        <button class="btn" id="gStop" disabled>Arrêter</button>
+      </div>
+      <p class="small muted">Chaque note est jouée, puis tu la chantes. Dès que tu la tiens 0,7 s juste, on passe à la suivante. Après une réussite, monte d'un demi-ton et recommence.</p>
+      <div class="chips" id="gChips"></div>
+      <p class="result" id="gRes"></p>
+    </div>
+
+    <div id="m-tessiture" hidden>
+      <div class="row">
+        <button class="btn pri" id="tsGo">Mesurer ma tessiture</button>
+        <button class="btn" id="tsStop" disabled>Terminer</button>
+      </div>
+      <p class="small muted">Sur « ou », descends doucement vers ta note la plus grave confortable, tiens-la une seconde. Puis monte vers la plus aiguë sans forcer ni crier. Seules les notes tenues comptent.</p>
+      <p class="result" id="tsRes"></p>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="panel">
+      <h2>Progression</h2>
+      <p class="small muted">Tes 20 derniers scores. <span style="color:var(--accent)">■</span> note cible · <span style="color:var(--hot)">■</span> gamme guidée.</p>
+      <div class="bars" id="scoreBars"></div>
+      <p class="small" id="scoreSum"></p>
+    </div>
+    <div class="panel">
+      <h2>Analyser un enregistrement</h2>
+      <p class="small muted">Enregistre-toi avec le dictaphone du téléphone (une chanson, un exercice ou un discours) puis importe le fichier. Ça marche aussi quand le micro est bloqué.</p>
+      <input type="file" id="fileIn" accept="audio/*,video/*">
+      <p class="small mono muted" id="fileState"></p>
+    </div>
+  </div>
+
+  <div class="panel" id="fileOut" hidden>
+    <h2 id="fileName">Analyse</h2>
+    <canvas class="roll" id="fileRoll" style="height:240px" aria-label="Courbe de hauteur de l'enregistrement"></canvas>
+    <div class="stats" id="fileStats"></div>
+    <p class="small muted" id="fileHint"></p>
+  </div>
+</section>
+
+<!-- ROUTINE CHANT -->
+<section class="view" id="v-routine" role="tabpanel" aria-labelledby="t-routine" hidden>
+  <div class="panel">
+    <div class="prog-head"><h2>Séance du jour · 15 min</h2><span class="small muted mono" id="rc-total"></span></div>
+    <div class="routine" data-routine="chant"></div>
+  </div>
+  <div class="panel">
+    <h3>Hygiène vocale</h3>
+    <div class="methods">
+      <div class="method"><h3>Jamais de douleur</h3><p>Une gêne, un picotement ou une voix éraillée : stop pour la journée. Chanter ne doit pas faire mal, même dans l'aigu.</p></div>
+      <div class="method"><h3>Peu mais tous les jours</h3><p>15 minutes quotidiennes valent mieux qu'une heure le dimanche. Les muscles du larynx progressent par répétition.</p></div>
+      <div class="method"><h3>Eau et sommeil</h3><p>Bois régulièrement dans la journée, pas seulement pendant la séance. Une voix fatiguée chante faux plus facilement.</p></div>
+      <div class="method"><h3>Volume moyen</h3><p>Travaille à volume confortable. Crier ou chuchoter longtemps fatigue plus que chanter normalement.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- DICTION -->
+<section class="view" id="v-diction" role="tabpanel" aria-labelledby="t-diction" hidden>
+  <div class="panel">
+    <div class="prog-head"><h2>Séance du jour · 12 min</h2><span class="small muted mono" id="rd-total"></span></div>
+    <div class="routine" data-routine="diction"></div>
+  </div>
+
+  <div class="panel">
+    <div class="prog-head">
+      <h2>Virelangues</h2>
+      <div class="row">
+        <label for="vFilter" class="small">Son</label>
+        <select id="vFilter"><option value="">Tous</option></select>
+        <button class="btn pri" id="vNext">Suivant</button>
+      </div>
+    </div>
+    <p class="twister" id="vTxt"></p>
+    <div class="row"><span class="tag" id="vTag"></span></div>
+    <p class="note">Méthode : 3 fois très lentement en exagérant chaque consonne, 3 fois à vitesse normale, 3 fois vite. Recommence avec un stylo ou un bouchon tenu entre les dents, puis sans : la différence de netteté s'entend tout de suite.</p>
+  </div>
+
+  <div class="grid2">
+    <div class="panel">
+      <h2>Débit de lecture</h2>
+      <div class="row">
+        <label for="rSel" class="small">Texte</label>
+        <select id="rSel">
+          <option value="0">Le marché du quartier</option>
+          <option value="1">Discours de bilan</option>
+          <option value="own">Mon propre texte</option>
+        </select>
+      </div>
+      <div class="reading" id="rTxt"></div>
+      <textarea id="rOwn" hidden placeholder="Colle ici un texte que tu dois présenter (discours, présentation, mail à lire…)"></textarea>
+      <div class="row"><button class="btn pri" id="rGo">Je commence à lire</button><span class="mono small muted" id="rWords"></span></div>
+      <div class="row" style="align-items:baseline;gap:14px"><span class="big" id="rWpm">–</span><span class="muted small">mots par minute</span><span class="mono" id="rClock"></span></div>
+      <div class="gauge-wrap">
+        <span class="gauge-pin" id="rPin"></span>
+        <div class="gauge"><i class="g1"></i><i class="g2"></i><i class="g3"></i><i class="g4"></i></div>
+        <div class="gauge-l"><span>90</span><span>130</span><span>160</span><span>190</span><span>220</span></div>
+      </div>
+      <p class="small" id="rVerdict">Zone confortable à l'oral : 130 à 160 mots par minute, avec des pauses aux points.</p>
+    </div>
+
+    <div class="panel">
+      <h2>Impro 60 secondes</h2>
+      <p class="small muted">Parle une minute sur le sujet, sans t'arrêter. Chaque fois que tu dis « euh », « du coup » ou « en fait », tape le bouton. Le but est de remplacer ces tics par un silence.</p>
+      <p class="twister" id="iTopic" style="font-size:1.5rem;min-height:2.2em"></p>
+      <div class="row"><button class="btn" id="iNew">Autre sujet</button><button class="btn pri" id="iGo">Démarrer</button><span class="clock" id="iClock" style="font-size:2rem;margin-left:auto">1:00</span></div>
+      <button class="euh" id="iEuh" disabled>« euh » · <span id="iN">0</span></button>
+      <p class="small" id="iRes"></p>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="panel">
+      <h2>S'enregistrer</h2>
+      <p class="small muted">Le moyen le plus rapide de progresser. Enregistre une impro ou une lecture, réécoute avec la grille à côté.</p>
+      <div class="row"><button class="btn hot" id="recBtn">Enregistrer</button><span class="mono small" id="recClock"></span></div>
+      <div id="recList" class="check"></div>
+      <p class="small muted" id="recNote"></p>
+    </div>
+    <div class="panel">
+      <h2>Grille d'écoute</h2>
+      <div class="check" id="grid">
+        <label><input type="checkbox" id="g1"> Les fins de mots sont audibles (pas de syllabes avalées)</label>
+        <label><input type="checkbox" id="g2"> Le débit laisse respirer : des pauses aux points</label>
+        <label><input type="checkbox" id="g3"> La voix monte et descend, elle n'est pas monocorde</label>
+        <label><input type="checkbox" id="g4"> Les mots importants sont appuyés</label>
+        <label><input type="checkbox" id="g5"> Peu de « euh », remplacés par des silences</label>
+        <label><input type="checkbox" id="g6"> La fin des phrases ne retombe pas dans un murmure</label>
+        <label><input type="checkbox" id="g7"> J'ai envie d'écouter la suite</label>
+      </div>
+      <p class="small muted">Astuce : active le micro puis va sur l'onglet Justesse en mode libre pendant que tu lis. Une courbe plate signale une voix monocorde.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PROGRAMMES -->
+<section class="view" id="v-programme" role="tabpanel" aria-labelledby="t-programme" hidden>
+  <div class="panel">
+    <div class="prog-head">
+      <h2>Programme chant · 8 semaines</h2>
+      <span class="small muted mono" id="weekNow"></span>
+    </div>
+    <div class="weeks" id="wkChant"></div>
+  </div>
+  <div class="panel">
+    <h2>Programme communication · 8 semaines</h2>
+    <div class="weeks" id="wkCom"></div>
+    <div class="row"><span class="small muted">Début du programme :</span><input type="date" id="startDate"><button class="btn sm" id="startReset">Recommencer aujourd'hui</button></div>
+  </div>
+  <div class="panel">
+    <h2>Méthodes à connaître</h2>
+    <div class="methods">
+      <div class="method"><h3>PREP</h3><p><b>P</b>oint, <b>R</b>aison, <b>E</b>xemple, <b>P</b>oint. Annonce ton idée, justifie-la, illustre-la, conclus en la répétant. Marche pour une réponse en réunion comme pour un entretien.</p></div>
+      <div class="method"><h3>Règle de trois</h3><p>Trois arguments, trois exemples, trois étapes. Au-delà, l'auditeur décroche. En dessous, ça sonne incomplet.</p></div>
+      <div class="method"><h3>Situation, complication, résolution</h3><p>La structure de toute bonne histoire. Plante le décor, pose le problème, raconte comment il a été résolu.</p></div>
+      <div class="method h"><h3>Le silence plutôt que « euh »</h3><p>Une pause de 2 secondes paraît longue à celui qui parle et naturelle à celui qui écoute. Elle donne de l'autorité.</p></div>
+      <div class="method h"><h3>Sourire vocal</h3><p>Un léger sourire change le timbre et s'entend, même au téléphone. Teste-le avec l'enregistreur.</p></div>
+      <div class="method h"><h3>Appuyer les mots-clés</h3><p>Une phrase, un mot important. Ralentis et monte légèrement la voix dessus, puis marque une micro-pause.</p></div>
+    </div>
+  </div>
+  <div class="panel">
+    <h2>Applis et ressources complémentaires</h2>
+    <div class="apps">
+      <div class="app"><b>Yousician</b><span>Chant et instruments, exercices notés en temps réel sur des chansons.</span></div>
+      <div class="app"><b>Vanido</b><span>Exercices vocaux quotidiens courts avec suivi de justesse.</span></div>
+      <div class="app"><b>Erol Singer's Studio</b><span>Échauffements et exercices conçus par un coach vocal.</span></div>
+      <div class="app"><b>Vocal Pitch Monitor</b><span>Courbe de hauteur en direct sur Android, utile en complément.</span></div>
+      <div class="app"><b>Orai</b><span>Prise de parole : analyse du débit, des tics et de l'énergie vocale.</span></div>
+      <div class="app"><b>Yoodli</b><span>Coach IA pour s'entraîner aux discours et aux entretiens.</span></div>
+      <div class="app"><b>Un prof de chant</b><span>Même une séance par mois pour corriger la technique : rien ne remplace une oreille experte.</span></div>
+      <div class="app"><b>Théâtre ou impro amateur</b><span>Le meilleur terrain pour la diction, la projection et l'aisance.</span></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script>
+(()=>{
+"use strict";
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const store={
+  get(k,d){try{const v=localStorage.getItem("atelier-voix:"+k);return v?JSON.parse(v):d}catch(e){return d}},
+  set(k,v){try{localStorage.setItem("atelier-voix:"+k,JSON.stringify(v))}catch(e){}}
+};
+const pad=n=>String(n).padStart(2,"0");
+const dkey=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const today=()=>dkey(new Date());
+const fmt=s=>{s=Math.max(0,Math.ceil(s));return Math.floor(s/60)+":"+pad(s%60)};
+const median=a=>{const b=[...a].sort((x,y)=>x-y);const m=b.length>>1;return b.length%2?b[m]:(b[m-1]+b[m])/2};
+const pct=(a,p)=>{const b=[...a].sort((x,y)=>x-y);return b[Math.min(b.length-1,Math.max(0,Math.round(p*(b.length-1))))]};
+
+/* ---------- Notes ---------- */
+const NOMS=["Do","Do♯","Ré","Ré♯","Mi","Fa","Fa♯","Sol","Sol♯","La","La♯","Si"];
+const SCI=["C","C♯","D","D♯","E","F","F♯","G","G♯","A","A♯","B"];
+const m2f=m=>440*Math.pow(2,(m-69)/12);
+const f2m=f=>69+12*Math.log2(f/440);
+const pc=m=>((Math.round(m)%12)+12)%12;
+const nom=m=>NOMS[pc(m)]+(Math.floor(Math.round(m)/12)-2);   // convention française : La3 = 440 Hz
+const sci=m=>SCI[pc(m)]+(Math.floor(Math.round(m)/12)-1);
+const isBlack=m=>[1,3,6,8,10].includes(pc(m));
+
+/* ---------- Journal / série ---------- */
+function markDone(kind){const log=store.get("log",{});const k=today();log[k]=log[k]||{};log[k][kind]=1;store.set("log",log);renderStreak()}
+function renderStreak(){
+  const log=store.get("log",{});const box=$("#days");box.innerHTML="";
+  const now=new Date();
+  for(let i=13;i>=0;i--){const d=new Date(now);d.setDate(now.getDate()-i);const e=log[dkey(d)]||{};
+    const el=document.createElement("span");el.className="day"+(i===0?" today":"");
+    el.title=d.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"})+(e.chant?" · chant":"")+(e.diction?" · diction":"");
+    el.innerHTML='<i class="'+(e.chant?"c":"")+'"></i><i class="'+(e.diction?"d":"")+'"></i>';box.appendChild(el)}
+  let n=0;const d=new Date();if(!log[dkey(d)])d.setDate(d.getDate()-1);
+  while(log[dkey(d)]){n++;d.setDate(d.getDate()-1)}
+  $("#streakN").textContent=n;$("#streakS").textContent=n>1?"s":"";
+}
+
+/* ---------- Audio ---------- */
+const A={ctx:null,stream:null,an:null,buf:null,on:false,muteUntil:0,fn:new Set(),hist:[],raw:[],silent:0};
+function ctx(){if(!A.ctx){const C=window.AudioContext||window.webkitAudioContext;A.ctx=new C()}if(A.ctx.state==="suspended")A.ctx.resume();return A.ctx}
+const nowS=()=>performance.now()/1000;
+
+let yinD=null;
+function yin(buf,sr,len){
+  len=len||buf.length;
+  const tauMin=Math.max(2,Math.floor(sr/1100)),tauMax=Math.min(Math.floor(sr/70),Math.floor(len/2)-1);
+  const W=len-tauMax-1;
+  if(!yinD||yinD.length<tauMax+2)yinD=new Float32Array(tauMax+2);
+  const d=yinD;
+  for(let tau=1;tau<=tauMax;tau++){let s=0;for(let i=0;i<W;i++){const x=buf[i]-buf[i+tau];s+=x*x}d[tau]=s}
+  let run=0;
+  for(let tau=1;tau<=tauMax;tau++){run+=d[tau];d[tau]=run>0?d[tau]*tau/run:1}
+  let tau=-1;
+  for(let t=tauMin;t<=tauMax;t++){if(d[t]<0.15){while(t+1<=tauMax&&d[t+1]<d[t])t++;tau=t;break}}
+  if(tau<0)return null;
+  let bt=tau;
+  if(tau>1&&tau<tauMax){const a=d[tau-1],b=d[tau],c=d[tau+1],den=a+c-2*b;if(den)bt=tau+(a-c)/(2*den)}
+  return{f:sr/bt,p:1-d[tau]};
+}
+
+function showMicErr(e){
+  const box=$("#micErr");box.hidden=false;
+  const framed=window.top!==window.self;
+  box.innerHTML="<b>Le micro n'est pas accessible ici.</b> "+(framed
+    ?"Cette fenêtre bloque le micro. Ouvre la page directement dans ton navigateur (Chrome, Safari, Firefox) depuis son adresse GitHub Pages ou en ouvrant le fichier <span class='mono'>voix/index.html</span>, et autorise le micro quand il est demandé."
+    :"Autorise le micro dans les réglages du navigateur pour cette page, puis réessaie. La page doit être servie en https ou ouverte en local.")
+    +" En attendant, enregistre-toi avec le dictaphone du téléphone et importe le fichier plus bas : l'analyse de justesse fonctionne pareil.";
+  $("#recNote").textContent="Enregistrement indisponible sans micro : utilise le dictaphone de ton téléphone.";
+}
+async function startMic(){
+  if(A.on)return true;
+  try{
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw new Error("indisponible");
+    A.stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
+  }catch(e){showMicErr(e);return false}
+  $("#micErr").hidden=true;
+  const c=ctx();const src=c.createMediaStreamSource(A.stream);
+  A.an=c.createAnalyser();A.an.fftSize=2048;src.connect(A.an);
+  A.buf=new Float32Array(A.an.fftSize);A.on=true;A.hist=[];
+  $("#micbar").classList.add("on");$("#micTxt").textContent="Micro actif";$("#micBtn").textContent="Couper le micro";$("#micBtn").classList.remove("pri");
+  requestAnimationFrame(loop);return true;
+}
+function stopMic(){
+  if(rec.mr&&rec.mr.state==="recording")rec.mr.stop();
+  if(A.stream)A.stream.getTracks().forEach(t=>t.stop());
+  A.on=false;$("#micbar").classList.remove("on");$("#micTxt").textContent="Micro coupé";$("#micBtn").textContent="Activer le micro";$("#micBtn").classList.add("pri");$("#lvl").style.width="0";
+}
+$("#micBtn").onclick=()=>A.on?stopMic():startMic();
+
+function loop(){
+  if(!A.on)return;
+  A.an.getFloatTimeDomainData(A.buf);
+  const t=nowS();let rms=0;for(let i=0;i<A.buf.length;i++)rms+=A.buf[i]*A.buf[i];rms=Math.sqrt(rms/A.buf.length);
+  $("#lvl").style.width=Math.min(100,Math.max(0,(20*Math.log10(rms+1e-6)+60)/50*100))+"%";
+  let midi=null;
+  if(t>A.muteUntil&&rms>0.01){const r=yin(A.buf,A.ctx.sampleRate);if(r&&r.p>0.8&&r.f>60&&r.f<1200){A.raw.push(f2m(r.f));if(A.raw.length>5)A.raw.shift();midi=median(A.raw);A.silent=0}}
+  if(midi===null&&++A.silent>3)A.raw.length=0;
+  const s={t,midi,rms};A.hist.push(s);while(A.hist.length&&t-A.hist[0].t>10)A.hist.shift();
+  A.fn.forEach(f=>f(s));
+  requestAnimationFrame(loop);
+}
+function playNote(m,dur=1){
+  const c=ctx(),t=c.currentTime,o=c.createOscillator(),g=c.createGain();
+  o.type="triangle";o.frequency.value=m2f(m);
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.28,t+.03);g.gain.setValueAtTime(.28,t+dur-.15);g.gain.linearRampToValueAtTime(0,t+dur);
+  o.connect(g).connect(c.destination);o.start(t);o.stop(t+dur+.05);
+  A.muteUntil=nowS()+dur+.2;A.raw.length=0;
+  return new Promise(r=>setTimeout(r,dur*1000+200));
+}
+function beep(){try{const c=ctx(),t=c.currentTime,o=c.createOscillator(),g=c.createGain();o.frequency.value=880;g.gain.setValueAtTime(.15,t);g.gain.exponentialRampToValueAtTime(.001,t+.35);o.connect(g).connect(c.destination);o.start(t);o.stop(t+.4)}catch(e){}}
+
+/* ---------- Roll drawing ---------- */
+let colors={};
+function readColors(){const cs=getComputedStyle(document.documentElement);["--surface","--sunk","--line","--muted","--ink","--ok","--near","--off","--hot","--hot-soft","--accent"].forEach(k=>colors[k]=cs.getPropertyValue(k).trim())}
+readColors();
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",readColors);
+new MutationObserver(readColors).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+
+function fit(cv){const r=cv.getBoundingClientRect(),dpr=window.devicePixelRatio||1;const w=Math.round(r.width*dpr),h=Math.round(r.height*dpr);if(cv.width!==w||cv.height!==h){cv.width=w;cv.height=h}return{w:r.width,h:r.height,dpr}}
+function devColor(c){const a=Math.abs(c);return a<=15?colors["--ok"]:a<=35?colors["--near"]:colors["--off"]}
+function drawRoll(cv,pts,o){
+  const{w,h,dpr}=fit(cv);const g=cv.getContext("2d");g.setTransform(dpr,0,0,dpr,0,0);
+  g.fillStyle=colors["--surface"];g.fillRect(0,0,w,h);
+  const lo=o.lo,hi=o.hi,lab=46;
+  const y=m=>h-((m-lo)/(hi-lo))*h;
+  g.font="11px "+getComputedStyle(document.body).getPropertyValue("--mono");
+  g.textBaseline="middle";
+  for(let m=Math.ceil(lo);m<=Math.floor(hi);m++){
+    const yy=y(m),lh=h/(hi-lo);
+    if(isBlack(m)){g.fillStyle=colors["--sunk"];g.fillRect(lab,yy-lh/2,w-lab,lh)}
+    g.strokeStyle=colors["--line"];g.lineWidth=pc(m)===0?1.2:.5;g.beginPath();g.moveTo(lab,yy);g.lineTo(w,yy);g.stroke();
+    if(lh>=11||pc(m)===0||pc(m)===9){g.fillStyle=pc(m)===0?colors["--ink"]:colors["--muted"];g.fillText(nom(m),6,yy)}
+  }
+  if(o.target!=null){const yy=y(o.target),band=(h/(hi-lo))*0.5;g.fillStyle=colors["--hot-soft"];g.fillRect(lab,yy-band/2,w-lab,band);g.strokeStyle=colors["--hot"];g.lineWidth=2;g.beginPath();g.moveTo(lab,yy);g.lineTo(w,yy);g.stroke()}
+  const x=t=>lab+((t-o.t0)/(o.t1-o.t0))*(w-lab);
+  g.lineWidth=3;g.lineCap="round";
+  let prev=null;
+  for(const p of pts){
+    if(p.midi==null||p.midi<lo-1||p.midi>hi+1){prev=null;continue}
+    const ref=o.target!=null?o.target:Math.round(p.midi);const c=(p.midi-ref)*100;
+    const X=x(p.t),Y=y(p.midi);
+    if(prev&&p.t-prev.t<0.12){g.strokeStyle=devColor(c);g.beginPath();g.moveTo(prev.X,prev.Y);g.lineTo(X,Y);g.stroke()}
+    else{g.fillStyle=devColor(c);g.beginPath();g.arc(X,Y,1.6,0,7);g.fill()}
+    prev={t:p.t,X,Y};
+  }
+  if(o.live){g.strokeStyle=colors["--line"];g.lineWidth=1;g.beginPath();g.moveTo(w-1,0);g.lineTo(w-1,h);g.stroke()}
+  if(o.empty){g.fillStyle=colors["--muted"];g.textAlign="center";g.font="14px "+getComputedStyle(document.body).getPropertyValue("--body");g.fillText(o.empty,lab+(w-lab)/2,h/2);g.textAlign="left"}
+}
+
+/* ---------- Justesse ---------- */
+const J={mode:"libre",target:null,center:60};
+const roll=$("#roll");
+function liveFrame(s){
+  // readout
+  const tgt=J.target;
+  if(s.midi!=null){
+    const ref=tgt!=null?tgt:Math.round(s.midi);const c=Math.round((s.midi-ref)*100);
+    $("#noteN").firstChild.nodeValue=nom(s.midi);$("#noteSci").textContent=sci(s.midi);
+    $("#noteHz").textContent=m2f(s.midi).toFixed(1)+" Hz";
+    const cc=Math.max(-50,Math.min(50,c));const pin=$("#pin");pin.style.left=(50+cc)+"%";pin.style.background=devColor(c);
+    $("#centsTxt").textContent=(c>0?"+":"")+c+" ¢";$("#centsTxt").style.color=devColor(c);
+    J.center+=(s.midi-J.center)*0.03;
+  }
+  if(viewNow==="justesse")drawLive();
+}
+function drawLive(){
+  const t=nowS();const c=J.target!=null?J.target:Math.round(J.center);
+  const half=J.mode==="tessiture"?14:8;
+  drawRoll(roll,A.hist,{lo:c-half,hi:c+half,t0:t-8,t1:t,target:J.target,live:true,empty:A.on?null:"Active le micro pour voir ta voix ici"});
+}
+A.fn.add(liveFrame);
+new ResizeObserver(()=>{if(!A.on)drawLive()}).observe(roll);
+
+function setMode(m){
+  J.mode=m;$$(".modes button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.m===m));
+  ["libre","cible","gamme","tessiture"].forEach(k=>$("#m-"+k).hidden=k!==m);
+  J.target=m==="cible"?+$("#tgtSel").value:null;
+  $("#refLbl").textContent=J.target!=null?"Écart à la note cible":"Note la plus proche";
+  if(m!=="gamme")gamme.stop=true;
+  drawLive();
+}
+$$(".modes button").forEach(b=>b.onclick=()=>setMode(b.dataset.m));
+
+function fillNoteSelect(sel,def){for(let m=40;m<=84;m++){const o=document.createElement("option");o.value=m;o.textContent=nom(m)+"  ("+sci(m)+")";if(m===def)o.selected=true;sel.appendChild(o)}}
+const range=store.get("range",null);
+const defTon=range?Math.min(79,range.lo+4):55;
+fillNoteSelect($("#tgtSel"),range?Math.round((range.lo+range.hi)/2):57);
+fillNoteSelect($("#gTon"),defTon);
+$("#tgtSel").onchange=()=>{J.target=+$("#tgtSel").value;$("#tgtRes").textContent="";drawLive()};
+$("#tgtPlay").onclick=()=>playNote(+$("#tgtSel").value,1.2);
+
+function addScore(k,v){const s=store.get("scores",[]);s.push({d:today(),k,v:Math.round(v)});store.set("scores",s.slice(-60));renderScores()}
+function renderScores(){
+  const s=store.get("scores",[]).slice(-20);const box=$("#scoreBars");box.innerHTML="";
+  if(!s.length){box.innerHTML='<span class="empty">Aucun score pour l\'instant. Fais un exercice « Note cible » ou « Gamme guidée ».</span>';$("#scoreSum").textContent="";return}
+  s.forEach(x=>{const i=document.createElement("i");i.style.height=Math.max(3,x.v)+"%";if(x.k==="gamme")i.className="g";i.title=x.d+" · "+x.v+" %";box.appendChild(i)});
+  const last=s.slice(-5),avg=last.reduce((a,b)=>a+b.v,0)/last.length;
+  $("#scoreSum").innerHTML="Moyenne des 5 derniers : <b class='mono'>"+Math.round(avg)+" %</b>";
+}
+
+$("#tgtHold").onclick=async()=>{
+  if(!(await startMic()))return;
+  const tgt=+$("#tgtSel").value;J.target=tgt;
+  const btn=$("#tgtHold");btn.disabled=true;
+  await playNote(tgt,1.2);
+  $("#tgtRes").textContent="À toi : tiens la note…";
+  const r=await new Promise(res=>{
+    let start=null,n=0,good=0,devs=[];const t0=nowS();
+    const f=s=>{
+      if(s.midi==null){if(!start&&s.t-t0>8){A.fn.delete(f);res(null)}return}
+      if(!start)start=s.t;
+      const c=(s.midi-tgt)*100;n++;if(Math.abs(c)<=25)good++;devs.push(c);
+      $("#tgtRes").textContent="À toi : "+fmt(5-(s.t-start))+" · "+Math.round(good/n*100)+" % juste";
+      if(s.t-start>=5){A.fn.delete(f);res({sc:good/n*100,dev:median(devs)})}
+    };A.fn.add(f);
+  });
+  btn.disabled=false;
+  if(!r){$("#tgtRes").textContent="Je n'ai pas entendu de note tenue. Rapproche-toi du micro et chante un peu plus fort.";return}
+  const dir=Math.abs(r.dev)<8?"bien centré":r.dev>0?"plutôt trop haut":"plutôt trop bas";
+  $("#tgtRes").innerHTML="Score <b>"+Math.round(r.sc)+" %</b> · écart médian <b>"+(r.dev>0?"+":"")+Math.round(r.dev)+" ¢</b>, "+dir+". "+(r.sc>=80?"Très bien : passe à la note suivante.":r.sc>=50?"Pas mal. Réécoute et recommence en visant la bande orange.":"Réécoute la note en la fredonnant bouche fermée avant de la chanter.");
+  addScore("cible",r.sc);
+};
+
+/* Gamme guidée */
+const gamme={stop:true};
+function listenFor(tgt,hold=.7,timeout=6){
+  return new Promise(res=>{
+    const t0=nowS();let since=null,devs=[];
+    const f=s=>{
+      if(gamme.stop){A.fn.delete(f);res(null);return}
+      if(s.midi!=null){const c=(s.midi-tgt)*100;devs.push(c);
+        if(Math.abs(c)<=30){if(since==null)since=s.t;if(s.t-since>=hold){A.fn.delete(f);res({ok:true,dev:median(devs.slice(-20))});return}}else since=null}
+      else since=null;
+      if(s.t-t0>timeout){A.fn.delete(f);res({ok:false,dev:devs.length?median(devs):null})}
+    };A.fn.add(f);
+  });
+}
+$("#gGo").onclick=async()=>{
+  if(!(await startMic()))return;
+  const ton=+$("#gTon").value,pat=$("#gPat").value.split(",").map(Number);
+  gamme.stop=false;$("#gGo").disabled=true;$("#gStop").disabled=false;$("#gRes").textContent="";
+  const box=$("#gChips");box.innerHTML="";const chips=pat.map(iv=>{const c=document.createElement("span");c.className="chip";c.textContent=nom(ton+iv);box.appendChild(c);return c});
+  let ok=0;const devs=[];
+  for(let i=0;i<pat.length;i++){
+    if(gamme.stop)break;
+    const m=ton+pat[i];J.target=m;chips.forEach(c=>c.classList.remove("cur"));chips[i].classList.add("cur");
+    await playNote(m,.9);if(gamme.stop)break;
+    const r=await listenFor(m);if(!r)break;
+    chips[i].classList.remove("cur");chips[i].classList.add(r.ok?"ok":"ko");
+    if(r.ok)ok++;if(r.dev!=null)devs.push(r.dev);
+  }
+  const done=!gamme.stop;gamme.stop=true;J.target=null;$("#gGo").disabled=false;$("#gStop").disabled=true;
+  if(!done){$("#gRes").textContent="Exercice arrêté.";return}
+  const sc=ok/pat.length*100,md=devs.length?median(devs):0;
+  $("#gRes").innerHTML="<b>"+ok+" / "+pat.length+"</b> notes justes · tendance <b>"+(md>0?"+":"")+Math.round(md)+" ¢</b>. "+(sc>=85?"Monte d'un demi-ton et recommence.":"Recommence sur le même départ, plus lentement.");
+  if(sc>=85){const s=$("#gTon");if(s.selectedIndex<s.options.length-1)s.selectedIndex++}
+  addScore("gamme",sc);
+};
+$("#gStop").onclick=()=>{gamme.stop=true};
+
+/* Tessiture */
+const ts={on:false,lo:null,hi:null,f:null};
+function tsText(){if(ts.lo==null){$("#tsRes").textContent="En écoute… tiens une note pour qu'elle soit retenue.";return}
+  const span=ts.hi-ts.lo,oct=Math.floor(span/12),st=span%12;
+  $("#tsRes").innerHTML="Grave : <b>"+nom(ts.lo)+"</b> · Aigu : <b>"+nom(ts.hi)+"</b> · étendue <b>"+(oct?oct+" octave"+(oct>1?"s":"")+(st?" et ":""):"")+(st||!oct?st+" demi-ton"+(st>1?"s":""):"")+"</b>"}
+$("#tsGo").onclick=async()=>{
+  if(!(await startMic()))return;
+  ts.on=true;ts.lo=ts.hi=null;$("#tsGo").disabled=true;$("#tsStop").disabled=false;tsText();
+  ts.f=s=>{
+    const recent=A.hist.filter(h=>s.t-h.t<=.4);
+    if(recent.length<8||recent.some(h=>h.midi==null))return;
+    const ms=recent.map(h=>h.midi);if(Math.max(...ms)-Math.min(...ms)>.6)return;
+    const n=Math.round(median(ms));
+    if(ts.lo==null||n<ts.lo)ts.lo=n;if(ts.hi==null||n>ts.hi)ts.hi=n;tsText();
+  };A.fn.add(ts.f);
+};
+$("#tsStop").onclick=()=>{
+  A.fn.delete(ts.f);ts.on=false;$("#tsGo").disabled=false;$("#tsStop").disabled=true;
+  if(ts.lo!=null&&ts.hi-ts.lo>=5){store.set("range",{lo:ts.lo,hi:ts.hi,d:today()});
+    $("#gTon").value=Math.min(79,ts.lo+4);$("#tgtSel").value=Math.round((ts.lo+ts.hi)/2);
+    $("#tsRes").innerHTML+=". Enregistré : la gamme guidée partira de <b>"+nom(ts.lo+4)+"</b>, un peu au-dessus de ton grave."}
+};
+if(range)$("#tsRes").innerHTML="Dernière mesure ("+range.d+") : <b>"+nom(range.lo)+"</b> à <b>"+nom(range.hi)+"</b>.";
+
+/* Analyse de fichier */
+$("#fileIn").onchange=async e=>{
+  const file=e.target.files[0];if(!file)return;
+  const st=$("#fileState");st.textContent="Décodage…";
+  try{
+    const ab=await file.arrayBuffer();
+    const dec=await ctx().decodeAudioData(ab);
+    const dur=Math.min(dec.duration,180),SR=16000;
+    const off=new OfflineAudioContext(1,Math.ceil(dur*SR),SR);const src=off.createBufferSource();src.buffer=dec;src.connect(off.destination);src.start();
+    const data=(await off.startRendering()).getChannelData(0);
+    const N=1024,H=320,pts=[];let raw=[],sil=0;const frame=new Float32Array(N);
+    for(let i=0;i+N<data.length;i+=H){
+      if((i/H)%400===0){st.textContent="Analyse… "+Math.round(i/data.length*100)+" %";await new Promise(r=>setTimeout(r,0))}
+      let rms=0;for(let j=0;j<N;j++){frame[j]=data[i+j];rms+=frame[j]*frame[j]}rms=Math.sqrt(rms/N);
+      let midi=null;
+      if(rms>0.008){const r=yin(frame,SR,N);if(r&&r.p>0.8&&r.f>60&&r.f<1100){raw.push(f2m(r.f));if(raw.length>5)raw.shift();midi=median(raw);sil=0}}
+      if(midi==null&&++sil>3)raw=[];
+      pts.push({t:i/SR,midi,rms});
+    }
+    const v=pts.filter(p=>p.midi!=null).map(p=>p.midi);
+    if(v.length<10){st.textContent="Pas assez de voix détectée dans ce fichier.";return}
+    st.textContent=dur<dec.duration?"Analysé : les 3 premières minutes.":"Analyse terminée.";
+    const lo=pct(v,.02),hi=pct(v,.98),md=median(v);
+    const inTune=v.filter(m=>Math.abs(m-Math.round(m))*100<=25).length/v.length*100;
+    const mean=v.reduce((a,b)=>a+b,0)/v.length,sd=Math.sqrt(v.reduce((a,b)=>a+(b-mean)**2,0)/v.length);
+    $("#fileOut").hidden=false;$("#fileName").textContent=file.name;
+    const draw=()=>drawRoll($("#fileRoll"),pts,{lo:Math.floor(lo)-2,hi:Math.ceil(hi)+2,t0:0,t1:dur,target:null});
+    draw();new ResizeObserver(draw).observe($("#fileRoll"));
+    $("#fileStats").innerHTML=[
+      [Math.round(inTune)+" %","du temps à moins de 25 ¢ d'une note"],
+      [nom(md),"note centrale ("+m2f(md).toFixed(0)+" Hz)"],
+      [nom(lo)+" → "+nom(hi),"notes utilisées"],
+      [sd.toFixed(1)+" dt","variation de hauteur"],
+      [Math.round(v.length/pts.length*100)+" %","du fichier avec de la voix"]
+    ].map(x=>'<div class="stat"><b>'+x[0]+'</b><span>'+x[1]+'</span></div>').join("");
+    $("#fileHint").textContent="Chant : au-dessus de 70 % du temps près d'une note, la justesse est bonne. Parole : une variation de hauteur sous 2 demi-tons sonne monocorde, entre 3 et 5 c'est vivant.";
+  }catch(err){st.textContent="Impossible de lire ce fichier. Essaie un format courant (m4a, mp3, wav).";}
+};
+
+/* ---------- Routines ---------- */
+const ROUTINES={
+  chant:[
+    {t:"Posture et respiration",d:120,how:"Debout, pieds largeur du bassin, genoux souples, épaules basses.<ul><li>Inspire 4 s par le nez en gonflant le ventre et les côtes, pas les épaules.</li><li>Expire 8 s sur un « sss » régulier.</li><li>À chaque cycle, allonge l'expiration. Objectif : 20 s de « sss » stable.</li></ul>"},
+    {t:"Détente",d:60,how:"<ul><li>Roule les épaules, masse les joues et la mâchoire.</li><li>Bâille franchement deux ou trois fois : ça ouvre la gorge.</li><li>Laisse tomber la mâchoire, langue posée derrière les dents du bas.</li></ul>"},
+    {t:"Bouche fermée (humming)",d:120,how:"Sur « mmm », lèvres fermées et dents desserrées. Glisse doucement sur 3 ou 4 notes confortables.<ul><li>Cherche la vibration sur les lèvres et le nez.</li><li>Si ça chatouille, c'est bien placé.</li></ul>"},
+    {t:"Trilles de lèvres et sirènes",d:120,how:"Fais vibrer les lèvres (« brrr ») et glisse du grave à l'aigu puis retour, comme une sirène.<ul><li>Si les lèvres ne vibrent pas, pose deux doigts sur les joues.</li><li>Variante : sirène sur « ng » (comme dans « parking »).</li><li>Ne force jamais en haut.</li></ul>"},
+    {t:"Gamme 5 notes",d:180,how:"Onglet <b>Justesse</b> → <b>Gamme guidée</b>, exercice 5 notes.<ul><li>Sur « mi », « ma », puis « mo ».</li><li>Après un 9/9, monte d'un demi-ton.</li><li>Arrête de monter dès que ça serre.</li></ul>"},
+    {t:"Notes tenues",d:120,how:"Onglet <b>Justesse</b> → <b>Note cible</b>. Écoute, puis tiens 5 secondes.<ul><li>Vise 80 % de justesse.</li><li>Essaie 3 notes différentes au milieu de ta voix.</li></ul>"},
+    {t:"Une phrase de chanson",d:180,how:"Choisis une chanson que tu aimes, dans une tonalité confortable.<ul><li>Travaille une seule phrase, lentement, puis au tempo.</li><li>Enregistre-toi et importe l'enregistrement dans Justesse pour voir les notes à côté.</li></ul>"}
+  ],
+  diction:[
+    {t:"Respiration",d:90,how:"Inspire par le ventre, expire sur « sss » puis sur « fff », le plus longtemps et régulièrement possible. Une voix posée commence par un souffle maîtrisé."},
+    {t:"Échauffement du visage",d:90,how:"<ul><li>Grimaces : ouvre grand la bouche puis serre tout le visage.</li><li>Langue : 10 cercles dans chaque sens derrière les lèvres.</li><li>Lèvres : « brrr », puis « pa-ta-ka » de plus en plus vite.</li></ul>"},
+    {t:"Voyelles exagérées",d:60,how:"« A – É – I – O – OU », lentement, bouche très mobile, comme si quelqu'un lisait sur tes lèvres de loin. Puis « pi – pé – pa – po – pou »."},
+    {t:"Virelangues",d:180,how:"Section <b>Virelangues</b> ci-dessous : 3 virelangues, avec un stylo entre les dents puis sans. Lent, normal, rapide."},
+    {t:"Lecture à voix haute",d:150,how:"Section <b>Débit de lecture</b> : lis le texte en marquant une vraie pause à chaque point. Vise 130 à 160 mots par minute."},
+    {t:"Impro 60 secondes",d:150,how:"Section <b>Impro 60 secondes</b> : un sujet au hasard, une minute sans t'arrêter, en remplaçant les « euh » par des silences."}
+  ]
+};
+function setupRoutine(root){
+  const kind=root.dataset.routine,steps=ROUTINES[kind];
+  const total=steps.reduce((a,s)=>a+s.d,0);$(kind==="chant"?"#rc-total":"#rd-total").textContent=fmt(total)+" au total";
+  root.innerHTML='<ol class="steps"></ol><div class="panel" style="background:var(--sunk);border:0"><div class="eyebrow cur-n"></div><h3 class="cur-t"></h3><div class="clock">0:00</div><div class="progress"><i></i></div><div class="row"><button class="btn pri go">Démarrer</button><button class="btn nx">Étape suivante</button><button class="btn sm rs">Recommencer</button></div><div class="how"></div><div class="donebanner" hidden></div></div>';
+  const ol=root.querySelector(".steps");
+  steps.forEach((s,i)=>{const li=document.createElement("li");li.innerHTML='<span class="t">'+s.t+'</span><span class="d">'+fmt(s.d)+'</span>';li.onclick=()=>{st.i=i;st.left=s.d;st.run=false;render()};ol.appendChild(li)});
+  const st={i:0,left:steps[0].d,run:false,done:new Set(),timer:null,last:0};
+  const q=s=>root.querySelector(s);
+  function render(){
+    const s=steps[st.i];
+    [...ol.children].forEach((li,i)=>{li.classList.toggle("cur",i===st.i);li.classList.toggle("done",st.done.has(i))});
+    q(".cur-n").textContent="Étape "+(st.i+1)+" sur "+steps.length;q(".cur-t").textContent=s.t;q(".how").innerHTML=s.how;
+    q(".clock").textContent=fmt(st.left);q(".progress i").style.width=((s.d-st.left)/s.d*100)+"%";
+    q(".go").textContent=st.run?"Pause":"Démarrer";
+  }
+  function next(){
+    st.done.add(st.i);
+    if(st.done.size===steps.length){finish()}
+    if(st.i<steps.length-1){st.i++;st.left=steps[st.i].d}else{st.run=false;st.left=0}
+    render();
+  }
+  function finish(){markDone(kind);const b=q(".donebanner");b.hidden=false;b.textContent="Séance terminée, bravo. Elle est comptée dans ta série du jour."}
+  function tick(){if(!st.run)return;const t=nowS();st.left-=t-st.last;st.last=t;if(st.left<=0){beep();next()}render()}
+  q(".go").onclick=()=>{st.run=!st.run;st.last=nowS();if(st.run&&!st.timer)st.timer=setInterval(tick,250);render()};
+  q(".nx").onclick=next;
+  q(".rs").onclick=()=>{st.i=0;st.left=steps[0].d;st.run=false;st.done.clear();q(".donebanner").hidden=true;render()};
+  const log=store.get("log",{});if((log[today()]||{})[kind]){const b=q(".donebanner");b.hidden=false;b.textContent="Séance déjà faite aujourd'hui. Tu peux la refaire si tu veux."}
+  render();
+}
+$$("[data-routine]").forEach(setupRoutine);
+
+/* ---------- Diction ---------- */
+const VIRE=[
+  ["Les chaussettes de l'archiduchesse sont-elles sèches ? Archi-sèches !","s / ch"],
+  ["Un chasseur sachant chasser doit savoir chasser sans son chien.","s / ch"],
+  ["Ces six saucissons-ci sont si secs qu'on ne sait si c'en sont.","s"],
+  ["Si six scies scient six cyprès, six cent six scies scient six cent six cyprès.","s"],
+  ["Seize chaises sèchent.","s / ch"],
+  ["Suis-je bien chez ce cher Serge ?","s / ch / j"],
+  ["Je veux et j'exige d'exquises excuses.","j / z / x"],
+  ["Natacha n'attacha pas son chat Pacha qui s'échappa.","ch / t"],
+  ["Cinq chiens chassent six chats.","s / ch"],
+  ["Tonton, ton thé t'a-t-il ôté ta toux ?","t"],
+  ["Trois tortues trottaient sur un trottoir très étroit.","t / r"],
+  ["Didon dîna, dit-on, du dos d'un dodu dindon.","d"],
+  ["La pipe au papa du pape Pie pue.","p"],
+  ["Panier, piano. Panier, piano. Panier, piano.","p / n"],
+  ["Pruneau cuit, pruneau cru.","r / k"],
+  ["Le ver vert va vers le verre vert.","v / r"],
+  ["Petit pot de beurre, quand te dépetitpotdebeurreriseras-tu ?","p / t / r"],
+  ["Gros gras grain d'orge, quand te dégrosgrasgraindorgeriseras-tu ?","g / r"],
+  ["Un pâtissier qui pâtissait chez un tapissier qui tapissait dit un jour au tapissier qui tapissait.","p / t / s"],
+  ["Lily lit le livre dans le lit.","l"],
+  ["Fruits frais, fruits frits, fruits cuits, fruits crus.","f / r / k"],
+  ["Mur pâle, pur mal, mal pur.","m / p / l"]
+];
+const sounds=[...new Set(VIRE.flatMap(v=>v[1].split(" / ")))].sort();
+sounds.forEach(s=>{const o=document.createElement("option");o.value=s;o.textContent=s;$("#vFilter").appendChild(o)});
+let vLast=-1;
+function nextVire(){const f=$("#vFilter").value;const pool=VIRE.map((v,i)=>i).filter(i=>!f||VIRE[i][1].split(" / ").includes(f));
+  let i=pool[Math.floor(Math.random()*pool.length)];if(pool.length>1&&i===vLast)i=pool[(pool.indexOf(i)+1)%pool.length];vLast=i;
+  $("#vTxt").textContent=VIRE[i][0];$("#vTag").textContent="sons travaillés : "+VIRE[i][1]}
+$("#vNext").onclick=nextVire;$("#vFilter").onchange=nextVire;nextVire();
+
+const TEXTS=[
+  "Chaque matin, le marché du quartier se réveille avant le reste de la ville. Les maraîchers installent leurs cagettes de tomates, de poireaux et de pommes, pendant que le boulanger d'en face sort ses premières fournées. Vers huit heures, les premiers clients arrivent : des retraités qui prennent leur temps, des parents pressés qui tiennent un enfant d'une main et un panier de l'autre. On discute du prix des fraises, de la pluie annoncée pour le week-end, du match de la veille. Rien d'extraordinaire, et pourtant c'est ici que le quartier se raconte. Une vendeuse connaît le prénom de chacun. Un vieux monsieur vient chaque samedi acheter un seul citron, juste pour la conversation. Quand midi sonne, les étals se vident, les bâches claquent dans le vent, et la place retrouve son calme, en attendant le prochain marché.",
+  "Merci à toutes et à tous d'être là. Il y a un an, nous nous sommes fixé un objectif simple : réduire de moitié le temps d'attente de nos clients. Beaucoup pensaient que c'était impossible. Nous avons d'abord écouté. Nous avons passé des semaines au guichet, à côté de vous, à noter chaque blocage. Ensuite, nous avons simplifié : trois formulaires sont devenus un seul. Enfin, nous avons formé chaque équipe. Le résultat ? Le temps d'attente est passé de vingt minutes à huit. Ce chiffre n'appartient à personne en particulier. Il appartient à chacun d'entre vous. Alors l'année prochaine, je vous propose d'aller plus loin. Pas plus vite : plus loin. Merci."
+];
+const wc=t=>t.trim().split(/\s+/).filter(w=>/[\p{L}\p{N}]/u.test(w)).length;
+function curText(){return $("#rSel").value==="own"?$("#rOwn").value:TEXTS[+$("#rSel").value]}
+function showText(){const own=$("#rSel").value==="own";$("#rTxt").hidden=own;$("#rOwn").hidden=!own;if(!own)$("#rTxt").textContent=TEXTS[+$("#rSel").value];$("#rWords").textContent=wc(curText())+" mots"}
+$("#rSel").onchange=showText;$("#rOwn").oninput=()=>{$("#rWords").textContent=wc(curText())+" mots";try{localStorage.setItem("atelier-voix:own",$("#rOwn").value)}catch(e){}};
+try{$("#rOwn").value=localStorage.getItem("atelier-voix:own")||""}catch(e){}
+showText();
+const rd={on:false,t0:0,iv:null};
+function setWpm(w){
+  $("#rWpm").textContent=Math.round(w);const p=$("#rPin");p.style.display="block";p.style.left="calc("+Math.max(0,Math.min(100,(w-90)/130*100))+"% - 1px)";
+  $("#rVerdict").textContent=w<120?"Un peu lent : ça peut sembler hésitant. Garde les pauses mais enchaîne les mots d'un même groupe.":w<=160?"Débit confortable. Vérifie à la réécoute que les pauses tombent aux points.":w<=190?"Rapide : l'auditeur décroche vite. Ralentis sur les mots-clés et respire à chaque point.":"Trop rapide pour être bien compris. Relis en faisant une pause d'une seconde à chaque virgule.";
+}
+$("#rGo").onclick=()=>{
+  if(!rd.on){if(wc(curText())<20){$("#rVerdict").textContent="Colle un texte d'au moins 20 mots.";return}
+    rd.on=true;rd.t0=nowS();$("#rGo").textContent="J'ai fini";$("#rGo").classList.replace("pri","hot");
+    rd.iv=setInterval(()=>$("#rClock").textContent=fmt(nowS()-rd.t0),250)}
+  else{rd.on=false;clearInterval(rd.iv);$("#rGo").textContent="Je commence à lire";$("#rGo").classList.replace("hot","pri");
+    const s=nowS()-rd.t0;if(s<5)return;const w=wc(curText())/(s/60);setWpm(w);
+    const h=store.get("debits",[]);h.push({d:today(),w:Math.round(w)});store.set("debits",h.slice(-30))}
+};
+{const h=store.get("debits",[]);if(h.length){const l=h[h.length-1];setWpm(l.w);$("#rClock").textContent="dernière lecture, "+l.d}}
+
+const TOPICS=["Le meilleur conseil qu'on t'ait donné","Défends ta saison préférée","Explique ton métier à un enfant de 8 ans","Un objet dont tu ne pourrais pas te passer","Convaincs-moi d'aller voir ton film préféré","Ce que tu changerais dans ta ville","Raconte ton dernier fou rire","Le repas parfait","Pourquoi apprendre à chanter ?","Une compétence que tout le monde devrait avoir","Le voyage qui t'a marqué","Pour ou contre le télétravail","Présente-toi comme dans un entretien d'embauche","Une habitude qui a changé ta vie","Le livre ou la série à recommander","Ce que tu ferais avec une journée de plus par semaine","Raconte une erreur dont tu as appris","Vends-moi un stylo","Le métier que tu aurais aimé faire","Ce qui te rend fier cette année"];
+let tLast=-1;
+function newTopic(){let i;do{i=Math.floor(Math.random()*TOPICS.length)}while(i===tLast);tLast=i;$("#iTopic").textContent=TOPICS[i]}
+newTopic();$("#iNew").onclick=newTopic;
+const im={on:false,n:0,t0:0,iv:null};
+$("#iGo").onclick=()=>{
+  if(im.on){end();return}
+  im.on=true;im.n=0;$("#iN").textContent="0";im.t0=nowS();$("#iEuh").disabled=false;$("#iGo").textContent="Arrêter";$("#iRes").textContent="";
+  im.iv=setInterval(()=>{const l=60-(nowS()-im.t0);$("#iClock").textContent=fmt(l);if(l<=0){beep();end()}},200);
+  function end(){clearInterval(im.iv);im.on=false;$("#iEuh").disabled=true;$("#iGo").textContent="Démarrer";$("#iClock").textContent="1:00";
+    const sec=Math.min(60,nowS()-im.t0);if(sec<10)return;const per=im.n/(sec/60);
+    const h=store.get("impros",[]);const prev=h.length?h[h.length-1]:null;h.push({d:today(),n:im.n,per:+per.toFixed(1)});store.set("impros",h.slice(-30));
+    $("#iRes").innerHTML="<b class='mono'>"+im.n+"</b> tic"+(im.n>1?"s":"")+" en "+Math.round(sec)+" s. "+(per<=2?"Excellent, très peu de tics.":per<=5?"Correct. Essaie de les remplacer par une pause.":"Beaucoup de tics : ralentis, et autorise-toi des silences.")+(prev?" La dernière fois : "+prev.n+".":"")}
+  im.end=end;
+};
+$("#iEuh").onclick=()=>{if(im.on){im.n++;$("#iN").textContent=im.n}};
+
+/* Enregistreur */
+const rec={mr:null,chunks:[],t0:0,iv:null,n:0};
+$("#recBtn").onclick=async()=>{
+  if(rec.mr&&rec.mr.state==="recording"){rec.mr.stop();return}
+  if(typeof MediaRecorder==="undefined"){$("#recNote").textContent="Ce navigateur ne permet pas d'enregistrer ici : utilise le dictaphone du téléphone.";return}
+  if(!(await startMic()))return;
+  rec.chunks=[];rec.mr=new MediaRecorder(A.stream);
+  rec.mr.ondataavailable=e=>{if(e.data.size)rec.chunks.push(e.data)};
+  rec.mr.onstop=()=>{clearInterval(rec.iv);$("#recBtn").textContent="Enregistrer";$("#recClock").textContent="";
+    const blob=new Blob(rec.chunks,{type:rec.mr.mimeType||"audio/webm"});const url=URL.createObjectURL(blob);rec.n++;
+    const d=document.createElement("div");d.innerHTML='<span class="small muted mono">Prise '+rec.n+' · '+new Date().toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})+'</span>';
+    const au=document.createElement("audio");au.controls=true;au.src=url;d.appendChild(au);$("#recList").prepend(d)};
+  rec.mr.start();rec.t0=nowS();$("#recBtn").textContent="Arrêter";
+  rec.iv=setInterval(()=>{const s=nowS()-rec.t0;$("#recClock").textContent=fmt(s);if(s>180)rec.mr.stop()},250);
+};
+$("#recNote").textContent="Les prises restent sur cet appareil le temps de la page, rien n'est envoyé.";
+
+/* ---------- Programmes ---------- */
+const WK_CHANT=[
+  ["Souffle et posture","Installer la respiration basse et la routine quotidienne.",["Routine chant complète chaque jour","Expiration sur « sss » : passer de 10 à 20 s","Mesurer sa tessiture une première fois"]],
+  ["Justesse sur notes tenues","Entendre une note et la reproduire.",["Note cible : 3 notes au milieu de la voix, objectif 70 %","Fredonner la note bouche fermée avant de la chanter","S'enregistrer une fois et importer le fichier"]],
+  ["Gammes 5 notes","Enchaîner des notes justes.",["Gamme guidée 5 notes, monter d'un demi-ton après chaque 9/9","Voyelles « i », « é », « a », « o », « ou »","Objectif : 80 % en note cible"]],
+  ["Étendre la voix doucement","Gagner de l'aisance dans le grave et l'aigu sans forcer.",["Sirènes sur « ng » et trilles de lèvres plus longues","Arpège do-mi-sol-do","Remesurer la tessiture en fin de semaine"]],
+  ["Intervalles","Sauter d'une note à une autre avec précision.",["Exercice intervalles : quinte, quarte, tierce","Chanter « do-sol » puis « do-fa » à l'oreille, vérifier avec la courbe","Gamme majeure complète"]],
+  ["Le passage","Adoucir la zone où la voix « casse » entre grave et aigu.",["Sirènes lentes sur « ou » à travers le passage, volume faible","Gamme 5 notes sur « mum » autour de cette zone","Repérer la note du passage sur la courbe"]],
+  ["Une vraie chanson","Appliquer la technique à un morceau.",["Choisir une chanson dans ta tessiture","Travailler phrase par phrase, lentement","S'enregistrer et viser 70 % près des notes à l'analyse"]],
+  ["Interpréter","Chanter juste et avec intention.",["Chanson complète enregistrée deux fois, comparer","Nuances : une phrase douce, une phrase plus forte","Bilan : nouvelle tessiture, moyenne des scores, prochaine chanson"]]
+];
+const WK_COM=[
+  ["Souffle et posture","Une voix posée vient d'un corps stable et d'un souffle maîtrisé.",["Routine diction chaque jour","Lire debout, ancré, épaules basses","S'enregistrer 1 minute : c'est ton point de départ"]],
+  ["Articulation","Être compris du premier coup.",["Virelangues avec le stylo puis sans","Prononcer les consonnes finales (« grand-e », « vite »)","Lecture à voix haute, chaque syllabe audible"]],
+  ["Débit et pauses","Laisser le temps à l'auditeur de comprendre.",["Débit de lecture : viser 130 à 160 mots par minute","Pause d'une seconde à chaque point, deux secondes entre deux idées","Relire le même texte trois jours de suite et comparer"]],
+  ["Intonation","Sortir du ton monocorde.",["Lire avec la courbe de hauteur (Justesse, mode libre) : la faire bouger","Appuyer un mot-clé par phrase","Analyser un enregistrement : viser 3 à 5 demi-tons de variation"]],
+  ["Structurer","Dire les choses dans un ordre qui se retient.",["Méthode PREP sur trois sujets d'impro","Règle de trois pour une présentation de 2 minutes","Annoncer le plan en une phrase au début"]],
+  ["Chasser les tics","Remplacer « euh », « du coup », « en fait » par du silence.",["Impro 60 s chaque jour, compter les tics","Objectif : diviser le compte par deux","Repérer ses tics favoris à la réécoute"]],
+  ["Présence et écoute","Ce qui se voit compte autant que ce qui s'entend.",["S'entraîner face à un miroir ou une caméra : regard, mains, sourire","Reformuler ce que l'autre dit avant de répondre","Sourire vocal au téléphone"]],
+  ["Prise de parole réelle","Mettre tout ensemble devant un public.",["Préparer une intervention de 2 minutes avec la structure situation-complication-résolution","La faire devant une ou deux personnes","Comparer l'enregistrement avec celui de la semaine 1"]]
+];
+function getStart(){let s=store.get("start",null);if(!s){s=today();store.set("start",s)}return s}
+function weekIdx(){const s=new Date(getStart()+"T00:00");const d=Math.floor((new Date()-s)/864e5);return Math.max(0,Math.min(7,Math.floor(d/7)))}
+function renderWeeks(){
+  const w=weekIdx();$("#weekNow").textContent="Tu es en semaine "+(w+1)+" sur 8";$("#startDate").value=getStart();
+  [["#wkChant",WK_CHANT],["#wkCom",WK_COM]].forEach(([sel,data])=>{const box=$(sel);box.innerHTML="";
+    data.forEach((x,i)=>{const d=document.createElement("details");d.className="wk";if(i===w)d.open=true;
+      d.innerHTML='<summary><span class="w">Sem. '+(i+1)+'</span><b>'+x[0]+'</b>'+(i===w?'<span class="now">en cours</span>':'')+'</summary><div class="body"><p class="muted">'+x[1]+'</p><ul>'+x[2].map(y=>"<li>"+y+"</li>").join("")+'</ul></div>';box.appendChild(d)})});
+}
+$("#startDate").onchange=e=>{if(e.target.value){store.set("start",e.target.value);renderWeeks()}};
+$("#startReset").onclick=()=>{store.set("start",today());renderWeeks()};
+
+/* ---------- Navigation ---------- */
+let viewNow="justesse";
+const VIEWS=["justesse","routine","diction","programme"];
+function show(v){if(!VIEWS.includes(v))v="justesse";viewNow=v;
+  VIEWS.forEach(k=>{$("#v-"+k).hidden=k!==v;$("#t-"+k).setAttribute("aria-selected",k===v)});
+  if(v==="justesse")requestAnimationFrame(drawLive);
+  try{localStorage.setItem("atelier-voix:tab",v)}catch(e){}
+}
+$$(".tab").forEach(b=>b.onclick=()=>{location.hash=b.dataset.v});
+window.addEventListener("hashchange",()=>show(location.hash.slice(1)));
+let initial=location.hash.slice(1);if(!initial){try{initial=localStorage.getItem("atelier-voix:tab")||""}catch(e){}}
+show(initial);
+
+renderStreak();renderScores();renderWeeks();drawLive();
+})();
+</script>
+</body></html>
