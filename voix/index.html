@@ -156,6 +156,8 @@ audio{width:100%}
 .stat{background:var(--sunk);border-radius:10px;padding:10px 12px}
 .stat b{display:block;font-family:var(--mono);font-size:1.2rem}
 .stat span{font-size:.82rem;color:var(--muted)}
+.meter{height:10px;border-radius:5px;background:var(--sunk);overflow:hidden}
+.meter i{display:block;height:100%;width:0;background:var(--chant);transition:width .08s linear}
 .h-title{font-family:var(--display);font-weight:400;font-size:2.2rem;line-height:1}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -169,6 +171,12 @@ audio{width:100%}
     <p id="today"></p>
   </header>
   <div class="cards" id="cards"></div>
+  <div class="panel" id="micTest">
+    <h3>Tester le micro</h3>
+    <p class="small muted">À faire une fois avant ta première séance : le navigateur va te demander l'autorisation d'utiliser le micro, réponds « Autoriser ».</p>
+    <div class="row"><button class="btn" id="mtGo">Tester le micro</button></div>
+    <div id="mtOut" style="display:flex;flex-direction:column;gap:8px"></div>
+  </div>
   <p class="tip" id="installTip">Astuce : ajoute cette page à l'écran d'accueil de ton téléphone (menu du navigateur → « Ajouter à l'écran d'accueil ») pour l'ouvrir comme une appli.</p>
 </section>
 
@@ -281,14 +289,21 @@ function yin(buf,sr){
   return{f:sr/bt,p:1-d[tau]};
 }
 let micError=null;
+const gUM=c=>navigator.mediaDevices.getUserMedia(c);
 async function startMic(){
-  if(A.on)return true;
+  const c=ctx();   // créé et relancé pendant le geste : indispensable sur iPhone
+  if(A.on&&A.stream&&A.stream.getAudioTracks().some(t=>t.readyState==="live"))return true;
+  A.on=false;
   try{
-    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw new Error("api");
-    A.stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
+    if(!window.isSecureContext)throw Object.assign(new Error("https"),{name:"Insecure"});
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw Object.assign(new Error("api"),{name:"NoApi"});
+    try{A.stream=await gUM({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}})}
+    catch(e){if(e.name==="OverconstrainedError"||e.name==="TypeError"||e.name==="NotReadableError")A.stream=await gUM({audio:true});else throw e}
   }catch(e){micError=e;return false}
-  const c=ctx(),src=c.createMediaStreamSource(A.stream);
+  try{await c.resume()}catch(e){}
+  const src=c.createMediaStreamSource(A.stream);
   A.an=c.createAnalyser();A.an.fftSize=2048;src.connect(A.an);A.buf=new Float32Array(2048);A.on=true;A.hist=[];
+  A.stream.getAudioTracks().forEach(t=>t.onended=()=>{A.on=false});
   requestAnimationFrame(loop);return true;
 }
 function loop(){
@@ -313,13 +328,22 @@ function playNote(m,dur=1){
 async function playMelody(notes,step=.45){for(const m of notes){if(!R.alive)return;await playNote(m,step)}}
 function beep(){try{const c=ctx(),t=c.currentTime,o=c.createOscillator(),g=c.createGain();o.frequency.value=880;g.gain.setValueAtTime(.15,t);g.gain.exponentialRampToValueAtTime(.001,t+.35);o.connect(g).connect(c.destination);o.start(t);o.stop(t+.4)}catch(e){}}
 
+const inApp=/wv\)|FBAN|FBAV|Instagram|Line\/|WhatsApp|Snapchat|Claude/i.test(navigator.userAgent);
 function micHelp(el,retry){
   const box=document.createElement("div");box.className="warn";
-  const framed=window.top!==window.self;
-  box.innerHTML="<b>Le micro n'est pas accessible.</b>"+(framed
-    ?"<span>Cette page est affichée dans une autre appli qui bloque le micro. Ouvre directement l'adresse <span class='mono'>gaspardcourrier.com/exercice/</span> dans Chrome ou Safari.</span>"
-    :!window.isSecureContext?"<span>La page doit être ouverte en https.</span>"
-    :"<span>Autorise le micro pour ce site. <b>Chrome</b> : touche l'icône à gauche de l'adresse → Autorisations → Micro → Autoriser. <b>iPhone</b> : Réglages → Safari → Micro → Autoriser. Puis réessaie.</span>");
+  const name=micError&&micError.name||"inconnu";
+  const openOut="Ouvre la page dans <b>Chrome</b> ou <b>Safari</b> : menu ⋮ ou ⋯ → « Ouvrir dans le navigateur », ou copie l'adresse <span class='mono'>gaspardcourrier.com/exercice/</span>.";
+  let msg;
+  if(window.top!==window.self)msg="Cette page est affichée à l'intérieur d'une autre page, qui bloque le micro. "+openOut;
+  else if(name==="Insecure")msg="La page doit être ouverte en https. Utilise l'adresse <span class='mono'>https://gaspardcourrier.com/exercice/</span>.";
+  else if(name==="NoApi")msg="Ce navigateur ne donne pas accès au micro. C'est souvent le cas quand un lien est ouvert depuis une appli (Claude, WhatsApp, Instagram…). "+openOut;
+  else if(name==="NotFoundError"||name==="OverconstrainedError")msg="Aucun micro trouvé sur cet appareil. Vérifie qu'un micro est branché ou que celui du téléphone n'est pas désactivé.";
+  else if(name==="NotReadableError"||name==="AbortError")msg="Le micro est déjà utilisé par une autre appli (appel, dictaphone, visio). Ferme-la, recharge la page et réessaie.";
+  else msg="Le micro a été refusé pour ce site."+(inApp?" Tu sembles être dans le navigateur d'une appli : "+openOut:"")+
+    "<br><b>Android / Chrome</b> : touche l'icône à gauche de l'adresse → Autorisations (ou Paramètres du site) → Micro → Autoriser. Si ce n'est pas proposé : Paramètres du téléphone → Applis → Chrome → Autorisations → Micro → Autoriser."+
+    "<br><b>iPhone / Safari</b> : touche « aA » dans la barre d'adresse → Réglages du site web → Micro → Autoriser. Sinon : Réglages → Safari → Micro → Demander."+
+    "<br>Puis recharge la page.";
+  box.innerHTML="<b>Le micro n'est pas accessible.</b><span>"+msg+"</span><span class='small muted mono'>code : "+name+"</span>";
   const b=document.createElement("button");b.className="btn sm";b.textContent="Réessayer";b.onclick=()=>{box.remove();retry()};
   box.appendChild(b);el.prepend(box);
 }
@@ -809,6 +833,18 @@ async function renderProgCom(){
   now.insertAdjacentHTML("beforeend",`<p class="small" style="margin-top:8px"><b>Aujourd'hui</b></p>`);
   recorder(now,{max:75,label:"Enregistrer maintenant",onBlob:b=>idbPut("actuel",b)});
 }
+$("#mtGo").onclick=async()=>{
+  const out=$("#mtOut");out.innerHTML="";
+  if(!(await startMic())){micHelp(out,()=>$("#mtGo").click());return}
+  out.innerHTML='<div class="meter"><i></i></div><p class="small mt-s">Micro autorisé. Parle ou chante : la barre doit bouger.</p>';
+  let max=0;const t0=nowS();
+  const f=s=>{if(!out.isConnected||$("#home").hidden){A.fn.delete(f);return}
+    out.querySelector("i").style.width=Math.min(100,Math.max(0,(20*Math.log10(s.rms+1e-6)+60)/50*100))+"%";max=Math.max(max,s.rms);
+    const p=out.querySelector(".mt-s");
+    if(s.midi!=null)p.textContent="Ça marche : j'entends un "+nom(s.midi)+". Tu peux commencer une séance.";
+    else if(s.t-t0>4&&max<0.002)p.textContent="Le micro est autorisé mais ne capte aucun son. Vérifie qu'aucune autre appli ne l'utilise (appel, dictaphone), puis recharge la page.";
+  };A.fn.add(f);
+};
 let libreW=null;
 $("#lStart").onclick=async()=>{if(!(await startMic())){micHelp($("#lBody"),()=>$("#lStart").click());return}$("#lStart").hidden=true;if(!libreW||!$("#lBody").firstChild){$("#lBody").innerHTML="";libreW=pitchWidget($("#lBody"),{half:12,tol:20})}};
 
