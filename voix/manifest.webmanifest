@@ -1,7 +1,7 @@
 {
   "name": "Atelier Voix",
   "short_name": "Voix",
-  "description": "Chant et communication : une séance par jour.",
+  "description": "Un quart d'heure par jour pour prendre confiance à l'oral.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

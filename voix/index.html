@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Atelier Voix</title>
-<meta name="description" content="Entraînement quotidien : chant (justesse en direct, par niveaux) et communication (diction, débit, prise de parole).">
+<meta name="description" content="Un quart d'heure par jour pour prendre confiance à l'oral : une leçon, du chant et un défi de parole.">
 <meta name="theme-color" content="#0d6b67">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
 <style>
-/* Layout: one screen at a time. Home = two cards (Chant, Communication). Séance = one exercise per screen with a single "Suivant" button. Progrès = levels / weeks you can pick freely. */
+/* Layout: one daily 15-minute session, one exercise per screen. Home = one card. Parcours = levels + measures + journal. Blocks: chant (teal), parole (orange). */
 :root{
   color-scheme:light;
   --bg:#f3f2f7; --surface:#ffffff; --sunk:#eae8f1; --ink:#1a1726; --muted:#5f5a72; --line:#dad7e4;
@@ -39,7 +39,7 @@
 html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
 [hidden]{display:none!important}
-.wrap{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:720px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
 :focus-visible{outline:3px solid var(--focus);outline-offset:2px}
@@ -53,7 +53,6 @@ p{margin:0}
 .chant{--accent:var(--chant);--accent-soft:var(--chant-soft)}
 .com{--accent:var(--com);--accent-soft:var(--com-soft)}
 
-/* Buttons */
 .btn{border:1.5px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 16px;font-weight:600;line-height:1.2}
 .btn:hover{border-color:var(--muted)}
 .btn.pri{background:var(--accent);border-color:var(--accent);color:var(--bg)}
@@ -67,20 +66,27 @@ p{margin:0}
 .home-head h1{font-family:var(--display);font-weight:400;font-size:clamp(2.4rem,9vw,3.4rem);line-height:.95}
 .home-head h1 em{color:var(--chant)}
 .home-head p{color:var(--muted);margin-top:4px}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
-.card{background:var(--surface);border:1px solid var(--line);border-top:5px solid var(--accent);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0}
-.card h2{font-family:var(--display);font-weight:400;font-size:2.1rem;line-height:1}
-.card .lvl{font-weight:700}
-.card .lvl span{color:var(--muted);font-weight:500}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{font-family:var(--display);font-weight:400;font-size:2.2rem;line-height:1}
+.plan{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.plan li{display:flex;gap:10px;align-items:baseline;font-size:.95rem}
+.plan li .m{font-family:var(--mono);font-size:.78rem;color:var(--muted);width:3.4em;flex:0 0 auto}
+.plan li .dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto;align-self:center;background:var(--line)}
+.plan li .dot.c{background:var(--chant)}
+.plan li .dot.p{background:var(--com)}
+.plan li span:last-child{min-width:0}
 .status{display:flex;align-items:center;gap:8px;font-size:.92rem}
 .status i{width:10px;height:10px;border-radius:50%;background:var(--line)}
 .status.done i{background:var(--ok)}
 .days{display:flex;gap:4px}
 .days i{width:14px;height:14px;border-radius:4px;background:var(--sunk);border:1px solid var(--line)}
-.days i.on{background:var(--accent);border-color:var(--accent)}
+.days i.on{background:var(--chant);border-color:var(--chant)}
 .days i.today{outline:2px solid var(--ink);outline-offset:1px}
 .card-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
 .tip{background:var(--sunk);border-radius:10px;padding:12px 14px;font-size:.92rem}
+details.box{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+details.box summary{cursor:pointer;font-weight:700}
+details.box[open] summary{margin-bottom:10px}
 
 /* Séance */
 .s-top{display:flex;align-items:center;gap:12px}
@@ -88,15 +94,27 @@ p{margin:0}
 .s-top .where{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
 .progress{height:6px;background:var(--sunk);border-radius:3px;overflow:hidden}
 .progress i{display:block;height:100%;width:0;background:var(--accent);transition:width .25s}
-.step{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.step{background:var(--surface);border:1px solid var(--line);border-top:5px solid var(--accent);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:14px;min-width:0}
 .step h2{font-family:var(--display);font-weight:400;font-size:clamp(1.9rem,6vw,2.4rem);line-height:1.05}
 .how{font-size:1rem;line-height:1.6}
 .how ul{margin:6px 0 0;padding-left:1.2em}
 .s-body{display:flex;flex-direction:column;gap:14px;min-width:0}
 .s-foot{position:sticky;bottom:0;padding-block:12px calc(12px + env(safe-area-inset-bottom,0px));background:linear-gradient(to top,var(--bg) 70%,transparent)}
-.clock{font-family:var(--mono);font-size:3.2rem;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.clock{font-family:var(--mono);font-size:3rem;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
 .timer{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
 .timer.end .clock{color:var(--ok)}
+.phase{font-size:1.15rem;font-weight:600;min-height:3.2em}
+.phases{display:flex;gap:6px}
+.phases i{flex:1;height:6px;border-radius:3px;background:var(--sunk)}
+.phases i.on{background:var(--accent)}
+
+/* Leçon */
+.lesson{font-size:1.06rem;line-height:1.7}
+.keep{border-left:4px solid var(--accent);padding:4px 0 4px 12px;font-weight:600}
+.question{background:var(--sunk);border-radius:10px;padding:12px 14px;font-size:.98rem}
+.question b{display:block;font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:4px}
+textarea{width:100%;min-height:70px;resize:vertical;background:var(--surface);border:1.5px solid var(--line);border-radius:8px;padding:8px 10px}
+.yesterday{background:var(--com-soft);border-radius:10px;padding:10px 12px;font-size:.95rem}
 
 /* Pitch widget */
 .pw{display:flex;flex-direction:column;gap:8px}
@@ -115,49 +133,55 @@ p{margin:0}
 .chip.cur{border-color:var(--accent);color:var(--accent)}
 .chip.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 15%,transparent)}
 .chip.ko{border-color:var(--off);background:color-mix(in srgb,var(--off) 12%,transparent)}
+button.chip{font-family:var(--body);font-size:.9rem;cursor:pointer}
+button.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--bg)}
 .say{font-size:1.05rem;font-weight:600;min-height:1.6em}
 .result{font-size:1.02rem}
 .result b{font-family:var(--mono)}
 .warn{background:var(--com-soft);border-radius:10px;padding:12px 14px;font-size:.95rem;display:flex;flex-direction:column;gap:8px}
 .warn b{color:var(--com)}
+.meter{height:10px;border-radius:5px;background:var(--sunk);overflow:hidden}
+.meter i{display:block;height:100%;width:0;background:var(--chant);transition:width .08s linear}
 
-/* Communication widgets */
+/* Parole */
 .big-text{font-family:var(--display);font-size:clamp(1.6rem,5.5vw,2.2rem);line-height:1.15}
 .reading{font-size:1.1rem;line-height:1.8;max-height:46vh;overflow:auto;padding:14px;background:var(--sunk);border-radius:10px}
 .reading .p1,.reading .p2{color:var(--accent);font-weight:700;padding:0 .2em}
+.reading ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:8px}
 .bignum{font-family:var(--mono);font-size:2.4rem;font-weight:700;line-height:1}
-.euh{width:100%;padding:24px;font-size:1.3rem;border-radius:14px;border:2px dashed var(--accent);background:var(--accent-soft);font-weight:700;color:var(--accent)}
+.euh{width:100%;padding:20px;font-size:1.25rem;border-radius:14px;border:2px dashed var(--accent);background:var(--accent-soft);font-weight:700;color:var(--accent)}
 .euh:disabled{opacity:.45}
+.take{border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:12px}
 .fields{display:grid;gap:8px}
 .fields label{display:flex;flex-direction:column;gap:4px;font-size:.88rem;font-weight:600}
 .fields input{background:var(--surface);border:1.5px solid var(--line);border-radius:8px;padding:8px 10px;font-weight:400}
 .stars{display:flex;gap:4px}
 .stars button{width:42px;height:42px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);font-family:var(--mono);font-weight:700}
 .stars button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--bg)}
-.rate-row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
 audio{width:100%}
 
-/* Progrès */
+/* Parcours */
 .list{display:flex;flex-direction:column;gap:8px}
 .item{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;gap:12px;align-items:center}
-.item.cur{border-color:var(--accent);box-shadow:inset 4px 0 0 var(--accent)}
+.item.cur{border-color:var(--chant);box-shadow:inset 4px 0 0 var(--chant)}
 .item .num{font-family:var(--mono);font-size:.85rem;color:var(--muted);width:1.6em;flex:0 0 auto}
 .item .txt{flex:1;min-width:0}
 .item .txt b{display:block}
 .item .txt span{font-size:.9rem;color:var(--muted)}
 .pill{font-family:var(--mono);font-size:.72rem;padding:3px 8px;border-radius:999px;background:var(--sunk);color:var(--muted);white-space:nowrap}
 .pill.ok{background:color-mix(in srgb,var(--ok) 18%,transparent);color:var(--ok)}
-.pill.cur{background:var(--accent);color:var(--bg)}
+.pill.cur{background:var(--chant);color:var(--bg)}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0}
 .panel h3{font-size:1.05rem}
 .bars{display:flex;align-items:flex-end;gap:4px;height:70px;border-bottom:1px solid var(--line)}
-.bars i{flex:1;max-width:22px;border-radius:3px 3px 0 0;background:var(--accent);min-height:2px}
+.bars i{flex:1;max-width:22px;border-radius:3px 3px 0 0;background:var(--chant);min-height:2px}
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
 .stat{background:var(--sunk);border-radius:10px;padding:10px 12px}
 .stat b{display:block;font-family:var(--mono);font-size:1.2rem}
 .stat span{font-size:.82rem;color:var(--muted)}
-.meter{height:10px;border-radius:5px;background:var(--sunk);overflow:hidden}
-.meter i{display:block;height:100%;width:0;background:var(--chant);transition:width .08s linear}
+.journal{display:flex;flex-direction:column;gap:6px;font-size:.95rem}
+.journal div{display:flex;gap:10px}
+.journal .mono{color:var(--muted);font-size:.8rem;flex:0 0 auto;padding-top:2px}
 .h-title{font-family:var(--display);font-weight:400;font-size:2.2rem;line-height:1}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -170,17 +194,17 @@ audio{width:100%}
     <h1>Atelier <em>Voix</em></h1>
     <p id="today"></p>
   </header>
-  <div class="cards" id="cards"></div>
-  <div class="panel" id="micTest">
-    <h3>Tester le micro</h3>
-    <p class="small muted">À faire une fois avant ta première séance : le navigateur va te demander l'autorisation d'utiliser le micro, réponds « Autoriser ».</p>
-    <div class="row"><button class="btn" id="mtGo">Tester le micro</button></div>
-    <div id="mtOut" style="display:flex;flex-direction:column;gap:8px"></div>
-  </div>
-  <p class="tip" id="installTip">Astuce : ajoute cette page à l'écran d'accueil de ton téléphone (menu du navigateur → « Ajouter à l'écran d'accueil ») pour l'ouvrir comme une appli.</p>
+  <article class="card" id="dayCard"></article>
+  <details class="box" id="micBox">
+    <summary>Tester le micro</summary>
+    <p class="small muted">À faire une fois : le navigateur demande l'autorisation, réponds « Autoriser ». Parle ensuite quelques secondes.</p>
+    <div class="row" style="margin-top:8px"><button class="btn" id="mtGo">Lancer le test</button></div>
+    <div id="mtOut" style="display:flex;flex-direction:column;gap:8px;margin-top:8px"></div>
+  </details>
+  <p class="tip" id="installTip">Astuce : menu du navigateur → « Ajouter à l'écran d'accueil » pour l'ouvrir comme une appli.</p>
 </section>
 
-<!-- SÉANCE (une étape à la fois) -->
+<!-- SÉANCE -->
 <section class="screen wrap" id="seance" hidden>
   <div class="s-top">
     <button class="btn sm" id="sQuit">← Accueil</button>
@@ -194,48 +218,39 @@ audio{width:100%}
   <div class="s-foot" id="sFoot"><button class="btn big pri" id="sNext">Suivant</button></div>
 </section>
 
-<!-- PROGRÈS CHANT -->
-<section class="screen wrap chant" id="progres-chant" hidden>
+<!-- PARCOURS -->
+<section class="screen wrap" id="parcours" hidden>
   <div class="s-top"><button class="btn sm" data-go="">← Accueil</button></div>
-  <h1 class="h-title">Chant · niveaux</h1>
-  <p class="small muted">Choisis librement ton niveau. Si c'est trop simple, saute au suivant. Le test de placement te propose un niveau en 3 minutes.</p>
-  <div class="row"><button class="btn pri" data-go="test">Test de placement</button><button class="btn" data-go="libre">Courbe libre</button></div>
-  <div class="list" id="lvlList"></div>
+  <h1 class="h-title">Mon parcours</h1>
   <div class="panel">
-    <h3>Ta note de confort</h3>
-    <p class="small muted">Les exercices sont placés autour de cette note. Si c'est trop grave ou trop aigu pour toi, décale-la.</p>
-    <div class="row"><button class="btn sm" id="cDown">− grave</button><b class="mono" id="cNote">–</b><button class="btn sm" id="cUp">aigu +</button></div>
+    <h3>Ma progression à l'oral</h3>
+    <div class="stats" id="mStats"></div>
   </div>
   <div class="panel">
-    <h3>Épreuves de fin de séance</h3>
+    <h3>Ce que je voulais améliorer</h3>
+    <div class="journal" id="journal"></div>
+  </div>
+  <div class="panel chant">
+    <h3>Niveau de chant</h3>
+    <p class="small muted">Choisis librement. Si c'est trop facile, monte d'un niveau.</p>
+    <div class="list" id="lvlList"></div>
+    <div class="row"><button class="btn sm" data-go="test">Test de placement</button><button class="btn sm" data-go="libre">Courbe libre</button></div>
+  </div>
+  <div class="panel chant">
+    <h3>Ma note de confort</h3>
+    <p class="small muted">Les exercices de chant sont placés autour de cette note. Trop grave ou trop aigu ? Décale-la.</p>
+    <div class="row"><button class="btn sm" id="cDown">− grave</button><b class="mono" id="cNote">–</b><button class="btn sm" id="cUp">aigu +</button></div>
+    <h3 style="margin-top:6px">Épreuves de chant</h3>
     <div class="bars" id="cBars"></div>
     <p class="small" id="cSum"></p>
   </div>
 </section>
 
-<!-- PROGRÈS COMMUNICATION -->
-<section class="screen wrap com" id="progres-com" hidden>
-  <div class="s-top"><button class="btn sm" data-go="">← Accueil</button></div>
-  <h1 class="h-title">Communication · thèmes</h1>
-  <p class="small muted">Un thème par semaine, mais c'est toi qui avances : choisis le thème que tu veux travailler.</p>
-  <div class="list" id="wkList"></div>
-  <div class="panel">
-    <h3>Tes mesures</h3>
-    <div class="stats" id="mStats"></div>
-  </div>
-  <div class="panel">
-    <h3>Avant / maintenant</h3>
-    <p class="small muted">Ton enregistrement de départ, à comparer avec un enregistrement d'aujourd'hui sur le même sujet : « Présente-toi en une minute et dis ce que tu aimerais améliorer. »</p>
-    <div id="recDepart"></div>
-    <div id="recNow"></div>
-  </div>
-</section>
-
 <!-- COURBE LIBRE -->
 <section class="screen wrap chant" id="libre" hidden>
-  <div class="s-top"><button class="btn sm" data-go="progres-chant">← Niveaux</button></div>
+  <div class="s-top"><button class="btn sm" data-go="parcours">← Parcours</button></div>
   <h1 class="h-title">Courbe libre</h1>
-  <p class="small muted">Chante ce que tu veux : la courbe suit ta voix. Vert = juste, jaune = presque, rouge = à côté.</p>
+  <p class="small muted">Chante ou parle : la courbe suit ta voix. Vert = juste, jaune = presque, rouge = à côté.</p>
   <div class="row"><button class="btn pri" id="lStart">Activer le micro</button></div>
   <div id="lBody"></div>
 </section>
@@ -245,8 +260,8 @@ audio{width:100%}
 "use strict";
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const store={
-  get(k,d){try{const v=localStorage.getItem("av2:"+k);return v?JSON.parse(v):d}catch(e){return d}},
-  set(k,v){try{localStorage.setItem("av2:"+k,JSON.stringify(v))}catch(e){}}
+  get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
 };
 const pad=n=>String(n).padStart(2,"0");
 const dkey=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
@@ -255,6 +270,7 @@ const fmt=s=>{s=Math.max(0,Math.ceil(s));return Math.floor(s/60)+":"+pad(s%60)};
 const median=a=>{const b=[...a].sort((x,y)=>x-y);const m=b.length>>1;return b.length%2?b[m]:(b[m-1]+b[m])/2};
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 const nowS=()=>performance.now()/1000;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
 /* ================= Notes ================= */
 const NOMS=["Do","Do♯","Ré","Ré♯","Mi","Fa","Fa♯","Sol","Sol♯","La","La♯","Si"];
@@ -266,12 +282,13 @@ const nom=m=>NOMS[pc(m)]+(Math.floor(Math.round(m)/12)-2);   // La3 = 440 Hz (no
 const sci=m=>SCI[pc(m)]+(Math.floor(Math.round(m)/12)-1);
 const isBlack=m=>[1,3,6,8,10].includes(pc(m));
 
-/* ================= State ================= */
-const C=store.get("chant",{level:1,centre:null,scores:[],passed:{}});
-const M=store.get("com",{week:0,sessions:{},wpm:[],euh:[],souffle:[],into:[],rates:[],started:false});
-const saveC=()=>store.set("chant",C), saveM=()=>store.set("com",M);
-function markDone(kind){const log=store.get("log",{});const k=today();log[k]=log[k]||{};log[k][kind]=1;store.set("log",log)}
-function streak(kind){const log=store.get("log",{});let n=0;const d=new Date();if(!(log[dkey(d)]||{})[kind])d.setDate(d.getDate()-1);while((log[dkey(d)]||{})[kind]){n++;d.setDate(d.getDate()-1)}return n}
+/* ================= État ================= */
+const old=store.get("av2:chant",null);
+const S=Object.assign({level:Math.max(4,old?old.level:4),centre:old?old.centre:null,scores:[],passed:{1:1,2:1,3:1},day:0,wpm:[],euh:[],conf:[],notes:[],into:[]},store.get("av3",{}));
+if(!(S.level>=1&&S.level<=6))S.level=4;
+const save=()=>store.set("av3",S);
+function markDone(){const log=store.get("av3:log",{});log[today()]=1;store.set("av3:log",log)}
+function streak(){const log=store.get("av3:log",{});let n=0;const d=new Date();if(!log[dkey(d)])d.setDate(d.getDate()-1);while(log[dkey(d)]){n++;d.setDate(d.getDate()-1)}return n}
 
 /* ================= Audio ================= */
 const A={ctx:null,stream:null,an:null,buf:null,on:false,muteUntil:0,fn:new Set(),hist:[],raw:[],silent:0};
@@ -337,11 +354,11 @@ function micHelp(el,retry){
   if(window.top!==window.self)msg="Cette page est affichée à l'intérieur d'une autre page, qui bloque le micro. "+openOut;
   else if(name==="Insecure")msg="La page doit être ouverte en https. Utilise l'adresse <span class='mono'>https://gaspardcourrier.com/exercice/</span>.";
   else if(name==="NoApi")msg="Ce navigateur ne donne pas accès au micro. C'est souvent le cas quand un lien est ouvert depuis une appli (Claude, WhatsApp, Instagram…). "+openOut;
-  else if(name==="NotFoundError"||name==="OverconstrainedError")msg="Aucun micro trouvé sur cet appareil. Vérifie qu'un micro est branché ou que celui du téléphone n'est pas désactivé.";
+  else if(name==="NotFoundError"||name==="OverconstrainedError")msg="Aucun micro trouvé sur cet appareil.";
   else if(name==="NotReadableError"||name==="AbortError")msg="Le micro est déjà utilisé par une autre appli (appel, dictaphone, visio). Ferme-la, recharge la page et réessaie.";
   else msg="Le micro a été refusé pour ce site."+(inApp?" Tu sembles être dans le navigateur d'une appli : "+openOut:"")+
-    "<br><b>Android / Chrome</b> : touche l'icône à gauche de l'adresse → Autorisations (ou Paramètres du site) → Micro → Autoriser. Si ce n'est pas proposé : Paramètres du téléphone → Applis → Chrome → Autorisations → Micro → Autoriser."+
-    "<br><b>iPhone / Safari</b> : touche « aA » dans la barre d'adresse → Réglages du site web → Micro → Autoriser. Sinon : Réglages → Safari → Micro → Demander."+
+    "<br><b>Android / Chrome</b> : touche l'icône à gauche de l'adresse → Autorisations → Micro → Autoriser. Sinon : Paramètres du téléphone → Applis → Chrome → Autorisations → Micro → Autoriser."+
+    "<br><b>iPhone / Safari</b> : « aA » dans la barre d'adresse → Réglages du site web → Micro → Autoriser."+
     "<br>Puis recharge la page.";
   box.innerHTML="<b>Le micro n'est pas accessible.</b><span>"+msg+"</span><span class='small muted mono'>code : "+name+"</span>";
   const b=document.createElement("button");b.className="btn sm";b.textContent="Réessayer";b.onclick=()=>{box.remove();retry()};
@@ -378,12 +395,11 @@ function drawRoll(cv,pts,o){
   }
   if(o.empty){g.fillStyle=colors["--muted"];g.textAlign="center";g.font="14px Figtree, sans-serif";g.fillText(o.empty,lab+(w-lab)/2,h/2);g.textAlign="left"}
 }
-/* Widget : note + aiguille + courbe. Retourne {target, destroy} */
 function pitchWidget(el,opts={}){
   const tol=opts.tol||25;
   el.insertAdjacentHTML("beforeend",`<div class="pw"><div class="pw-top"><div><span class="pw-n">–</span> <span class="pw-sci"></span></div><span class="pw-c">${A.on?"Chante…":"Micro en attente"}</span></div><div><div class="needle"><span class="zone" style="left:${50-tol}%;width:${2*tol}%"></span><span class="mid"></span><span class="pin"></span></div><div class="needle-l"><span>trop bas</span><span>trop haut</span></div></div><canvas class="roll"></canvas></div>`);
   const root=el.lastElementChild,cv=root.querySelector("canvas");
-  const W={target:opts.target??null,centre:C.centre||55,tol};
+  const W={target:opts.target??null,centre:S.centre||55,tol};
   const draw=()=>{const t=nowS(),c=W.target!=null?W.target:Math.round(W.centre),half=opts.half||7;drawRoll(cv,A.hist,{lo:c-half,hi:c+half,t0:t-7,t1:t,target:W.target,tol,empty:A.on?null:"La courbe apparaîtra ici"})};
   const f=s=>{
     if(!root.isConnected){A.fn.delete(f);return}
@@ -400,47 +416,45 @@ function pitchWidget(el,opts={}){
   return{set target(v){W.target=v;draw()},get target(){return W.target},destroy(){A.fn.delete(f)}};
 }
 
-/* ================= Enregistrements (stockés sur l'appareil) ================= */
-function idb(){return new Promise((res,rej)=>{const r=indexedDB.open("atelier-voix",1);r.onupgradeneeded=()=>r.result.createObjectStore("rec");r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
-async function idbPut(k,v){try{const db=await idb();await new Promise((res,rej)=>{const tx=db.transaction("rec","readwrite");tx.objectStore("rec").put(v,k);tx.oncomplete=res;tx.onerror=()=>rej(tx.error)});return true}catch(e){return false}}
-async function idbGet(k){try{const db=await idb();return await new Promise(res=>{const r=db.transaction("rec").objectStore("rec").get(k);r.onsuccess=()=>res(r.result||null);r.onerror=()=>res(null)})}catch(e){return null}}
-/* Bouton Enregistrer/Arrêter + lecteur. onBlob(blob) appelé à la fin. */
-function recorder(el,{max=90,label="Enregistrer",onBlob}={}){
+/* ================= Enregistreur ================= */
+/* Démarre un enregistrement si possible. Retourne {stop()} ; onAudio(url) appelé à la fin. */
+async function recordInto(onAudio){
+  if(typeof MediaRecorder==="undefined"||!(await startMic()))return null;
+  const chunks=[];const mr=new MediaRecorder(A.stream);
+  mr.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};
+  mr.onstop=()=>onAudio(URL.createObjectURL(new Blob(chunks,{type:mr.mimeType||"audio/webm"})));
+  mr.start();return{stop(){if(mr.state==="recording")mr.stop()}};
+}
+function recorder(el,{max=150,label="Enregistrer"}={}){
   const box=document.createElement("div");box.style.cssText="display:flex;flex-direction:column;gap:8px";
   box.innerHTML=`<div class="row"><button class="btn pri">${label}</button><span class="mono small"></span></div><div></div>`;
   el.appendChild(box);
   const btn=box.querySelector("button"),ck=box.querySelector("span"),pl=box.lastElementChild;
-  let mr=null,iv=null,t0=0;
+  let r=null,iv=null,t0=0;
   btn.onclick=async()=>{
-    if(mr&&mr.state==="recording"){mr.stop();return}
-    if(typeof MediaRecorder==="undefined"){ck.textContent="Enregistrement impossible sur ce navigateur.";return}
-    if(!(await startMic())){micHelp(el,()=>btn.click());return}
-    const chunks=[];mr=new MediaRecorder(A.stream);
-    mr.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};
-    mr.onstop=()=>{clearInterval(iv);btn.textContent="Recommencer";ck.textContent="";
-      const blob=new Blob(chunks,{type:mr.mimeType||"audio/webm"});
-      pl.innerHTML="";const au=document.createElement("audio");au.controls=true;au.src=URL.createObjectURL(blob);pl.appendChild(au);
-      if(onBlob)onBlob(blob)};
-    mr.start();t0=nowS();btn.textContent="Arrêter";
-    iv=setInterval(()=>{const s=nowS()-t0;ck.textContent="● "+fmt(s);if(s>=max)mr.stop()},250);
+    if(r){r.stop();r=null;clearInterval(iv);btn.textContent="Refaire une prise";ck.textContent="";return}
+    r=await recordInto(url=>{pl.innerHTML="";const au=document.createElement("audio");au.controls=true;au.src=url;pl.appendChild(au)});
+    if(!r){micHelp(el,()=>btn.click());return}
+    t0=nowS();btn.textContent="Arrêter";
+    iv=setInterval(()=>{const s=nowS()-t0;ck.textContent="● "+fmt(s);if(s>=max)btn.click()},250);
   };
-  return{stop(){if(mr&&mr.state==="recording")mr.stop()}};
+  return{stop(){if(r){r.stop();r=null;clearInterval(iv)}}};
 }
 
 /* ================= Moteur de séance ================= */
-const R={kind:null,steps:[],i:0,res:{},alive:false,clean:[],tok:0,stop:false,meta:{}};
+const R={steps:[],i:0,res:{},alive:false,clean:[],tok:0,stop:false,meta:{},kind:""};
 let wakeLock=null;
 async function wake(){try{wakeLock=await navigator.wakeLock.request("screen")}catch(e){}}
 function cleanup(){R.alive=false;R.clean.forEach(f=>{try{f()}catch(e){}});R.clean=[]}
-function startSeance(kind,steps,meta={}){
+function startSeance(kind,steps,meta){
   R.kind=kind;R.steps=steps;R.i=0;R.res={};R.stop=false;R.meta=meta;
-  $("#seance").className="screen wrap "+(kind==="com"?"com":"chant");
   location.hash="seance";renderStep();wake();
 }
 function renderStep(){
   cleanup();R.alive=true;const tok=++R.tok;
   const s=R.steps[R.i],n=R.steps.length;
-  $("#sWhere").textContent=R.meta.label+" · étape "+(R.i+1)+" sur "+n;
+  $("#seance").className="screen wrap "+(s.block||"chant");
+  $("#sWhere").textContent=(s.label||R.meta.label)+" · "+(R.i+1)+"/"+n+(s.min?" · "+s.min:"");
   $("#sProg").style.width=(R.i/n*100)+"%";
   $("#sTitle").textContent=s.t;$("#sHow").innerHTML=s.how||"";
   const body=$("#sBody");body.innerHTML="";
@@ -457,8 +471,8 @@ function renderStep(){
 }
 $("#sNext").onclick=()=>{if(R.stop||R.i>=R.steps.length-1)finish();else{R.i++;renderStep()}};
 $("#sQuit").onclick=()=>{cleanup();location.hash=""};
+const tag=(o,block,label,min)=>Object.assign(o,{block,label,min});
 
-/* ---------- Étapes génériques ---------- */
 function timerBox(el,sec,api,onStart){
   el.insertAdjacentHTML("beforeend",`<div class="timer"><span class="clock">${fmt(sec)}</span><button class="btn pri">Démarrer</button></div>`);
   const box=el.lastElementChild,clk=box.querySelector(".clock"),b=box.querySelector("button");
@@ -467,18 +481,31 @@ function timerBox(el,sec,api,onStart){
   b.onclick=()=>{run=!run;last=nowS();box.classList.remove("end");if(run){b.textContent="Pause";if(!iv)iv=setInterval(tick,250);if(onStart)onStart()}else b.textContent="Reprendre"};
   api.onClean(()=>clearInterval(iv));
 }
-const T=(t,sec,how)=>({t,how,run:(el,api)=>timerBox(el,sec,api)});
-const FREE=(t,sec,how)=>({t,how,run:(el,api)=>{
-  let w=null;
-  timerBox(el,sec,api,async()=>{if(!w){if(await startMic()){if(api.alive()){w=pitchWidget(el,{half:12});api.onClean(()=>w.destroy())}}else micHelp(el,()=>{})}});
-}});
 
-/* Tenir des notes : score = part du temps à moins de `tol` cents */
+/* ---------- Échauffement : 1 minute, 3 phases ---------- */
+const WARM={t:"Échauffement express",id:"warm",how:"Une minute, trois gestes. Debout si possible, épaules basses.",run:(el,api)=>{
+  const P=[["Souffle","Inspire 4 s par le ventre, expire 8 s sur un « sss » régulier. Deux fois."],["Lèvres","Trilles de lèvres (« brrr ») en sirène : du grave à l'aigu, puis retour. Sans forcer."],["Articulation","« pa-ta-ka, pa-ta-ka » de plus en plus vite, bouche très mobile."]];
+  el.insertAdjacentHTML("beforeend",`<div class="phases">${P.map(()=>"<i></i>").join("")}</div><p class="eyebrow ph-n">${P[0][0]}</p><p class="phase">${P[0][1]}</p>`);
+  const bars=[...el.querySelectorAll(".phases i")];let cur=-1;
+  const set=i=>{if(i===cur||i>2)return;cur=i;bars.forEach((b,j)=>b.classList.toggle("on",j<=i));el.querySelector(".ph-n").textContent=P[i][0];el.querySelector(".phase").textContent=P[i][1];if(i>0)beep()};
+  let t0=0,iv=null;
+  timerBox(el,60,api,()=>{if(!t0){t0=nowS();set(0);iv=setInterval(()=>{if(!api.alive()){clearInterval(iv);return}set(Math.floor((nowS()-t0)/20))},250);api.onClean(()=>clearInterval(iv))}});
+}};
+
+/* ---------- Leçon du jour ---------- */
+function LESSON(L){return{t:L.t,how:"",run:(el)=>{
+  const last=S.notes.length?S.notes[S.notes.length-1]:null;
+  el.insertAdjacentHTML("beforeend",
+    (last&&last.d!==today()?`<p class="yesterday">La dernière fois, tu voulais améliorer : <b>${esc(last.v)}</b></p>`:"")+
+    `<p class="lesson">${L.x}</p><p class="keep">${L.k}</p><div class="question"><b>À réfléchir</b>${L.q}</div>`);
+}}}
+
+/* ---------- Chant ---------- */
 function HOLD(t,how,rel,{tol=25,sec=4,id,gate,base=0}={}){
   return{t,how,id,gate,run:(el,api)=>{
-    el.insertAdjacentHTML("beforeend",`<div class="chips"></div><p class="say">Appuie sur Commencer : la note est jouée, puis tu la tiens ${sec} secondes.</p><div class="row"><button class="btn pri go">Commencer</button><button class="btn again" disabled>Réécouter la note</button></div><p class="result"></p>`);
+    el.insertAdjacentHTML("beforeend",`<div class="chips"></div><p class="say">Appuie sur Commencer : la note est jouée, puis tu la tiens ${sec} secondes.</p><div class="row"><button class="btn pri go">Commencer</button><button class="btn again" disabled>Réécouter</button></div><p class="result"></p>`);
     const chipsEl=el.querySelector(".chips"),say=el.querySelector(".say"),go=el.querySelector(".go"),again=el.querySelector(".again"),res=el.querySelector(".result");
-    const notes=()=>rel.map(r=>(C.centre||55)+base+r);
+    const notes=()=>rel.map(r=>(S.centre||55)+base+r);
     const drawChips=()=>{chipsEl.innerHTML=notes().map(m=>`<span class="chip">${nom(m)}</span>`).join("")};drawChips();
     let w=null,cur=null;
     again.onclick=()=>{if(cur!=null)playNote(cur,1.2)};
@@ -491,7 +518,7 @@ function HOLD(t,how,rel,{tol=25,sec=4,id,gate,base=0}={}){
         if(!api.alive())return;
         cur=ns[i];w.target=cur;chips.forEach(c=>c.classList.remove("cur"));chips[i].classList.add("cur");
         say.textContent="Écoute…";await playNote(cur,1.2);if(!api.alive())return;
-        say.textContent="À toi : tiens la note sur « ou » ou « mmm ».";
+        say.textContent="À toi : tiens la note.";
         const sc=await new Promise(done=>{
           let start=null,n=0,good=0;const t0=nowS();
           const f=s=>{
@@ -507,17 +534,16 @@ function HOLD(t,how,rel,{tol=25,sec=4,id,gate,base=0}={}){
       }
       const avg=scores.reduce((a,b)=>a+b,0)/scores.length;
       say.textContent="Terminé.";go.disabled=false;go.textContent="Refaire";w.target=null;cur=null;again.disabled=true;
-      res.innerHTML="Score : <b>"+Math.round(avg)+" %</b>"+(gate!=null?" (objectif "+gate+" %)":"")+". "+(avg>=80?"Excellent.":avg>=60?"Bien. La justesse viendra avec la répétition.":"Pas grave : fredonne la note bouche fermée avant de la chanter.");
+      res.innerHTML="Score : <b>"+Math.round(avg)+" %</b>"+(gate!=null?" (objectif "+gate+" %)":"")+".";
       api.result(avg);
     };
   }};
 }
-/* Suite guidée : chaque note est jouée puis chantée ; validée quand tenue `hold` s dans la tolérance */
 function SEQ(t,how,rel,{tol=30,hold=.6,timeout=6,base=0,id,gate,melody=false}={}){
   return{t,how,id,gate,run:(el,api)=>{
-    el.insertAdjacentHTML("beforeend",`<div class="chips"></div><p class="say">${melody?"La mélodie est jouée une fois en entier, puis note par note : tu répètes chaque note.":"Chaque note est jouée, puis tu la répètes. Dès qu'elle est juste, on passe à la suivante."}</p><div class="row"><button class="btn pri go">Commencer</button><button class="btn stop" disabled>Arrêter</button></div><p class="result"></p>`);
+    el.insertAdjacentHTML("beforeend",`<div class="chips"></div><p class="say">${melody?"La mélodie est jouée en entier, puis note par note : tu répètes chaque note.":"Chaque note est jouée, puis tu la répètes. Dès qu'elle est juste, on passe à la suivante."}</p><div class="row"><button class="btn pri go">Commencer</button><button class="btn stop" disabled>Arrêter</button></div><p class="result"></p>`);
     const chipsEl=el.querySelector(".chips"),say=el.querySelector(".say"),go=el.querySelector(".go"),stop=el.querySelector(".stop"),res=el.querySelector(".result");
-    const notes=()=>rel.map(r=>(C.centre||55)+base+r);
+    const notes=()=>rel.map(r=>(S.centre||55)+base+r);
     const drawChips=()=>{chipsEl.innerHTML=notes().map(m=>`<span class="chip">${nom(m)}</span>`).join("")};drawChips();
     let w=null,halt=false;
     stop.onclick=()=>{halt=true};
@@ -547,102 +573,104 @@ function SEQ(t,how,rel,{tol=30,hold=.6,timeout=6,base=0,id,gate,melody=false}={}
       go.disabled=false;stop.disabled=true;go.textContent="Refaire";w.target=null;
       if(halt){say.textContent="Arrêté.";return}
       const sc=ok/ns.length*100;say.textContent="Terminé.";
-      res.innerHTML="<b>"+ok+" / "+ns.length+"</b> notes justes"+(gate!=null?" (objectif "+Math.ceil(gate/100*ns.length)+")":"")+". "+(sc>=80?"Très bien.":"Refais-le : la deuxième fois est souvent meilleure.");
+      res.innerHTML="<b>"+ok+" / "+ns.length+"</b> notes justes"+(gate!=null?" (objectif "+Math.ceil(gate/100*ns.length)+")":"")+".";
       api.result(sc);
     };
   }};
 }
-/* Calibrage : on écoute ta voix parlée pour placer les exercices */
-const CALIB={t:"Trouver ta zone de voix",id:"calib",how:"Pour placer les exercices là où ta voix est à l'aise, l'appli écoute ta voix parlée. Appuie sur Commencer puis dis, à voix normale : « Bonjour, je m'appelle… et aujourd'hui je commence à chanter. »",run:(el,api)=>{
+const CALIB={t:"Trouver ta zone de voix",id:"calib",how:"Une seule fois : l'appli écoute ta voix parlée pour placer les exercices de chant. Appuie sur Commencer et dis normalement : « Bonjour, je m'appelle… et aujourd'hui je travaille ma voix. »",run:(el,api)=>{
   el.insertAdjacentHTML("beforeend",`<div class="row"><button class="btn pri go">Commencer</button></div><p class="say"></p><p class="small muted">Sans micro, choisis : <button class="link lo">voix plutôt grave</button> ou <button class="link hi">voix plutôt aiguë</button>.</p>`);
   const say=el.querySelector(".say"),go=el.querySelector(".go");
-  const setC=(c,txt)=>{C.centre=Math.max(45,Math.min(67,c));saveC();say.innerHTML=(txt||"")+"Ta note de confort : <b>"+nom(C.centre)+"</b>. Tu pourras la décaler dans les niveaux."};
+  const setC=(c,txt)=>{S.centre=Math.max(45,Math.min(67,c));save();say.innerHTML=(txt||"")+"Ta note de confort : <b>"+nom(S.centre)+"</b>."};
   el.querySelector(".lo").onclick=()=>setC(50);el.querySelector(".hi").onclick=()=>setC(60);
   go.onclick=async()=>{
     if(!(await startMic())){micHelp(el,()=>go.click());return}
-    go.disabled=true;const v=[];const t0=nowS();say.textContent="Je t'écoute… parle normalement.";
+    go.disabled=true;const v=[];const t0=nowS();say.textContent="Je t'écoute…";
     const f=s=>{if(!api.alive()){api.off(f);return}if(s.midi!=null)v.push(s.midi);
       if(v.length>150||s.t-t0>9){api.off(f);go.disabled=false;go.textContent="Recommencer";
-        if(v.length<30){say.textContent="Je n'ai pas assez entendu ta voix. Rapproche-toi du téléphone et recommence.";return}
+        if(v.length<30){say.textContent="Je n'ai pas assez entendu ta voix. Rapproche-toi et recommence.";return}
         setC(Math.round(median(v)+4),"Ta voix parlée tourne autour de "+nom(median(v))+". ")}};
     api.on(f);
   };
 }};
-
-/* ================= CHANT ================= */
 const SONGS={
   clair:{n:"Au clair de la lune",r:[0,0,0,2,4,2,0,4,2,2,0]},
   jacques:{n:"Frère Jacques",r:[0,2,4,0,0,2,4,0,4,5,7,4,5,7]},
   maman:{n:"Ah ! vous dirai-je, maman",r:[0,0,7,7,9,9,7,5,5,4,4,2,2,0]}
 };
+const GENTLE="Commence à volume moyen : ce premier exercice termine ton échauffement. ";
+/* Chaque niveau : [exercice (alterne selon le jour), épreuve] */
 const LEVELS=[
-  {n:"Trouver ta voix",d:"Fredonner et tenir une note, avec une marge large.",thr:60,
-   steps:()=>[HOLD("Fredonner la note","Bouche fermée, sur « mmm ». Pas besoin d'être parfait : la bande verte est large. Écoute bien la note avant de la fredonner.",[0,2,-1,1],{tol:50}),
-              HOLD("Épreuve : 3 notes","Même exercice, sur « ou ». L'épreuve est réussie à 60 %.",[0,3,-2],{tol:50,id:"ep"}),
-              T("Chanter pour le plaisir",150,"Fredonne ou chante une chanson que tu aimes, sans te juger. Le but est de prendre l'habitude d'entendre ta voix.")]},
+  {n:"Trouver ta voix",d:"Fredonner et tenir une note, marge large.",thr:60,
+   ex:()=>[HOLD("Fredonner la note",GENTLE+"Bouche fermée sur « mmm ».",[0,2,-1,1],{tol:50})],
+   ep:()=>HOLD("Épreuve : 3 notes","Sur « ou ». Réussie à 60 %.",[0,3,-2],{tol:50,id:"ep"})},
   {n:"Reproduire une note",d:"Chanter juste une note entendue, à ±25 cents.",thr:70,
-   steps:()=>[HOLD("Notes tenues","La bande verte est plus étroite. Écoute la note, fredonne-la dans ta tête, puis chante-la sur « ou ».",[0,2,4,-2,5],{tol:25}),
-              HOLD("Épreuve : 3 notes","Réussie à 70 %.",[1,-1,3],{tol:25,id:"ep"}),
-              T("Chanter pour le plaisir",150,"Chante une chanson que tu aimes. Si tu peux, enregistre-toi avec ton téléphone et réécoute une phrase.")]},
-  {n:"Trois notes",d:"Enchaîner do-ré-mi juste. Chanson : Au clair de la lune.",thr:80,
-   steps:()=>[SEQ("Do-ré-mi","Trois notes qui montent et descendent. Sur « mi » puis « ma ».",[0,2,4,2,0,1,3,5,3,1],{base:-2}),
-              SEQ("Épreuve : do-ré-mi","Réussie à 80 % des notes.",[0,2,4,2,0,-1,1,3,1,-1],{base:-2,id:"ep"}),
-              SEQ("Chanson : "+SONGS.clair.n,"Ta première chanson, note par note.",SONGS.clair.r,{base:-2,melody:true,tol:35})]},
+   ex:()=>[HOLD("Notes tenues",GENTLE+"Écoute, entends la note dans ta tête, puis chante-la sur « ou ».",[0,2,4,-2,5],{tol:25})],
+   ep:()=>HOLD("Épreuve : 3 notes","Réussie à 70 %.",[1,-1,3],{tol:25,id:"ep"})},
+  {n:"Trois notes",d:"Enchaîner do-ré-mi. Chanson : Au clair de la lune.",thr:80,
+   ex:()=>[SEQ("Do-ré-mi",GENTLE+"Sur « mi » puis « ma ».",[0,2,4,2,0,1,3,5,3,1],{base:-2}),SEQ("Chanson : "+SONGS.clair.n,GENTLE+"Note par note.",SONGS.clair.r,{base:-2,melody:true,tol:35})],
+   ep:()=>SEQ("Épreuve : do-ré-mi","Réussie à 80 % des notes.",[0,2,4,2,0,-1,1,3,1,-1],{base:-2,id:"ep"})},
   {n:"Cinq notes",d:"La gamme do-ré-mi-fa-sol. Chanson : Frère Jacques.",thr:80,
-   steps:()=>[SEQ("Gamme 5 notes","Do-ré-mi-fa-sol-fa-mi-ré-do. Respire avant de commencer.",[0,2,4,5,7,5,4,2,0],{base:-4}),
-              SEQ("Épreuve : gamme 5 notes","Un demi-ton plus haut. Réussie à 80 %.",[0,2,4,5,7,5,4,2,0],{base:-3,id:"ep"}),
-              SEQ("Chanson : "+SONGS.jacques.n,"Note par note, puis chante-la seul en entier.",SONGS.jacques.r,{base:-4,melody:true,tol:35})]},
-  {n:"Les sauts",d:"Sauter de note en note : tierce, quinte, octave.",thr:75,
-   steps:()=>[SEQ("Sauts","Do-mi, do-sol, do-fa : vise la note d'arrivée directement, sans glisser.",[0,4,0,7,0,5,0],{base:-4}),
-              SEQ("Épreuve : arpège","Do-mi-sol-do-sol-mi-do. Réussie à 75 %.",[0,4,7,12,7,4,0],{base:-6,id:"ep"}),
-              SEQ("Chanson : "+SONGS.maman.n,"Attention au saut du début (do-sol).",SONGS.maman.r,{base:-5,melody:true,tol:35})]},
-  {n:"Chansons",d:"Des mélodies complètes, note après note.",thr:80,
-   steps:()=>{const ks=Object.keys(SONGS),a=SONGS[ks[new Date().getDate()%3]],b=SONGS[ks[(new Date().getDate()+1)%3]];
-     return[SEQ("Chanson : "+a.n,"Écoute, puis chante note par note.",a.r,{base:-5,melody:true,tol:30}),
-            SEQ("Épreuve : "+b.n,"Réussie à 80 %.",b.r,{base:-5,melody:true,tol:30,id:"ep"}),
-            T("Ta chanson",150,"Chante une chanson de ton choix en entier. Va dans Niveaux → Courbe libre si tu veux voir la courbe en même temps.")]}}
+   ex:()=>[SEQ("Gamme 5 notes",GENTLE+"Do-ré-mi-fa-sol-fa-mi-ré-do, sur « ma ». Respire avant de commencer.",[0,2,4,5,7,5,4,2,0],{base:-4}),SEQ("Chanson : "+SONGS.jacques.n,GENTLE+"Écoute, puis note par note.",SONGS.jacques.r,{base:-4,melody:true,tol:35})],
+   ep:()=>SEQ("Épreuve : gamme 5 notes","Un demi-ton plus haut. Réussie à 80 %.",[0,2,4,5,7,5,4,2,0],{base:-3,id:"ep"})},
+  {n:"Les sauts",d:"Tierce, quinte, octave. Chanson : Ah ! vous dirai-je, maman.",thr:75,
+   ex:()=>[SEQ("Sauts",GENTLE+"Do-mi, do-sol, do-fa : vise la note d'arrivée directement, sans glisser.",[0,4,0,7,0,5,0],{base:-4}),SEQ("Chanson : "+SONGS.maman.n,GENTLE+"Attention au saut do-sol du début.",SONGS.maman.r,{base:-5,melody:true,tol:35})],
+   ep:()=>SEQ("Épreuve : arpège","Do-mi-sol-do-sol-mi-do. Réussie à 75 %.",[0,4,7,12,7,4,0],{base:-6,id:"ep"})},
+  {n:"Chansons",d:"Mélodies complètes, tolérance plus fine.",thr:80,
+   ex:()=>Object.values(SONGS).map(s=>SEQ("Chanson : "+s.n,GENTLE+"Écoute, puis note par note.",s.r,{base:-5,melody:true,tol:30})),
+   ep:()=>{const s=Object.values(SONGS)[(S.day+1)%3];return SEQ("Épreuve : "+s.n,"Tolérance fine. Réussie à 80 %.",s.r,{base:-5,melody:true,tol:25,id:"ep"})}}
 ];
-function chantSeance(){
-  const L=LEVELS[C.level-1];
-  const steps=[
-    T("Respiration",120,"Debout, pieds largeur du bassin, épaules basses.<ul><li>Inspire 4 secondes par le nez en gonflant le ventre.</li><li>Expire 8 secondes sur un « sss » régulier.</li><li>Allonge l'expiration à chaque fois.</li></ul>"),
-    ...(C.centre==null?[CALIB]:[]),
-    T("Détente et bouche fermée",90,"<ul><li>Roule les épaules, masse la mâchoire, bâille deux fois.</li><li>Puis fredonne « mmm » lèvres fermées, dents desserrées : cherche la vibration sur les lèvres.</li></ul>"),
-    FREE("Sirènes",90,"Fais vibrer les lèvres (« brrr ») ou chante « ou », et glisse du grave à l'aigu puis retour, comme une sirène. Regarde ta courbe monter et descendre. Ne force jamais en haut."),
-    ...L.steps()
-  ];
-  startSeance("chant",steps,{label:"Chant · niveau "+C.level});
-}
-function placementTest(){
-  const steps=[...(C.centre==null?[CALIB]:[]),
-    HOLD("Test 1 · une note","Écoute et tiens chaque note.",[0,3],{tol:25,id:"t1",gate:70}),
-    SEQ("Test 2 · trois notes","Do-ré-mi-ré-do.",[0,2,4,2,0],{base:-2,id:"t2",gate:80}),
-    SEQ("Test 3 · cinq notes","La gamme do-ré-mi-fa-sol.",[0,2,4,5,7,5,4,2,0],{base:-4,id:"t3",gate:80}),
-    SEQ("Test 4 · sauts","Arpège do-mi-sol-do.",[0,4,7,12,7,4,0],{base:-6,id:"t4",gate:75})];
-  startSeance("test",steps,{label:"Test de placement"});
-}
 
-/* ================= COMMUNICATION ================= */
-const TWISTERS=["Les chaussettes de l'archiduchesse sont-elles sèches ? Archi-sèches !","Un chasseur sachant chasser doit savoir chasser sans son chien.","Ces six saucissons-ci sont si secs qu'on ne sait si c'en sont.","Seize chaises sèchent.","Suis-je bien chez ce cher Serge ?","Je veux et j'exige d'exquises excuses.","Natacha n'attacha pas son chat Pacha qui s'échappa.","Tonton, ton thé t'a-t-il ôté ta toux ?","Trois tortues trottaient sur un trottoir très étroit.","Didon dîna, dit-on, du dos d'un dodu dindon.","La pipe au papa du pape Pie pue.","Panier, piano. Panier, piano. Panier, piano.","Pruneau cuit, pruneau cru.","Le ver vert va vers le verre vert.","Petit pot de beurre, quand te dépetitpotdebeurreriseras-tu ?","Fruits frais, fruits frits, fruits cuits, fruits crus.","Lily lit le livre dans le lit.","Cinq chiens chassent six chats."];
-const TEXTS=[
-  "Chaque matin, le marché du quartier se réveille avant le reste de la ville. Les maraîchers installent leurs cagettes de tomates, de poireaux et de pommes, pendant que le boulanger d'en face sort ses premières fournées. Vers huit heures, les premiers clients arrivent : des retraités qui prennent leur temps, des parents pressés qui tiennent un enfant d'une main et un panier de l'autre. On discute du prix des fraises, de la pluie annoncée pour le week-end, du match de la veille. Rien d'extraordinaire, et pourtant c'est ici que le quartier se raconte. Une vendeuse connaît le prénom de chacun. Un vieux monsieur vient chaque samedi acheter un seul citron, juste pour la conversation. Quand midi sonne, les étals se vident, les bâches claquent dans le vent, et la place retrouve son calme, en attendant le prochain marché.",
-  "Merci à toutes et à tous d'être là. Il y a un an, nous nous sommes fixé un objectif simple : réduire de moitié le temps d'attente de nos clients. Beaucoup pensaient que c'était impossible. Nous avons d'abord écouté. Nous avons passé des semaines au guichet, à côté de vous, à noter chaque blocage. Ensuite, nous avons simplifié : trois formulaires sont devenus un seul. Enfin, nous avons formé chaque équipe. Le résultat ? Le temps d'attente est passé de vingt minutes à huit. Ce chiffre n'appartient à personne en particulier. Il appartient à chacun d'entre vous. Alors l'année prochaine, je vous propose d'aller plus loin. Pas plus vite : plus loin. Merci.",
-  "La première fois que j'ai pris le train de nuit, je pensais ne pas fermer l'œil. La couchette était étroite, le wagon grinçait à chaque virage, et mon voisin ronflait comme un moteur. Pourtant, vers deux heures du matin, le bercement a fini par gagner. Je me suis réveillé à l'aube, le nez contre la vitre, devant des montagnes que je n'avais jamais vues. Le contrôleur passait avec un thermos de café. Personne ne parlait. Chacun regardait le paysage défiler, comme si le voyage commençait vraiment à ce moment-là. Depuis, quand je peux, je choisis le train de nuit. On arrive plus tard, mais on arrive ailleurs."
-];
-const PAUSE_TEXT="Merci à toutes et à tous d'être là. // Il y a un an, / nous nous sommes fixé un objectif simple : / réduire de moitié / le temps d'attente de nos clients. // Beaucoup pensaient / que c'était impossible. // Nous avons d'abord écouté. / Ensuite, / nous avons simplifié. / Enfin, / nous avons formé chaque équipe. // Le résultat ? // Le temps d'attente / est passé de vingt minutes / à huit. // Ce chiffre n'appartient à personne en particulier. / Il appartient / à chacun d'entre vous. // Merci.";
-const INTO_TEXT="Tu es sûr ? Vraiment sûr ? Alors là, je ne m'y attendais pas ! Écoute bien : demain, à huit heures précises, tout le monde sera là. Tout le monde ? Oui, tout le monde. Même Paul ? Surtout Paul ! Et tu sais pourquoi ? Parce que c'est lui qui a eu l'idée. Incroyable, non ?";
-const TOPICS=["Le meilleur conseil qu'on t'ait donné","Défends ta saison préférée","Explique ton métier à un enfant de 8 ans","Un objet dont tu ne pourrais pas te passer","Convaincs-moi d'aller voir ton film préféré","Ce que tu changerais dans ta ville","Raconte ton dernier fou rire","Le repas parfait","Une compétence que tout le monde devrait avoir","Le voyage qui t'a marqué","Pour ou contre le télétravail","Présente-toi comme dans un entretien d'embauche","Une habitude qui a changé ta vie","Le livre ou la série à recommander","Ce que tu ferais avec une journée de plus par semaine","Raconte une erreur dont tu as appris","Vends-moi un stylo","Le métier que tu aurais aimé faire","Ce qui te rend fier cette année"];
-const QUESTIONS=["Faut-il interdire les téléphones à l'école ?","Quel est le meilleur moyen d'apprendre une langue ?","Vaut-il mieux vivre en ville ou à la campagne ?","Faut-il passer à la semaine de quatre jours ?","Faut-il lire le livre avant de voir le film ?","Pourquoi devrais-je t'embaucher ?","Le sport devrait-il être obligatoire au travail ?","Vaut-il mieux voyager seul ou accompagné ?","Les réseaux sociaux nous rapprochent-ils ?","Quel est le plus beau métier du monde ?"];
-const STORIES=["Raconte une difficulté que tu as surmontée","Présente un projet qui te tient à cœur","Raconte un voyage qui ne s'est pas passé comme prévu","Raconte la meilleure décision que tu aies prise","Présente une idée pour améliorer ton quotidien au travail","Raconte une rencontre qui a compté"];
+/* ---------- Parole ---------- */
+const TOPICS=["Le meilleur conseil qu'on t'ait donné","Défends ta saison préférée","Un objet dont tu ne pourrais pas te passer","Convaincs-moi d'aller voir ton film préféré","Ce que tu changerais dans ta ville","Raconte ton dernier fou rire","Le repas parfait","Une compétence que tout le monde devrait avoir","Le voyage qui t'a marqué","Pour ou contre le télétravail","Une habitude qui a changé ta vie","Ce que tu ferais avec une journée de plus par semaine","Raconte une erreur dont tu as appris","Vends-moi un stylo","Le métier que tu aurais aimé faire","Ce qui te rend fier cette année","Ta plus grande qualité, preuve à l'appui","Ce que tu aimerais apprendre cette année"];
+const QUESTIONS=["Faut-il interdire les téléphones à l'école ?","Quel est le meilleur moyen d'apprendre une langue ?","Vaut-il mieux vivre en ville ou à la campagne ?","Faut-il passer à la semaine de quatre jours ?","Pourquoi devrais-je t'embaucher ?","Vaut-il mieux voyager seul ou accompagné ?","Les réseaux sociaux nous rapprochent-ils ?","Quel est ton plus grand défaut ?","Où te vois-tu dans cinq ans ?","Faut-il toujours dire la vérité ?"];
+const STORIES=["Une difficulté que tu as surmontée","Un projet qui te tient à cœur","Un voyage qui ne s'est pas passé comme prévu","La meilleure décision que tu aies prise","Une rencontre qui a compté","Un moment où tu as dû convaincre quelqu'un"];
+const PITCHES=["Présente-toi","Présente ton métier ou tes études","Présente ta ville à un touriste","Présente un projet qui te tient à cœur","Présente ton livre ou ta série préférée","Présente une idée d'entreprise"];
+const WORDS=["parapluie","volcan","grand-mère","ascenseur","trompette","pirate","réunion","citron","train de nuit","robot","chat","tempête","boulangerie","clé perdue","astronaute","marathon","vélo","miroir","concert","bibliothèque"];
+const CONCEPTS=["L'inflation","Internet","Comment marche une élection","L'intelligence artificielle","Un crédit immobilier","Le réchauffement climatique","Pourquoi le ciel est bleu","Ce qu'est une entreprise","Comment on fabrique le pain","Le système solaire"];
+const OPPOSITES=["Il faut supprimer les devoirs à la maison","Les voitures devraient être interdites en centre-ville","Il vaut mieux être locataire que propriétaire","Le télétravail rend moins productif","Les réseaux sociaux devraient être interdits avant 16 ans","Tout le monde devrait apprendre à coder","Il faut supprimer le bac","Les vacances d'été sont trop longues"];
+const TEXTS={
+  bilan:"Merci à toutes et à tous d'être là. Il y a un an, nous nous sommes fixé un objectif simple : réduire de moitié le temps d'attente de nos clients. Beaucoup pensaient que c'était impossible. Nous avons d'abord écouté. Nous avons passé des semaines au guichet, à côté de vous, à noter chaque blocage. Ensuite, nous avons simplifié : trois formulaires sont devenus un seul. Enfin, nous avons formé chaque équipe. Le résultat ? Le temps d'attente est passé de vingt minutes à huit. Ce chiffre n'appartient à personne en particulier. Il appartient à chacun d'entre vous. Alors l'année prochaine, je vous propose d'aller plus loin. Pas plus vite : plus loin. Merci.",
+  pauses:"Merci à toutes et à tous d'être là. // Il y a un an, / nous nous sommes fixé un objectif simple : / réduire de moitié / le temps d'attente de nos clients. // Beaucoup pensaient / que c'était impossible. // Nous avons d'abord écouté. / Ensuite, / nous avons simplifié. / Enfin, / nous avons formé chaque équipe. // Le résultat ? // Le temps d'attente / est passé de vingt minutes / à huit. // Ce chiffre n'appartient à personne en particulier. / Il appartient / à chacun d'entre vous. // Merci.",
+  into:"Tu es sûr ? Vraiment sûr ? Alors là, je ne m'y attendais pas ! Écoute bien : demain, à huit heures précises, tout le monde sera là. Tout le monde ? Oui, tout le monde. Même Paul ? Surtout Paul ! Et tu sais pourquoi ? Parce que c'est lui qui a eu l'idée. Incroyable, non ?"
+};
+const AFFIRM=["Je pense qu'on devrait lancer le projet en janvier.","J'ai trois ans d'expérience dans ce domaine.","Ma proposition est simple.","Nous avons atteint notre objectif.","Je ne suis pas d'accord avec cette décision.","C'est la meilleure option pour l'équipe."];
+const FOCUS=["Moins de « euh »","Plus de pauses","Ralentir","Mieux articuler","Plus d'énergie","Mieux structurer","Finir les phrases vers le bas"];
 const wc=t=>t.trim().split(/\s+/).filter(w=>/[\p{L}\p{N}]/u.test(w)).length;
 
-function TWIST(){return{t:"Virelangues",how:"Dis chaque virelangue 3 fois lentement en exagérant, 3 fois normalement, 3 fois vite. Puis recommence avec un stylo entre les dents, et sans : la différence de netteté s'entend.",run:(el,api)=>{
-  el.insertAdjacentHTML("beforeend",`<p class="big-text"></p><div class="row"><button class="btn nx">Autre virelangue</button></div>`);
-  let last="";const show=()=>{let v;do{v=pick(TWISTERS)}while(v===last);last=v;el.querySelector(".big-text").textContent=v};show();
-  el.querySelector(".nx").onclick=show;timerBox(el,150,api);
+/* Défi oral en prises successives : prise → réécoute → un point à corriger → nouvelle prise */
+function SPEAK(t,how,promptFn,sec,{takes=2,euh=true}={}){return{t,how,run:(el,api)=>{
+  el.insertAdjacentHTML("beforeend",`<p class="big-text pr"></p><div class="row"><button class="btn sm nx">Autre sujet</button></div><div class="tk" style="display:flex;flex-direction:column;gap:12px"></div>`);
+  const show=()=>el.querySelector(".pr").textContent=promptFn();show();el.querySelector(".nx").onclick=show;
+  const wrap=el.querySelector(".tk");const counts=[],raw=[];let focus=null;
+  function take(n){
+    const box=document.createElement("div");box.className="take";
+    box.innerHTML=`<p class="eyebrow">Prise ${n} sur ${takes}${focus?" · objectif : "+esc(focus):""}</p><div class="timer"><span class="clock">${fmt(sec)}</span><button class="btn pri go">Démarrer</button></div>${euh?'<button class="euh" disabled>Tape à chaque « euh » · <span>0</span></button>':""}<div class="pl"></div><p class="result small"></p>`;
+    wrap.appendChild(box);box.scrollIntoView({behavior:"smooth",block:"nearest"});
+    const go=box.querySelector(".go"),clk=box.querySelector(".clock"),eb=box.querySelector(".euh"),pl=box.querySelector(".pl"),res=box.querySelector(".result");
+    let on=false,cnt=0,t0=0,iv=null,rec=null,done=false;
+    const end=()=>{if(!on)return;on=false;clearInterval(iv);if(eb)eb.disabled=true;if(rec)rec.stop();go.disabled=true;go.textContent="Terminé";
+      const s=Math.min(sec,nowS()-t0);counts.push(cnt/(Math.max(s,10)/60));raw.push(cnt);
+      if(euh){res.innerHTML="<b>"+cnt+"</b> tic"+(cnt>1?"s":"")+" en "+Math.round(s)+" s."+(raw.length>1?" Prise précédente : "+raw[raw.length-2]+".":"")}
+      if(done)return;done=true;
+      if(n<takes){
+        box.insertAdjacentHTML("beforeend",`<p class="small"><b>Réécoute ta prise.</b> Choisis UN seul point à corriger pour la suivante :</p><div class="chips">${FOCUS.map(f=>`<button class="chip" aria-pressed="false">${f}</button>`).join("")}</div><div class="row"><button class="btn pri nt">Prise ${n+1}</button></div>`);
+        box.querySelectorAll("button.chip").forEach(c=>c.onclick=()=>{box.querySelectorAll("button.chip").forEach(x=>x.setAttribute("aria-pressed","false"));c.setAttribute("aria-pressed","true");focus=c.textContent});
+        box.querySelector(".nt").onclick=e=>{e.target.disabled=true;take(n+1)};
+      }else if(euh&&counts.length){const v=+counts[counts.length-1].toFixed(1);S.euh.push({d:today(),v});S.euh=S.euh.slice(-60);save();api.result(v)}
+    };
+    go.onclick=async()=>{
+      on=true;cnt=0;t0=nowS();go.textContent="Arrêter";go.onclick=end;if(eb){eb.disabled=false;eb.onclick=()=>{if(on){cnt++;eb.querySelector("span").textContent=cnt}}}
+      iv=setInterval(()=>{const l=sec-(nowS()-t0);clk.textContent=fmt(l);if(l<=0){beep();end()}},200);
+      rec=await recordInto(url=>{const au=document.createElement("audio");au.controls=true;au.src=url;pl.innerHTML="";pl.appendChild(au)});
+      if(!rec)pl.innerHTML='<p class="small muted">Sans micro : pas d\'enregistrement, mais fais quand même l\'exercice à voix haute.</p>';
+      if(!on&&rec)rec.stop();
+    };
+    api.onClean(()=>{clearInterval(iv);if(rec)rec.stop()});
+  }
+  take(1);
 }}}
-function READ(t,how,textFn,{id="wpm"}={}){return{t,how,run:(el,api)=>{
-  const txt=textFn();
+function READ(t,how,txt){return{t,how,run:(el,api)=>{
   el.insertAdjacentHTML("beforeend",`<div class="reading"></div><div class="row"><button class="btn pri go">Je commence à lire</button><span class="mono small muted clk">${wc(txt)} mots</span></div><div class="row" style="align-items:baseline"><span class="bignum">–</span><span class="muted small">mots par minute</span></div><p class="result small">Zone confortable : 130 à 160 mots par minute.</p>`);
   el.querySelector(".reading").textContent=txt;
   const go=el.querySelector(".go"),clk=el.querySelector(".clk"),num=el.querySelector(".bignum"),res=el.querySelector(".result");
@@ -651,29 +679,19 @@ function READ(t,how,textFn,{id="wpm"}={}){return{t,how,run:(el,api)=>{
     if(!on){on=true;t0=nowS();go.textContent="J'ai fini";iv=setInterval(()=>clk.textContent=fmt(nowS()-t0),250);return}
     on=false;clearInterval(iv);go.textContent="Relire";const s=nowS()-t0;if(s<5)return;
     const w=Math.round(wc(txt)/(s/60));num.textContent=w;
-    res.textContent=w<120?"Un peu lent : ça peut sembler hésitant. Enchaîne les mots d'un même groupe.":w<=160?"Débit confortable. Bravo.":w<=190?"Rapide : ralentis sur les mots importants et respire à chaque point.":"Trop rapide pour être bien compris. Fais une vraie pause à chaque virgule.";
-    M.wpm.push({d:today(),v:w});M.wpm=M.wpm.slice(-40);saveM();api.result(w);
+    res.textContent=w<120?"Un peu lent : enchaîne les mots d'un même groupe.":w<=160?"Débit confortable. Vérifie que tu as bien ralenti sur les chiffres.":w<=190?"Rapide : ralentis sur les chiffres et les mots importants.":"Trop rapide pour être bien compris. Relis avec une vraie pause à chaque point.";
+    S.wpm.push({d:today(),v:w});S.wpm=S.wpm.slice(-60);save();api.result(w);
   };
   api.onClean(()=>clearInterval(iv));
 }}}
-function SOUFFLE(){return{t:"Chrono du souffle",how:"Inspire par le ventre, puis expire sur un « sss » le plus long et le plus régulier possible. Appuie au début de l'expiration, et de nouveau quand tu n'as plus d'air. Fais 3 essais.",run:(el,api)=>{
-  el.insertAdjacentHTML("beforeend",`<div class="row"><button class="btn pri go">Je commence le « sss »</button><span class="bignum">0,0 s</span></div><p class="result"></p>`);
-  const go=el.querySelector(".go"),num=el.querySelector(".bignum"),res=el.querySelector(".result");let on=false,t0=0,iv=null;const tries=[];
-  go.onclick=()=>{
-    if(!on){on=true;t0=nowS();go.textContent="Plus d'air !";iv=setInterval(()=>num.textContent=(nowS()-t0).toFixed(1).replace(".",",")+" s",100);return}
-    on=false;clearInterval(iv);const s=nowS()-t0;tries.push(s);go.textContent="Essai suivant";
-    const best=Math.max(...tries);res.innerHTML="Essais : "+tries.map(x=>"<b>"+x.toFixed(1).replace(".",",")+" s</b>").join(" · ")+". "+(best>=20?"Excellent souffle.":"Objectif : 20 secondes de « sss » régulier.");
-    M.souffle.push({d:today(),v:+s.toFixed(1)});M.souffle=M.souffle.slice(-40);saveM();
-  };api.onClean(()=>clearInterval(iv));
-}}}
-function PAUSES(){return{t:"Lire avec des pauses",how:"Une barre <b>/</b> = une petite pause (respire si besoin). Deux barres <b>//</b> = une vraie pause, compte « un, deux » dans ta tête. Ça te paraîtra long : c'est normal.",run:(el,api)=>{
+function PAUSES(){return{t:"Lire avec des pauses",how:"<b>/</b> = petite pause. <b>//</b> = vraie pause : compte « un, deux » dans ta tête. Lis une fois en t'enregistrant, réécoute, puis relis en exagérant encore les pauses.",run:(el,api)=>{
   el.insertAdjacentHTML("beforeend",`<div class="reading"></div>`);
-  el.querySelector(".reading").innerHTML=PAUSE_TEXT.replace(/\/\//g,'<span class="p2">//</span>').replace(/(^|[^>])\/(?!\/)/g,'$1<span class="p1">/</span>');
-  timerBox(el,240,api);
+  el.querySelector(".reading").innerHTML=TEXTS.pauses.replace(/\/\//g,'<span class="p2">//</span>').replace(/(^|[^>])\/(?!\/)/g,'$1<span class="p1">/</span>');
+  const r=recorder(el,{max:120,label:"Enregistrer ma lecture"});api.onClean(()=>r.stop());
 }}}
-function INTO(){return{t:"Faire chanter la phrase",how:"Lis le texte en exagérant la mélodie : les questions montent, les exclamations claquent. La courbe montre ta voix. Si elle reste plate, tu es monocorde.",run:(el,api)=>{
+function INTO(){return{t:"Faire chanter la phrase",how:"Lis en exagérant la mélodie : les questions montent, les exclamations claquent. Regarde la courbe : si elle reste plate, tu es monocorde. C'est ici que le chant aide la parole.",run:(el,api)=>{
   el.insertAdjacentHTML("beforeend",`<div class="reading"></div><div class="row"><button class="btn pri go">Je commence à lire</button></div><p class="result"></p>`);
-  el.querySelector(".reading").textContent=INTO_TEXT;
+  el.querySelector(".reading").textContent=TEXTS.into;
   const go=el.querySelector(".go"),res=el.querySelector(".result");let w=null,on=false,v=[],f=null;
   go.onclick=async()=>{
     if(!on){if(!(await startMic())){micHelp(el,()=>go.click());return}
@@ -682,163 +700,175 @@ function INTO(){return{t:"Faire chanter la phrase",how:"Lis le texte en exagéra
     on=false;api.off(f);go.textContent="Relire";
     if(v.length<30){res.textContent="Je n'ai pas assez entendu ta voix. Rapproche-toi du micro.";return}
     const mean=v.reduce((a,b)=>a+b,0)/v.length,sd=Math.sqrt(v.reduce((a,b)=>a+(b-mean)**2,0)/v.length);
-    res.innerHTML="Variation de ta voix : <b>"+sd.toFixed(1).replace(".",",")+" demi-tons</b>. "+(sd<2?"Plutôt monocorde : exagère encore, comme pour un enfant.":sd<3?"Un peu plat. Monte plus haut sur les questions.":sd<=5?"Voix vivante. Bravo.":"Très expressif : parfait pour raconter une histoire.");
-    M.into.push({d:today(),v:+sd.toFixed(1)});M.into=M.into.slice(-40);saveM();
+    res.innerHTML="Variation de ta voix : <b>"+sd.toFixed(1).replace(".",",")+" demi-tons</b>. "+(sd<2?"Plutôt monocorde : exagère encore.":sd<3?"Un peu plat : monte plus haut sur les questions.":sd<=5?"Voix vivante. Bravo.":"Très expressif.");
+    S.into.push({d:today(),v:+sd.toFixed(1)});S.into=S.into.slice(-60);save();
   };
 }}}
-function PREP(t,how,listArr,fields,speakSec){return{t,how,run:(el,api)=>{
-  el.insertAdjacentHTML("beforeend",`<p class="big-text"></p><div class="row"><button class="btn sm nx">Autre sujet</button></div><div class="fields">${fields.map((f,i)=>`<label>${f}<input id="f${i}" placeholder="quelques mots-clés"></label>`).join("")}</div><p class="small muted">1 minute pour noter des mots-clés, puis parle ${speakSec>=120?"2 minutes":"1 minute"} en suivant la structure. Enregistre-toi pour réécouter.</p>`);
-  const show=()=>el.querySelector(".big-text").textContent=pick(listArr);show();el.querySelector(".nx").onclick=show;
-  el.insertAdjacentHTML("beforeend",`<p class="eyebrow">Préparation</p>`);timerBox(el,60,api);
-  el.insertAdjacentHTML("beforeend",`<p class="eyebrow">Prise de parole</p>`);const r=recorder(el,{max:speakSec+30,label:"Enregistrer ma prise"});api.onClean(()=>r.stop());
+function AFFIRMS(){return{t:"Phrases qui tombent juste",how:"Dis chaque phrase en faisant descendre la voix sur la dernière syllabe, sans baisser le volume. Active la courbe : la fin de chaque phrase doit plonger. Puis redis-les en finissant volontairement vers le haut, pour sentir la différence.",run:(el,api)=>{
+  el.insertAdjacentHTML("beforeend",`<div class="reading"><ol>${AFFIRM.map(a=>`<li>${a}</li>`).join("")}</ol></div><div class="row"><button class="btn pri go">Afficher la courbe</button></div>`);
+  const go=el.querySelector(".go");
+  go.onclick=async()=>{if(!(await startMic())){micHelp(el,()=>go.click());return}go.hidden=true;const w=pitchWidget(el,{half:10,tol:50});api.onClean(()=>w.destroy())};
 }}}
-function IMPRO(t,how,sec,{rec=true}={}){return{t,how,run:(el,api)=>{
-  el.insertAdjacentHTML("beforeend",`<p class="big-text"></p><div class="row"><button class="btn sm nx">Autre sujet</button></div><div class="timer"><span class="clock">${fmt(sec)}</span><button class="btn pri go">Démarrer</button></div><button class="euh" disabled>« euh » · <span>0</span></button><p class="result"></p>`);
-  const show=()=>el.querySelector(".big-text").textContent=pick(TOPICS);show();el.querySelector(".nx").onclick=show;
-  const go=el.querySelector(".go"),clk=el.querySelector(".clock"),euh=el.querySelector(".euh"),n_=euh.querySelector("span"),res=el.querySelector(".result");
-  let on=false,n=0,t0=0,iv=null,rr=null;
-  const end=()=>{clearInterval(iv);on=false;euh.disabled=true;go.textContent="Recommencer";if(rr)rr.stop();
-    const s=Math.min(sec,nowS()-t0);if(s<10)return;const per=n/(s/60);
-    res.innerHTML="<b>"+n+"</b> tic"+(n>1?"s":"")+" en "+Math.round(s)+" s. "+(per<=2?"Excellent.":per<=5?"Correct. Remplace-les par une pause.":"Ralentis et autorise-toi des silences.");
-    M.euh.push({d:today(),v:+per.toFixed(1)});M.euh=M.euh.slice(-40);saveM();api.result(per)};
-  go.onclick=async()=>{if(on){end();return}
-    on=true;n=0;n_.textContent="0";t0=nowS();euh.disabled=false;go.textContent="Arrêter";res.textContent="";
-    if(rec&&recWrap.querySelector("input").checked){if(await startMic()&&typeof MediaRecorder!=="undefined"){const chunks=[];const mr=new MediaRecorder(A.stream);mr.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};mr.onstop=()=>{const au=document.createElement("audio");au.controls=true;au.src=URL.createObjectURL(new Blob(chunks,{type:mr.mimeType||"audio/webm"}));play.innerHTML="";play.appendChild(au)};mr.start();rr={stop(){if(mr.state==="recording")mr.stop()}}}}
-    iv=setInterval(()=>{const l=sec-(nowS()-t0);clk.textContent=fmt(l);if(l<=0){beep();end()}},200)};
-  euh.onclick=()=>{if(on){n++;n_.textContent=n}};
-  el.insertAdjacentHTML("beforeend",`<label class="small rw"><input type="checkbox" checked> Enregistrer pour réécouter</label><div class="pl"></div>`);
-  const recWrap=el.querySelector(".rw"),play=el.querySelector(".pl");if(!rec)recWrap.hidden=true;
-  api.onClean(()=>{clearInterval(iv);if(rr)rr.stop()});
+function PROJ(){return{t:"Projeter sa voix",how:"Choisis une phrase, par exemple « Bonjour à tous, merci d'être venus ». Dis-la comme si la personne était à 1 mètre, puis à 5 mètres, puis au fond d'une salle à 15 mètres. Augmente le souffle, pas la gorge : la voix doit porter sans crier. Recommence avec d'autres phrases.",run:(el,api)=>{
+  el.insertAdjacentHTML("beforeend",`<div class="question"><b>Repère</b>Main sur le ventre : il doit pousser davantage à 15 mètres. Si la gorge serre ou gratte, reviens à 5 mètres.</div>`);
+  timerBox(el,180,api);const r=recorder(el,{max:200,label:"M'enregistrer"});api.onClean(()=>r.stop());
 }}}
-const RATE={t:"Ton auto-évaluation",how:"Réécoute ta prise si tu l'as enregistrée, puis note-toi honnêtement. Ces notes tracent ta progression.",run:(el,api)=>{
-  const crit=[["clarte","Clarté : on me comprend facilement"],["aisance","Aisance : je me sens à l'aise"],["rythme","Rythme : ni trop vite, ni trop lent"]];const v={};
-  el.insertAdjacentHTML("beforeend",crit.map(([k,l])=>`<div class="rate-row"><span>${l}</span><div class="stars" data-k="${k}">${[1,2,3,4,5].map(i=>`<button aria-pressed="false" aria-label="${i} sur 5">${i}</button>`).join("")}</div></div>`).join("")+`<p class="result small"></p>`);
-  el.querySelectorAll(".stars").forEach(s=>s.querySelectorAll("button").forEach((b,i)=>b.onclick=()=>{v[s.dataset.k]=i+1;s.querySelectorAll("button").forEach((x,j)=>x.setAttribute("aria-pressed",j<=i));
-    if(Object.keys(v).length===3){const e={d:today(),...v};M.rates=M.rates.filter(r=>r.d!==today());M.rates.push(e);M.rates=M.rates.slice(-60);saveM();el.querySelector(".result").textContent="Noté. Merci !"}}));
-}};
-const DEPART={t:"Ton enregistrement de départ",how:"Une seule fois, au début : présente-toi en une minute et dis ce que tu aimerais améliorer à l'oral. Ne prépare rien. Tu le réécouteras dans quelques semaines pour mesurer le chemin parcouru.",run:(el,api)=>{
-  const r=recorder(el,{max:75,label:"Enregistrer (1 minute)",onBlob:async b=>{if(await idbPut("depart",b)){M.started=true;saveM();el.insertAdjacentHTML("beforeend",`<p class="small">Enregistré sur ton appareil. Tu le retrouveras dans Communication → Thèmes.</p>`)}}});
-  api.onClean(()=>r.stop());
-}};
-const WEEKS=[
-  {n:"Souffle et posture",d:"Une voix posée vient d'un souffle maîtrisé.",ex:()=>SOUFFLE()},
-  {n:"Articulation",d:"Être compris du premier coup.",ex:()=>READ("Lecture avec un stylo","Lis le texte à voix haute avec un stylo tenu entre les dents, en articulant au maximum. Puis relis-le sans le stylo, en mesurant ton débit.",()=>TEXTS[new Date().getDate()%3])},
-  {n:"Débit",d:"Trouver la bonne vitesse : 130 à 160 mots par minute.",ex:()=>READ("Mesurer ton débit","Lis le texte comme si tu le présentais à un groupe. Appuie au début et à la fin.",()=>TEXTS[new Date().getDate()%3])},
-  {n:"Pauses",d:"Le silence donne du poids à ce que tu dis.",ex:()=>PAUSES()},
-  {n:"Intonation",d:"Sortir du ton monocorde.",ex:()=>INTO()},
-  {n:"Structurer ses idées",d:"Méthode PREP : Point, Raison, Exemple, Point.",ex:()=>PREP("Répondre avec PREP","Annonce ton avis (Point), justifie-le (Raison), illustre-le (Exemple), conclus en répétant ton avis (Point).",QUESTIONS,["Point : mon avis","Raison : pourquoi","Exemple : un cas concret","Point : je conclus"],60)},
-  {n:"Chasser les tics",d:"Remplacer « euh », « du coup », « en fait » par un silence.",ex:()=>IMPRO("Impro 2 minutes","Parle 2 minutes sans t'arrêter. Tape le bouton à chaque « euh », « du coup », « en fait ». Quand tu sens un tic arriver, tais-toi une seconde.",120)},
-  {n:"Prendre la parole",d:"Raconter avec une structure : situation, problème, solution.",ex:()=>PREP("Raconter une histoire","Plante le décor (Situation), pose le problème (Complication), raconte comment ça s'est résolu (Résolution), et termine par ce que tu en retiens.",STORIES,["Situation","Complication","Résolution","Ce que j'en retiens"],120)}
+function PREP(t,how,arr,fields,sec){return{t,how,run:(el,api)=>{
+  el.insertAdjacentHTML("beforeend",`<p class="big-text"></p><div class="row"><button class="btn sm nx">Autre sujet</button></div><div class="fields">${fields.map(f=>`<label>${f}<input placeholder="quelques mots-clés"></label>`).join("")}</div><p class="small muted">1 minute pour noter des mots-clés, puis parle ${sec>=120?"2 minutes":"1 minute"} en suivant la structure. Enregistre-toi, réécoute, refais une prise.</p><p class="eyebrow">Préparation</p>`);
+  const show=()=>el.querySelector(".big-text").textContent=pick(arr);show();el.querySelector(".nx").onclick=show;
+  timerBox(el,60,api);
+  el.insertAdjacentHTML("beforeend",`<p class="eyebrow">Prise de parole</p>`);const r=recorder(el,{max:sec+30,label:"Enregistrer ma prise"});api.onClean(()=>r.stop());
+}}}
+
+/* ---------- Programme : 14 jours qui tournent (leçon + défi liés) ---------- */
+const DAYS=[
+  {t:"Le trac est de l'énergie",x:"Le cœur qui bat, les mains moites : ton corps se prépare à l'effort. Ce n'est pas un signe que tu vas rater, c'est de l'adrénaline. Les orateurs expérimentés ont aussi le trac ; la différence, c'est qu'ils l'interprètent comme de l'énergie disponible. Deux leviers marchent tout de suite : une expiration longue, qui calme le rythme cardiaque, et une première phrase préparée mot pour mot. Le trac baisse nettement une fois les trente premières secondes passées.",k:"Expire longuement avant de parler, et connais ta première phrase par cœur.",q:"Dans quelle situation récente as-tu eu le trac ? Qu'aurait changé une première phrase préparée ?",
+   d:()=>SPEAK("Démarrage silencieux","Avant de dire un mot : 3 secondes de silence, regard droit devant (ou vers la caméra), une expiration. Puis ta première phrase, posée et audible. Parle une minute.",()=>pick(TOPICS),60)},
+  {t:"La pause, outil de pouvoir",x:"Quand on est stressé, on remplit le silence. Pourtant, une pause d'une à deux secondes après une idée importante produit l'effet inverse de ce qu'on craint : l'auditeur la perçoit comme de l'assurance, et il a le temps de comprendre. La pause sert aussi à respirer, donc à garder une voix stable. Ce qui te paraît une éternité dure à peine une seconde pour ceux qui écoutent.",k:"Après chaque idée importante : stop, une respiration, puis la suite.",q:"Pense à quelqu'un dont tu admires la façon de parler. Fait-il des pauses ?",
+   d:()=>PAUSES()},
+  {t:"Parler et chanter sur le souffle",x:"La voix, c'est de l'air qui fait vibrer les cordes vocales. Si l'air manque, la gorge compense en serrant : la voix devient tendue, aiguë, fatiguée. Le chant et la parole reposent sur le même geste : inspirer par le bas, le ventre et les côtes s'ouvrent, puis expirer de façon régulière pendant qu'on parle. C'est le soutien. Une voix soutenue porte loin sans forcer, et elle rassure : on l'entend comme posée.",k:"Inspire avant de commencer une phrase, jamais au milieu d'un mot.",q:"À quel moment ta voix se serre-t-elle : en début de phrase, à la fin, quand tu vas vite ?",
+   d:()=>PROJ()},
+  {t:"Une idée, une phrase",x:"Les phrases longues obligent l'auditeur à garder le début en mémoire pendant qu'il attend la fin. À l'oral, il n'a pas de seconde lecture. Les bons orateurs découpent : une idée par phrase, sujet-verbe-complément, puis une pause. Ça paraît simpliste à l'écrit, mais à l'oral c'est ce qui donne clarté et autorité. Si tu enchaînes « et », « mais », « donc » dans la même phrase, coupe-la.",k:"Une idée, une phrase, une pause.",q:"Comment résumerais-tu ce que tu fais dans la vie en une phrase de moins de 15 mots ?",
+   d:()=>SPEAK("Pitch 30 secondes","Trente secondes, phrases courtes, une idée par phrase. Trois prises : chacune doit être plus claire que la précédente.",()=>pick(PITCHES),30,{takes:3})},
+  {t:"PREP : répondre de façon structurée",x:"Quand on te pose une question à l'improviste, la structure PREP évite de tourner autour du pot. Point : tu donnes ta réponse tout de suite. Raison : tu expliques pourquoi. Exemple : tu illustres avec un cas concret. Point : tu reformules ta réponse pour conclure. En réunion ou en entretien, ça rassure : on sait où tu vas, et ta réponse finit par une phrase claire au lieu de s'éteindre.",k:"Commence par la réponse, finis par la réponse.",q:"Quelle question te pose-t-on souvent, à laquelle tu réponds mal ?",
+   d:()=>PREP("Répondre avec PREP","Point, Raison, Exemple, Point.",QUESTIONS,["Point : ma réponse","Raison : pourquoi","Exemple : un cas concret","Point : je conclus"],60)},
+  {t:"Les tics de langage",x:"« Euh », « du coup », « en fait », « voilà » remplissent le temps pendant que le cerveau cherche la suite. En petite quantité, ce n'est pas grave. En grand nombre, ils donnent une impression d'hésitation. On ne les supprime pas en se retenant, on les remplace : dès que tu sens un tic arriver, ferme la bouche et laisse un silence. Le simple fait de les compter les fait déjà baisser.",k:"Remplace le tic par un silence, bouche fermée.",q:"Quel est ton tic le plus fréquent ? La prise d'aujourd'hui va te le dire.",
+   d:()=>SPEAK("Impro sans tics","Parle 90 secondes sans t'arrêter. Tape le bouton à chaque tic. À la deuxième prise, vise moitié moins.",()=>pick(TOPICS),90)},
+  {t:"La mélodie de la voix",x:"Une voix monocorde fatigue l'oreille, même avec un contenu passionnant. La voix parlée a une mélodie, comme le chant : elle monte sur les questions, descend en fin d'affirmation, s'élève sur les mots importants. Travailler la justesse en chant te rend plus sensible à ces variations. Repère : en parlant avec expression, la voix varie de 3 à 5 demi-tons. En dessous de 2, on sonne plat.",k:"Monte sur le mot important, descends à la fin de l'affirmation.",q:"Quand tu racontes quelque chose qui t'enthousiasme, ta voix change-t-elle ?",
+   d:()=>INTO()},
+  {t:"Finir ses phrases vers le bas",x:"Une phrase affirmative qui finit en montant sonne comme une question : « Je pense qu'on devrait lancer le projet ? » L'auditeur entend un doute. Faire descendre la voix sur la dernière syllabe donne l'effet inverse : la phrase est terminée, assumée. C'est l'un des changements les plus rapides pour paraître sûr de soi. Descendre ne veut pas dire baisser le volume : la fin de phrase doit rester audible.",k:"Affirmation : la voix descend, le volume reste.",q:"Finis-tu tes phrases comme des questions quand tu n'es pas sûr de toi ?",
+   d:()=>AFFIRMS()},
+  {t:"Le pouvoir de l'exemple concret",x:"« La communication est importante » ne laisse aucune trace. « Le mois dernier, un client a annulé un contrat à cause d'un mail mal compris » reste en tête. Le cerveau retient les images, les personnes, les chiffres, les lieux. Chaque fois que tu avances une idée abstraite, demande-toi quel exemple, quelle histoire ou quel chiffre peut la rendre visible.",k:"Une idée abstraite a besoin d'un exemple concret.",q:"Quelle anecdote personnelle pourrait illustrer ce qui compte pour toi ?",
+   d:()=>SPEAK("Trois mots imposés","Invente une histoire de 90 secondes qui contient ces trois mots. Donne des détails concrets : un lieu, un personnage, un moment.",()=>{const w=[...WORDS].sort(()=>Math.random()-.5).slice(0,3);return w.join(" · ")},90)},
+  {t:"Expliquer simplement",x:"Si tu ne peux pas expliquer une idée à un enfant de 10 ans, c'est souvent que tu ne la maîtrises pas encore tout à fait. Simplifier n'est pas appauvrir : c'est choisir l'essentiel, éviter le jargon et utiliser des comparaisons. « Internet, c'est comme un réseau de routes entre des millions d'ordinateurs. » Une bonne comparaison vaut trois paragraphes d'explication.",k:"Trouve la comparaison qui rend l'idée évidente.",q:"Quel sujet de ton travail as-tu du mal à expliquer à tes proches ?",
+   d:()=>SPEAK("Explique à un enfant de 10 ans","Une minute, sans jargon, avec au moins une comparaison.",()=>pick(CONCEPTS),60)},
+  {t:"Penser contre soi",x:"Défendre une position que tu ne partages pas est un excellent exercice : tu dois chercher de vrais arguments au lieu de réciter tes convictions. Tu comprends mieux les objections qu'on te fera, et tu restes plus calme en débat, parce que rien ne te surprend. Les avocats et les débatteurs s'entraînent exactement comme ça.",k:"Connaître le meilleur argument adverse rend ton discours plus solide.",q:"Sur quel sujet as-tu une opinion forte ? Quel est le meilleur argument du camp opposé ?",
+   d:()=>SPEAK("Défends l'inverse","Si tu es d'accord avec cette phrase, défends le contraire. Sinon, défends-la. Une minute, avec deux arguments et un exemple.",()=>pick(OPPOSITES),60)},
+  {t:"Les 30 premières secondes",x:"L'attention de ton auditoire est maximale au début, et c'est aussi là que ton trac est le plus fort. D'où l'intérêt de préparer ton ouverture mot pour mot : une question, un chiffre étonnant, une courte anecdote. Évite de commencer par t'excuser (« je ne vais pas être long », « je ne suis pas un expert ») : tu dépenses tes meilleures secondes à baisser les attentes.",k:"Ouvre par une question, un chiffre ou une histoire. Jamais par une excuse.",q:"Comment commences-tu d'habitude quand tu prends la parole en réunion ?",
+   d:()=>SPEAK("Une ouverture qui accroche","45 secondes pour ouvrir une présentation sur ce sujet : une accroche (question, chiffre ou anecdote), puis annonce ce dont tu vas parler.",()=>pick(STORIES),45)},
+  {t:"Ralentir sur l'important",x:"Le débit idéal n'est pas constant. On peut aller assez vite sur les transitions et les détails, puis ralentir nettement sur les chiffres, les noms et les idées clés. Ce contraste attire l'attention bien mieux qu'un débit lent uniforme. Repère pour l'ensemble : 130 à 160 mots par minute, avec des ralentissements marqués là où tu veux être retenu.",k:"Ralentis sur les chiffres, les noms et les idées clés.",q:"Dans ta dernière conversation importante, quelle information aurais-tu dû ralentir ?",
+   d:()=>READ("Débit et contrastes","Lis ce discours comme devant un public. Ralentis franchement sur « vingt minutes », « huit » et « plus loin ». Lis-le deux fois.",TEXTS.bilan)},
+  {t:"Raconter une histoire",x:"Une histoire suit presque toujours le même schéma : une situation (où, quand, qui), une complication (ce qui ne se passe pas comme prévu), une résolution (comment ça s'est fini), et ce qu'on en retient. On écoute une histoire parce qu'on veut savoir comment elle finit. Elle sert partout : en entretien, en réunion, en soirée.",k:"Situation, complication, résolution, leçon.",q:"Quelle histoire vécue pourrais-tu raconter en entretien pour montrer une de tes qualités ?",
+   d:()=>PREP("Raconter une histoire vécue","Situation, complication, résolution, puis ce que tu en retiens.",STORIES,["Situation","Complication","Résolution","Ce que j'en retiens"],120)}
 ];
-async function comSeance(){
-  const hasDepart=!!(await idbGet("depart"))||M.started;
-  const W=WEEKS[M.week];
+
+/* ---------- Bilan ---------- */
+const BILAN={t:"Bilan",how:"Trente secondes pour ancrer ce que tu as appris.",run:(el,api)=>{
+  el.insertAdjacentHTML("beforeend",`<div class="row" style="justify-content:space-between"><span>Ma confiance à l'oral aujourd'hui</span><div class="stars">${[1,2,3,4,5].map(i=>`<button aria-pressed="false" aria-label="${i} sur 5">${i}</button>`).join("")}</div></div>
+    <label class="small" for="nextFocus"><b>La prochaine fois, je veux améliorer :</b></label><textarea id="nextFocus" placeholder="Ex. : faire une vraie pause après chaque idée"></textarea>`);
+  el.querySelectorAll(".stars button").forEach((b,i)=>b.onclick=()=>{el.querySelectorAll(".stars button").forEach((x,j)=>x.setAttribute("aria-pressed",j<=i));R.res.conf=i+1});
+  const ta=el.querySelector("textarea");ta.oninput=()=>{R.res.note=ta.value.trim()};
+}};
+
+/* ---------- Séance du jour ---------- */
+function dayPlan(){return DAYS[S.day%DAYS.length]}
+function seance(){
+  const D=dayPlan(),L=LEVELS[S.level-1],ex=L.ex(),pickEx=ex[S.day%ex.length];
   const steps=[
-    T("Échauffement",120,"<ul><li>Respire par le ventre, expire sur « sss » puis « fff ».</li><li>Grimaces : ouvre grand la bouche, puis serre tout le visage.</li><li>Langue : 10 cercles dans chaque sens derrière les lèvres.</li><li>Lèvres : « brrr », puis « pa-ta-ka » de plus en plus vite.</li></ul>"),
-    TWIST(),
-    W.ex(),
-    hasDepart?IMPRO("Mise en situation","Parle une minute sur le sujet, sans t'arrêter. Tape le bouton à chaque « euh ».",60):DEPART,
-    RATE
+    tag(WARM,"chant","Échauffement","1 min"),
+    tag(LESSON(D),"com","Leçon du jour","2 min"),
+    ...(S.centre==null?[tag(CALIB,"chant","Chant","1 min")]:[]),
+    tag(pickEx,"chant","Chant · niveau "+S.level,"3 min"),
+    tag(L.ep(),"chant","Chant · épreuve","2 min"),
+    tag(D.d(),"com","Défi parole","6 min"),
+    tag(BILAN,"com","Bilan","1 min")
   ];
-  startSeance("com",steps,{label:"Communication · "+W.n});
+  startSeance("day",steps,{label:"Séance"});
+}
+function placementTest(){
+  const steps=[...(S.centre==null?[CALIB]:[]),
+    HOLD("Test 1 · une note","Écoute et tiens chaque note.",[0,3],{tol:25,id:"t1",gate:70}),
+    SEQ("Test 2 · trois notes","Do-ré-mi-ré-do.",[0,2,4,2,0],{base:-2,id:"t2",gate:80}),
+    SEQ("Test 3 · cinq notes","La gamme do-ré-mi-fa-sol.",[0,2,4,5,7,5,4,2,0],{base:-4,id:"t3",gate:80}),
+    SEQ("Test 4 · sauts","Arpège do-mi-sol-do.",[0,4,7,12,7,4,0],{base:-6,id:"t4",gate:75})].map(s=>tag(s,"chant","Test de placement",""));
+  startSeance("test",steps,{label:"Test de placement"});
 }
 
 /* ================= Fin de séance ================= */
 function finish(){
   cleanup();
   const body=$("#sBody");$("#sProg").style.width="100%";$("#sFoot").hidden=true;$("#sHow").innerHTML="";body.innerHTML="";
+  $("#seance").className="screen wrap chant";
   const add=h=>body.insertAdjacentHTML("beforeend",h);
   const btn=(label,cls,fn)=>{const b=document.createElement("button");b.className="btn "+cls;b.textContent=label;b.onclick=fn;body.lastElementChild.appendChild(b)};
   if(R.kind==="test"){
     $("#sTitle").textContent="Résultat du test";
-    const r=R.res;let lv=1;
-    if(r.t1==null)lv=C.level;else if(r.t1<40)lv=1;else if(r.t1<70)lv=2;else{lv=3;if(r.t2>=80){lv=4;if(r.t3>=80){lv=5;if(r.t4>=75)lv=6}}}
-    add(`<p>Niveau conseillé : <b>${lv} · ${LEVELS[lv-1].n}</b>. ${LEVELS[lv-1].d}</p><div class="row"></div>`);
-    btn("Commencer à ce niveau","pri",()=>{C.level=lv;for(let i=1;i<lv;i++)C.passed[i]=1;saveC();location.hash=""});
-    btn("Garder le niveau "+C.level,"",()=>{location.hash=""});
+    const r=R.res;let lv;
+    if(r.t1==null)lv=S.level;else if(r.t1<40)lv=1;else if(r.t1<70)lv=2;else{lv=3;if(r.t2>=80){lv=4;if(r.t3>=80){lv=5;if(r.t4>=75)lv=6}}}
+    add(`<p>Niveau conseillé : <b>${lv} · ${LEVELS[lv-1].n}</b>.</p><div class="row"></div>`);
+    btn("Passer au niveau "+lv,"pri",()=>{S.level=lv;save();location.hash=""});
+    btn("Garder le niveau "+S.level,"",()=>{location.hash=""});
     return;
   }
-  markDone(R.kind);
+  markDone();
+  if(R.res.conf)S.conf.push({d:today(),v:R.res.conf});
+  if(R.res.note)S.notes.push({d:today(),v:R.res.note});
+  S.conf=S.conf.slice(-90);S.notes=S.notes.slice(-90);
+  const D=dayPlan();S.day++;
   $("#sTitle").textContent="Séance terminée";
-  if(R.kind==="chant"){
-    const L=LEVELS[C.level-1],ep=R.res.ep;
-    if(ep!=null){C.scores.push({d:today(),l:C.level,v:Math.round(ep)});C.scores=C.scores.slice(-60);saveC()}
-    if(ep!=null&&ep>=L.thr){
-      C.passed[C.level]=1;saveC();
-      if(C.level<6){add(`<p>Épreuve réussie (<b class="mono">${Math.round(ep)} %</b>). Tu peux passer au niveau ${C.level+1} : <b>${LEVELS[C.level].n}</b>.</p><div class="row"></div>`);
-        btn("Passer au niveau "+(C.level+1),"pri",()=>{C.level++;saveC();location.hash=""});btn("Rester encore un peu","",()=>{location.hash=""});return}
-      add(`<p>Épreuve réussie : tu as terminé le parcours. Les séances continuent sur les chansons pour garder ta justesse.</p><div class="row"></div>`);
-    }else{
-      add(`<p>${ep!=null?`Épreuve : <b class="mono">${Math.round(ep)} %</b> (objectif ${L.thr} %). Ça viendra avec la répétition.`:"Tu n'as pas fait l'épreuve aujourd'hui, ce n'est pas grave."} À demain !</p><div class="row"></div>`);
-      if(C.level<6)btn("Trop facile ? Passer au niveau "+(C.level+1),"",()=>{C.level++;saveC();location.hash=""});
-    }
-    btn("Retour à l'accueil","pri",()=>{location.hash=""});
-  }else{
-    M.sessions[M.week]=(M.sessions[M.week]||0)+1;M.started=true;saveM();
-    const n=M.sessions[M.week];
-    add(`<p>Séance ${n} sur le thème <b>${WEEKS[M.week].n}</b>. ${n>=5&&M.week<7?"Tu as fait 5 séances sur ce thème : tu peux passer au suivant.":"À demain !"}</p><div class="row"></div>`);
-    if(M.week<7)btn("Passer au thème suivant : "+WEEKS[M.week+1].n,n>=5?"pri":"",()=>{M.week++;saveM();location.hash=""});
-    btn("Retour à l'accueil",n>=5&&M.week<7?"":"pri",()=>{location.hash=""});
+  const L=LEVELS[S.level-1],ep=R.res.ep;
+  if(ep!=null){S.scores.push({d:today(),l:S.level,v:Math.round(ep)});S.scores=S.scores.slice(-60)}
+  add(`<p>Leçon du jour : <b>${D.t}</b>. À retenir : ${D.k}</p>`);
+  if(ep!=null&&ep>=L.thr&&S.level<6){
+    S.passed[S.level]=1;save();
+    add(`<p>Épreuve de chant réussie (<b class="mono">${Math.round(ep)} %</b>). Prêt pour le niveau ${S.level+1} : <b>${LEVELS[S.level].n}</b> ?</p><div class="row"></div>`);
+    btn("Passer au niveau "+(S.level+1),"pri",()=>{S.level++;save();location.hash=""});btn("Rester au niveau "+S.level,"",()=>{location.hash=""});return;
   }
+  if(ep!=null&&ep>=L.thr)S.passed[S.level]=1;
+  save();
+  add(`<p>${ep!=null?`Épreuve de chant : <b class="mono">${Math.round(ep)} %</b> (objectif ${L.thr} %).`:""} À demain : prochaine leçon, <b>${dayPlan().t}</b>.</p><div class="row"></div>`);
+  if(S.level<6)btn("Trop facile ? Niveau "+(S.level+1),"",()=>{S.level++;save();location.hash=""});
+  btn("Retour à l'accueil","pri",()=>{location.hash=""});
 }
 
 /* ================= Écrans ================= */
-function daysHtml(kind){const log=store.get("log",{});let h="";const now=new Date();for(let i=6;i>=0;i--){const d=new Date(now);d.setDate(now.getDate()-i);h+=`<i class="${(log[dkey(d)]||{})[kind]?"on":""}${i===0?" today":""}" title="${d.toLocaleDateString("fr-FR",{weekday:"long"})}"></i>`}return h}
+function daysHtml(){const log=store.get("av3:log",{});let h="";const now=new Date();for(let i=6;i>=0;i--){const d=new Date(now);d.setDate(now.getDate()-i);h+=`<i class="${log[dkey(d)]?"on":""}${i===0?" today":""}" title="${d.toLocaleDateString("fr-FR",{weekday:"long"})}"></i>`}return h}
 function renderHome(){
   $("#today").textContent=new Date().toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"});
-  const log=store.get("log",{}),t=log[today()]||{};
-  const card=(kind,cls,title,lvl,dur,progressHash,extra)=>{const s=streak(kind);return `<article class="card ${cls}">
-    <p class="eyebrow">${dur}</p><h2>${title}</h2><p class="lvl">${lvl}</p>
-    <div class="status ${t[kind]?"done":""}"><i></i>${t[kind]?"Séance du jour faite":"Séance du jour à faire"}</div>
-    <div class="card-foot"><div class="days" aria-label="7 derniers jours">${daysHtml(kind)}</div><span class="small muted">${s?"Série : "+s+" jour"+(s>1?"s":""):""}</span></div>
-    <button class="btn big pri" data-start="${kind}">${t[kind]?"Refaire la séance":"Commencer la séance"}</button>
-    <div class="row" style="justify-content:space-between"><button class="link" data-go="${progressHash}">${kind==="chant"?"Niveaux et progrès":"Thèmes et progrès"}</button>${extra||""}</div></article>`};
-  $("#cards").innerHTML=
-    card("chant","chant","Chant","Niveau "+C.level+" <span>· "+LEVELS[C.level-1].n+"</span>","15 minutes","progres-chant",(C.level===1&&!C.scores.length)?`<button class="link" data-go="test">Déjà des bases ? Test rapide</button>`:"")+
-    card("com","com","Communication","Thème "+(M.week+1)+" <span>· "+WEEKS[M.week].n+"</span>","12 minutes","progres-com","");
-  $$("[data-start]").forEach(b=>b.onclick=()=>b.dataset.start==="chant"?chantSeance():comSeance());
-  bindGo();
+  const done=!!store.get("av3:log",{})[today()],s=streak(),D=dayPlan();
+  $("#dayCard").innerHTML=`<p class="eyebrow">Séance ${S.day+1} · 15 minutes</p><h2>${esc(D.t)}</h2>
+    <ul class="plan">
+      <li><span class="m">1 min</span><span class="dot c"></span><span>Échauffement express</span></li>
+      <li><span class="m">2 min</span><span class="dot p"></span><span>Leçon : ${esc(D.t)}</span></li>
+      <li><span class="m">5 min</span><span class="dot c"></span><span>Chant · niveau ${S.level}, ${esc(LEVELS[S.level-1].n)}</span></li>
+      <li><span class="m">6 min</span><span class="dot p"></span><span>Défi parole : ${esc(D.d().t)}</span></li>
+      <li><span class="m">1 min</span><span class="dot p"></span><span>Bilan</span></li>
+    </ul>
+    <div class="status ${done?"done":""}"><i></i>${done?"Séance du jour faite":"Séance du jour à faire"}</div>
+    <div class="card-foot"><div class="days" aria-label="7 derniers jours">${daysHtml()}</div><span class="small muted">${s?"Série : "+s+" jour"+(s>1?"s":""):""}</span></div>
+    <button class="btn big pri" id="go">${done?"Faire la séance suivante":"Commencer"}</button>
+    <button class="link" data-go="parcours">Mon parcours et niveau de chant</button>`;
+  $("#go").onclick=seance;bindGo();
   if(window.matchMedia("(display-mode: standalone)").matches)$("#installTip").hidden=true;
 }
-function renderProgChant(){
-  $("#lvlList").innerHTML=LEVELS.map((L,i)=>{const n=i+1,cur=n===C.level,done=C.passed[n];
-    return `<div class="item ${cur?"cur":""}"><span class="num">${n}</span><div class="txt"><b>${L.n}</b><span>${L.d}</span></div>${cur?'<span class="pill cur">en cours</span>':`${done?'<span class="pill ok">réussi</span>':""}<button class="btn sm" data-lvl="${n}">Choisir</button>`}</div>`}).join("");
-  $$("[data-lvl]").forEach(b=>b.onclick=()=>{C.level=+b.dataset.lvl;saveC();renderProgChant()});
-  $("#cNote").textContent=C.centre!=null?nom(C.centre)+" ("+sci(C.centre)+")":"pas encore mesurée";
-  const s=C.scores.slice(-20);
-  $("#cBars").innerHTML=s.length?s.map(x=>`<i style="height:${Math.max(3,x.v)}%" title="${x.d} · niveau ${x.l} · ${x.v} %"></i>`).join(""):'<span class="small muted">Les scores des épreuves apparaîtront ici.</span>';
-  $("#cSum").textContent=s.length?"Dernière épreuve : "+s[s.length-1].v+" % (niveau "+s[s.length-1].l+")":"";
-}
-$("#cDown").onclick=()=>{C.centre=Math.max(43,(C.centre||55)-1);saveC();renderProgChant()};
-$("#cUp").onclick=()=>{C.centre=Math.min(69,(C.centre||55)+1);saveC();renderProgChant()};
-async function renderProgCom(){
-  $("#wkList").innerHTML=WEEKS.map((W,i)=>{const cur=i===M.week,n=M.sessions[i]||0;
-    return `<div class="item ${cur?"cur":""}"><span class="num">${i+1}</span><div class="txt"><b>${W.n}</b><span>${W.d}${n?" · "+n+" séance"+(n>1?"s":""):""}</span></div>${cur?'<span class="pill cur">en cours</span>':`<button class="btn sm" data-wk="${i}">Choisir</button>`}</div>`}).join("");
-  $$("[data-wk]").forEach(b=>b.onclick=()=>{M.week=+b.dataset.wk;saveM();renderProgCom()});
-  const last=a=>a.length?a[a.length-1].v:null,first=a=>a.length?a[0].v:null;
-  const rAvg=a=>a.length?(a.reduce((s,r)=>s+(r.clarte+r.aisance+r.rythme)/3,0)/a.length).toFixed(1).replace(".",","):"–";
+function renderParcours(){
+  const last=a=>a.length?a[a.length-1].v:null,avg=a=>a.length?(a.reduce((s,x)=>s+x.v,0)/a.length):null,f1=v=>v==null?"–":(Math.round(v*10)/10).toString().replace(".",",");
   $("#mStats").innerHTML=[
-    [last(M.wpm)!=null?last(M.wpm)+" mots/min":"–","dernier débit (cible 130–160)"],
-    [last(M.euh)!=null?String(last(M.euh)).replace(".",",")+" /min":"–","tics par minute"+(M.euh.length>1?" · au début "+String(first(M.euh)).replace(".",","):"")],
-    [M.souffle.length?Math.max(...M.souffle.map(x=>x.v)).toFixed(1).replace(".",",")+" s":"–","record de souffle"],
-    [last(M.into)!=null?String(last(M.into)).replace(".",",")+" dt":"–","variation de la voix (cible 3–5)"],
-    [rAvg(M.rates.slice(-5))+" / 5","auto-évaluation récente"+(M.rates.length>5?" · au début "+rAvg(M.rates.slice(0,5)):"")]
+    [S.day+"","séances faites"],
+    [f1(avg(S.conf.slice(-5)))+" / 5","confiance (5 dernières)"+(S.conf.length>5?" · au début "+f1(avg(S.conf.slice(0,5))):"")],
+    [f1(last(S.euh))+" /min","tics de langage"+(S.euh.length>1?" · au début "+f1(S.euh[0].v):"")],
+    [last(S.wpm)!=null?last(S.wpm)+" mots/min":"–","débit (cible 130–160)"],
+    [last(S.into)!=null?f1(last(S.into))+" dt":"–","mélodie de la voix (cible 3–5)"]
   ].map(x=>`<div class="stat"><b>${x[0]}</b><span>${x[1]}</span></div>`).join("");
-  const dep=$("#recDepart"),now=$("#recNow");dep.innerHTML="";now.innerHTML="";
-  const showAudio=(el,label,blob)=>{el.insertAdjacentHTML("beforeend",`<p class="small"><b>${label}</b></p>`);const au=document.createElement("audio");au.controls=true;au.src=URL.createObjectURL(blob);el.appendChild(au)};
-  const d=await idbGet("depart");
-  if(d)showAudio(dep,"Départ",d);else{dep.insertAdjacentHTML("beforeend",`<p class="small"><b>Départ</b> : pas encore enregistré.</p>`);recorder(dep,{max:75,label:"Enregistrer mon départ",onBlob:b=>{idbPut("depart",b);M.started=true;saveM()}})}
-  const n=await idbGet("actuel");
-  if(n)showAudio(now,"Dernier enregistrement",n);
-  now.insertAdjacentHTML("beforeend",`<p class="small" style="margin-top:8px"><b>Aujourd'hui</b></p>`);
-  recorder(now,{max:75,label:"Enregistrer maintenant",onBlob:b=>idbPut("actuel",b)});
+  $("#journal").innerHTML=S.notes.length?S.notes.slice(-8).reverse().map(n=>`<div><span class="mono">${n.d.slice(5).split("-").reverse().join("/")}</span><span>${esc(n.v)}</span></div>`).join(""):'<p class="small muted">Tes objectifs de fin de séance apparaîtront ici.</p>';
+  $("#lvlList").innerHTML=LEVELS.map((L,i)=>{const n=i+1,cur=n===S.level,done=S.passed[n];
+    return `<div class="item ${cur?"cur":""}"><span class="num">${n}</span><div class="txt"><b>${L.n}</b><span>${L.d}</span></div>${cur?'<span class="pill cur">actuel</span>':`${done?'<span class="pill ok">réussi</span>':""}<button class="btn sm" data-lvl="${n}">Choisir</button>`}</div>`}).join("");
+  $$("[data-lvl]").forEach(b=>b.onclick=()=>{S.level=+b.dataset.lvl;save();renderParcours()});
+  $("#cNote").textContent=S.centre!=null?nom(S.centre)+" ("+sci(S.centre)+")":"mesurée à ta première séance";
+  const sc=S.scores.slice(-20);
+  $("#cBars").innerHTML=sc.length?sc.map(x=>`<i style="height:${Math.max(3,x.v)}%" title="${x.d} · niveau ${x.l} · ${x.v} %"></i>`).join(""):'<span class="small muted">Les scores des épreuves apparaîtront ici.</span>';
+  $("#cSum").textContent=sc.length?"Dernière épreuve : "+sc[sc.length-1].v+" % (niveau "+sc[sc.length-1].l+")":"";
+  bindGo();
 }
-/* Test + diagnostic du micro : chaque étape est vérifiée et affichée */
+$("#cDown").onclick=()=>{S.centre=Math.max(43,(S.centre||55)-1);save();renderParcours()};
+$("#cUp").onclick=()=>{S.centre=Math.min(69,(S.centre||55)+1);save();renderParcours()};
+
+/* Test + diagnostic du micro */
 $("#mtGo").onclick=async()=>{
   const out=$("#mtOut");out.innerHTML="";const lines=[];let verdict="";
   const ua=navigator.userAgent,and=(ua.match(/Android [\d.]+/)||[""])[0],chr=(ua.match(/(Chrome|CriOS|Firefox|SamsungBrowser|Version)\/[\d.]+/)||[""])[0];
   const add=(ok,label,detail)=>{lines.push((ok===true?"✓ ":ok===false?"✗ ":"• ")+label+(detail?" : "+detail:""));render()};
-  const render=()=>{out.innerHTML=`<div class="meter"><i></i></div><p class="small mt-s">${verdict}</p><pre class="mono small" style="white-space:pre-wrap;margin:0;background:var(--sunk);padding:10px;border-radius:8px">${lines.join("\n")}</pre><div class="row"><button class="btn sm cp">Copier le rapport</button></div>`;
+  const render=()=>{out.innerHTML=`<div class="meter"><i></i></div><p class="small">${verdict}</p><pre class="mono small" style="white-space:pre-wrap;margin:0;background:var(--sunk);padding:10px;border-radius:8px">${lines.join("\n")}</pre><div class="row"><button class="btn sm cp">Copier le rapport</button></div>`;
     out.querySelector(".cp").onclick=()=>{const t="Atelier Voix · diagnostic micro\n"+lines.join("\n");navigator.clipboard?.writeText(t).then(()=>out.querySelector(".cp").textContent="Copié ✓",()=>{})}};
   add(null,"Appareil",(and||"?")+" · "+(chr||"?")+(/; wv\)/.test(ua)?" · navigateur intégré à une appli":""));
   add(window.isSecureContext,"Connexion sécurisée (https)",location.protocol);
@@ -848,7 +878,7 @@ $("#mtGo").onclick=async()=>{
   try{const st=await navigator.permissions.query({name:"microphone"});add(st.state!=="denied","Autorisation du navigateur",{granted:"accordée",prompt:"pas encore demandée",denied:"refusée"}[st.state]||st.state)}catch(e){add(null,"Autorisation du navigateur","inconnue")}
   const okMic=await startMic();
   if(!okMic){const e=micError||{};add(false,"Ouverture du micro",(e.name||"?")+(e.message?" – "+e.message:""));
-    verdict="Le micro n'a pas pu s'ouvrir. Copie le rapport et envoie-le moi.";render();micHelp(out,()=>$("#mtGo").click());return}
+    verdict="Le micro n'a pas pu s'ouvrir. Copie le rapport et envoie-le.";render();micHelp(out,()=>$("#mtGo").click());return}
   add(true,"Ouverture du micro","ok");
   try{const devs=(await navigator.mediaDevices.enumerateDevices()).filter(d=>d.kind==="audioinput");add(devs.length>0,"Micros détectés",String(devs.length))}catch(e){}
   try{const tr=A.stream.getAudioTracks()[0],st=tr.getSettings();add(tr.readyState==="live","Piste audio",tr.readyState+" · "+(st.sampleRate||A.ctx.sampleRate)+" Hz · gain auto "+(st.autoGainControl?"oui":"non")+(tr.muted?" · coupée par le système":""))}catch(e){}
@@ -863,25 +893,24 @@ $("#mtGo").onclick=async()=>{
   };A.fn.add(f)});
   add(max>0.003,"Son capté","niveau max "+(20*Math.log10(max+1e-9)).toFixed(0)+" dB");
   add(notes>5,"Notes reconnues",notes+" mesures");
-  verdict=notes>5?"Tout fonctionne : tu peux commencer une séance.":max>0.003?"Le micro capte du son mais je ne reconnais pas de note. Chante une voyelle tenue (« aaa ») plus près du téléphone, puis refais le test.":"Le micro est ouvert mais ne capte rien. Copie le rapport et envoie-le moi.";
+  verdict=notes>5?"Tout fonctionne.":max>0.003?"Le micro capte du son mais ne reconnaît pas de note. Chante « aaa » plus près du téléphone, puis refais le test.":"Le micro est ouvert mais ne capte rien. Copie le rapport et envoie-le.";
   render();
 };
 let libreW=null;
-$("#lStart").onclick=async()=>{if(!(await startMic())){micHelp($("#lBody"),()=>$("#lStart").click());return}$("#lStart").hidden=true;if(!libreW||!$("#lBody").firstChild){$("#lBody").innerHTML="";libreW=pitchWidget($("#lBody"),{half:12,tol:20})}};
+$("#lStart").onclick=async()=>{if(!(await startMic())){micHelp($("#lBody"),()=>$("#lStart").click());return}$("#lStart").hidden=true;if(!$("#lBody").querySelector(".pw")){libreW=pitchWidget($("#lBody"),{half:12,tol:20})}};
 
 /* ================= Navigation ================= */
 function bindGo(){$$("[data-go]").forEach(b=>b.onclick=()=>{const g=b.dataset.go;if(g==="test")placementTest();else location.hash=g})}
-const SCREENS=["home","seance","progres-chant","progres-com","libre"];
+const SCREENS=["home","seance","parcours","libre"];
 function route(){
   let h=location.hash.slice(1);
   if(h==="seance"&&!R.steps.length)h="";
   if(h!=="seance")cleanup();
-  const id=h||"home";const sc=SCREENS.includes(id)?id:"home";
+  const sc=SCREENS.includes(h)?h:"home";
   SCREENS.forEach(s=>$("#"+s).hidden=s!==sc);
   if(sc==="home")renderHome();
-  if(sc==="progres-chant")renderProgChant();
-  if(sc==="progres-com")renderProgCom();
-  if(sc==="libre"&&A.on&&!$("#lBody").firstChild){$("#lStart").hidden=true;libreW=pitchWidget($("#lBody"),{half:12,tol:20})}
+  if(sc==="parcours")renderParcours();
+  if(sc==="libre"&&A.on&&!$("#lBody").querySelector(".pw")){$("#lStart").hidden=true;libreW=pitchWidget($("#lBody"),{half:12,tol:20})}
   if(sc!=="seance"&&wakeLock){wakeLock.release().catch(()=>{});wakeLock=null}
   window.scrollTo({top:0});
 }
