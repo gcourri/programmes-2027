@@ -116,6 +116,10 @@ details.box[open] summary{margin-bottom:10px}
 textarea{width:100%;min-height:70px;resize:vertical;background:var(--surface);border:1.5px solid var(--line);border-radius:8px;padding:8px 10px}
 .yesterday{background:var(--com-soft);border-radius:10px;padding:10px 12px;font-size:.95rem}
 
+details.deep{background:var(--sunk);border-radius:10px;padding:10px 14px}
+details.deep summary{cursor:pointer;font-weight:600}
+details.deep[open] summary{margin-bottom:8px}
+details.deep ul{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px}
 /* Pitch widget */
 .pw{display:flex;flex-direction:column;gap:8px}
 .pw-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
@@ -222,6 +226,11 @@ audio{width:100%}
 <section class="screen wrap" id="parcours" hidden>
   <div class="s-top"><button class="btn sm" data-go="">← Accueil</button></div>
   <h1 class="h-title">Mon parcours</h1>
+  <div class="panel com">
+    <h3>Leçons de prise de parole</h3>
+    <p class="small muted">Chaque leçon dure 2 ou 3 séances : la première avec plus de théorie, les suivantes avec plus de pratique. Tu peux en choisir une à tout moment.</p>
+    <div class="list" id="modList"></div>
+  </div>
   <div class="panel">
     <h3>Ma progression à l'oral</h3>
     <div class="stats" id="mStats"></div>
@@ -284,7 +293,8 @@ const isBlack=m=>[1,3,6,8,10].includes(pc(m));
 
 /* ================= État ================= */
 const old=store.get("av2:chant",null);
-const S=Object.assign({level:Math.max(4,old?old.level:4),centre:old?old.centre:null,scores:[],passed:{1:1,2:1,3:1},day:0,wpm:[],euh:[],conf:[],notes:[],into:[]},store.get("av3",{}));
+const S=Object.assign({level:Math.max(4,old?old.level:4),centre:old?old.centre:null,scores:[],passed:{1:1,2:1,3:1},day:0,wpm:[],euh:[],conf:[],notes:[],into:[],mod:0,sess:0},store.get("av3",{}));
+if(!S.v4){S.v4=1;S.level=Math.max(5,S.level||5);S.passed[4]=1;store.set("av3",S)}
 if(!(S.level>=1&&S.level<=6))S.level=4;
 const save=()=>store.set("av3",S);
 function markDone(){const log=store.get("av3:log",{});log[today()]=1;store.set("av3:log",log)}
@@ -482,24 +492,6 @@ function timerBox(el,sec,api,onStart){
   api.onClean(()=>clearInterval(iv));
 }
 
-/* ---------- Échauffement : 1 minute, 3 phases ---------- */
-const WARM={t:"Échauffement express",id:"warm",how:"Une minute, trois gestes. Debout si possible, épaules basses.",run:(el,api)=>{
-  const P=[["Souffle","Inspire 4 s par le ventre, expire 8 s sur un « sss » régulier. Deux fois."],["Lèvres","Trilles de lèvres (« brrr ») en sirène : du grave à l'aigu, puis retour. Sans forcer."],["Articulation","« pa-ta-ka, pa-ta-ka » de plus en plus vite, bouche très mobile."]];
-  el.insertAdjacentHTML("beforeend",`<div class="phases">${P.map(()=>"<i></i>").join("")}</div><p class="eyebrow ph-n">${P[0][0]}</p><p class="phase">${P[0][1]}</p>`);
-  const bars=[...el.querySelectorAll(".phases i")];let cur=-1;
-  const set=i=>{if(i===cur||i>2)return;cur=i;bars.forEach((b,j)=>b.classList.toggle("on",j<=i));el.querySelector(".ph-n").textContent=P[i][0];el.querySelector(".phase").textContent=P[i][1];if(i>0)beep()};
-  let t0=0,iv=null;
-  timerBox(el,60,api,()=>{if(!t0){t0=nowS();set(0);iv=setInterval(()=>{if(!api.alive()){clearInterval(iv);return}set(Math.floor((nowS()-t0)/20))},250);api.onClean(()=>clearInterval(iv))}});
-}};
-
-/* ---------- Leçon du jour ---------- */
-function LESSON(L){return{t:L.t,how:"",run:(el)=>{
-  const last=S.notes.length?S.notes[S.notes.length-1]:null;
-  el.insertAdjacentHTML("beforeend",
-    (last&&last.d!==today()?`<p class="yesterday">La dernière fois, tu voulais améliorer : <b>${esc(last.v)}</b></p>`:"")+
-    `<p class="lesson">${L.x}</p><p class="keep">${L.k}</p><div class="question"><b>À réfléchir</b>${L.q}</div>`);
-}}}
-
 /* ---------- Chant ---------- */
 function HOLD(t,how,rel,{tol=25,sec=4,id,gate,base=0}={}){
   return{t,how,id,gate,run:(el,api)=>{
@@ -598,7 +590,7 @@ const SONGS={
   jacques:{n:"Frère Jacques",r:[0,2,4,0,0,2,4,0,4,5,7,4,5,7]},
   maman:{n:"Ah ! vous dirai-je, maman",r:[0,0,7,7,9,9,7,5,5,4,4,2,2,0]}
 };
-const GENTLE="Commence à volume moyen : ce premier exercice termine ton échauffement. ";
+const GENTLE="Pas d'échauffement séparé : fais 20 secondes de trilles de lèvres (« brrr ») en sirène, puis commence à volume moyen. ";
 /* Chaque niveau : [exercice (alterne selon le jour), épreuve] */
 const LEVELS=[
   {n:"Trouver ta voix",d:"Fredonner et tenir une note, marge large.",thr:60,
@@ -760,21 +752,63 @@ const BILAN={t:"Bilan",how:"Trente secondes pour ancrer ce que tu as appris.",ru
   const ta=el.querySelector("textarea");ta.oninput=()=>{R.res.note=ta.value.trim()};
 }};
 
-/* ---------- Séance du jour ---------- */
-function dayPlan(){return DAYS[S.day%DAYS.length]}
+/* ---------- Leçons de parole : progression ---------- */
+const NUM3=["Présente ton année en trois chiffres","Présente ta ville en trois chiffres","Présente ton métier ou tes études en trois chiffres","Présente un projet en trois chiffres","Présente ton sport ou ta passion en trois chiffres"];
+const SP=(t,how,arr,sec,o)=>()=>SPEAK(t,how,typeof arr==="function"?arr:()=>pick(arr),sec,o);
+const MODS=[
+  {L:DAYS[0],n:2,deep:"<ul><li><b>Respiration carrée</b> : inspire 4 s, bloque 4 s, expire 4 s, bloque 4 s. Trois cycles avant de parler.</li><li><b>Posture</b> : pieds ancrés, poids réparti, mains visibles. Un corps stable envoie un signal de calme au cerveau.</li><li><b>Prépare la première et la dernière phrase</b> mot pour mot : le milieu suit plus facilement.</li><li><b>Dans la vraie vie cette semaine</b> : prends la parole en premier en réunion ou à table, même pour une phrase.</li></ul>",
+   ex:[()=>DAYS[0].d(),SP("Présente-toi en 45 secondes","Démarrage silencieux, première phrase préparée, regard droit devant. Deux prises.",["Présente-toi comme au début d'un entretien","Présente-toi à un nouveau groupe d'amis","Présente-toi au début d'une réunion avec des inconnus"],45)]},
+  {L:DAYS[2],n:2,deep:"<ul><li><b>Le soutien</b>, c'est une expiration contrôlée : le ventre rentre doucement pendant que tu parles, au lieu de tout lâcher d'un coup.</li><li><b>La paille</b> : souffle dans une paille en faisant « ou » sur une sirène. C'est l'exercice préféré des chanteurs pour placer la voix sans forcer.</li><li><b>Les épaules</b> ne bougent pas à l'inspiration. Si elles montent, l'air ne descend pas assez.</li><li><b>Dans la vraie vie</b> : lis 2 minutes à voix haute en respirant uniquement aux points.</li></ul>",
+   ex:[()=>PROJ(),()=>PAUSES()]},
+  {L:DAYS[1],n:2,deep:"<ul><li><b>Trois pauses utiles</b> : avant un mot important (suspense), après une idée (laisser résonner), entre deux parties (transition).</li><li><b>Regarde ton auditoire pendant la pause</b> : c'est ce qui la rend assurée plutôt qu'hésitante.</li><li><b>Dans la vraie vie</b> : attends une seconde avant de répondre à une question. Ta réponse paraîtra réfléchie.</li></ul>",
+   ex:[()=>PAUSES(),SP("Impro avec trois pauses","Parle une minute. Place au moins trois vraies pauses de deux secondes, en regardant devant toi.",TOPICS,60,{euh:false})]},
+  {L:DAYS[5],n:3,deep:"<ul><li><b>D'où viennent les tics</b> : de la peur du silence, et d'une pensée qui court derrière la parole. Ralentir les réduit déjà.</li><li><b>Remplace les faux liens</b> : « du coup », « en fait » deviennent « ensuite », « par exemple », « en résumé ».</li><li><b>Connaître sa structure</b> réduit les tics : quand on sait où on va, on hésite moins.</li><li><b>Dans la vraie vie</b> : demande à un proche de lever la main à chaque « euh » pendant 2 minutes de conversation.</li></ul>",
+   ex:[()=>DAYS[5].d(),SP("Impro 2 minutes sans tics","Deux minutes, objectif : moins de 2 tics par minute. Ralentis plutôt que de remplir.",TOPICS,120)]},
+  {L:DAYS[3],n:2,deep:"<ul><li><b>Règle des 15 mots</b> : à l'oral, au-delà, coupe.</li><li><b>Supprime les amortisseurs</b> : « je pense que », « un petit peu », « en quelque sorte » affaiblissent ton message.</li><li><b>Des verbes d'action</b> plutôt que des noms : « on a réduit » plutôt que « il y a eu une réduction ».</li><li><b>Dans la vraie vie</b> : avant ton prochain message vocal, écris-le en trois phrases.</li></ul>",
+   ex:[()=>DAYS[3].d(),()=>DAYS[9].d()]},
+  {L:DAYS[7],n:2,deep:"<ul><li><b>La voix qui monte</b> en fin d'affirmation est une demande d'approbation : « c'est bien, hein ? »</li><li><b>Exceptions</b> : les vraies questions, et les énumérations (la voix monte à chaque élément, sauf le dernier, qui descend).</li><li><b>Combine avec une pause</b> : phrase qui descend + silence = autorité.</li><li><b>Dans la vraie vie</b> : en réunion, formule une proposition sans « peut-être », voix descendante.</li></ul>",
+   ex:[()=>AFFIRMS(),SP("Avis tranché","Donne ton avis en une minute. Chaque phrase affirmative descend à la fin. Aucun « peut-être », aucun « je sais pas ».",QUESTIONS,60)]},
+  {L:DAYS[6],n:2,deep:"<ul><li><b>Quatre leviers</b> : hauteur, volume, vitesse, pause. Varie-en un seul à la fois pour commencer.</li><li><b>Le lien avec le chant</b> : chanter élargit la plage de notes que ta voix utilise à l'oral, sans effort.</li><li><b>Dans la vraie vie</b> : lis une histoire à voix haute à un enfant, ou enregistre-toi en racontant ta journée avec exagération.</li></ul>",
+   ex:[()=>INTO(),SP("Raconter avec expression","Raconte ce souvenir en 90 secondes, en exagérant la mélodie : monte sur les moments forts, ralentis sur le suspense.",STORIES,90,{euh:false})]},
+  {L:DAYS[12],n:2,deep:"<ul><li><b>Les chiffres</b> : annonce-les (« un chiffre : »), dis-les lentement, puis traduis-les en image (« huit minutes, moins qu'un café »).</li><li><b>Une idée clé</b> = ralentir + pause + regard.</li><li><b>Dans la vraie vie</b> : la prochaine fois que tu donnes un chiffre, répète-le une deuxième fois.</li></ul>",
+   ex:[()=>DAYS[12].d(),SP("Trois chiffres","Une minute. Ralentis franchement sur chaque chiffre, puis donne-lui une image.",NUM3,60)]},
+  {L:DAYS[4],n:3,deep:"<ul><li><b>En entretien</b>, la méthode STAR : Situation, Tâche, Action, Résultat. Même logique, pour raconter une expérience.</li><li><b>Si tu n'as pas d'avis</b>, dis-le clairement et donne tes critères : « Ça dépend de deux choses… »</li><li><b>Dans la vraie vie</b> : réponds à la prochaine question qu'on te pose en réunion avec PREP.</li></ul>",
+   ex:[()=>DAYS[4].d(),SP("PREP sans préparation","Pas de temps de préparation : réponds tout de suite avec PREP, en une minute.",QUESTIONS,60)]},
+  {L:DAYS[8],n:2,deep:"<ul><li><b>Quatre types d'exemples</b> : une anecdote vécue, un chiffre, une comparaison, un cas concret.</li><li><b>Un détail précis</b> rend l'exemple vivant : « un mardi, à 7 h, sous la pluie ».</li><li><b>Règle des 30 secondes</b> : une idée abstraite doit être suivie d'un exemple en moins de 30 secondes.</li><li><b>Dans la vraie vie</b> : illustre ton avis par une histoire vécue lors d'une discussion.</li></ul>",
+   ex:[()=>DAYS[8].d(),SP("Idée + exemple","Donne ton avis en une minute, puis illustre-le par un exemple concret avec au moins un détail précis.",QUESTIONS,60)]},
+  {L:DAYS[9],n:2,deep:"<ul><li><b>Technique Feynman</b> : explique, repère où tu bloques, simplifie, recommence.</li><li><b>Structure</b> : à quoi ça sert, comment ça marche, un exemple.</li><li><b>Dans la vraie vie</b> : explique ton travail à un proche en une minute, puis demande-lui de te le réexpliquer.</li></ul>",
+   ex:[()=>DAYS[9].d(),SP("Expliquer en 90 secondes","Même exercice, plus long : à quoi ça sert, comment ça marche, un exemple, une comparaison.",CONCEPTS,90)]},
+  {L:DAYS[11],n:2,deep:"<ul><li><b>Quatre ouvertures</b> : une question, un chiffre, une anecdote, une affirmation forte.</li><li><b>Après l'accroche</b> : la promesse (ce que l'auditoire va y gagner) et le plan en trois points.</li><li><b>La conclusion</b> reprend l'accroche : la boucle est bouclée.</li><li><b>Dans la vraie vie</b> : prépare l'ouverture de ta prochaine réunion ou présentation.</li></ul>",
+   ex:[()=>DAYS[11].d(),SP("Ouverture + plan","90 secondes : accroche, promesse, plan en trois points, puis développe le premier point.",STORIES,90)]},
+  {L:DAYS[10],n:2,deep:"<ul><li><b>Reformule avant de répondre</b> : « Si je comprends bien, tu dis que… » Ça calme le débat et montre que tu écoutes.</li><li><b>Concéder un point</b> renforce ta crédibilité sur les autres.</li><li><b>En désaccord</b>, ralentis et baisse légèrement la voix : c'est le contraire de l'escalade.</li><li><b>Dans la vraie vie</b> : lors d'un désaccord, reformule avant de répondre.</li></ul>",
+   ex:[()=>DAYS[10].d(),SP("Pour, puis contre","90 secondes : 45 secondes pour, 45 secondes contre, avec une phrase de transition nette au milieu.",OPPOSITES,90)]},
+  {L:DAYS[13],n:3,deep:"<ul><li><b>Commence au milieu de l'action</b> : « J'étais sur le quai, le train partait… »</li><li><b>Un dialogue au présent</b> rend la scène vivante : « Et là, il me dit : … »</li><li><b>La chute</b> tient en une phrase.</li><li><b>Dans la vraie vie</b> : raconte une anecdote à table avec cette structure.</li></ul>",
+   ex:[()=>DAYS[13].d(),SP("Histoire sans préparation","Deux minutes, sans préparation : situation, complication, résolution, leçon.",STORIES,120)]},
+  {L:{t:"Tout assembler",x:"Tu as maintenant les outils : une ouverture préparée, des phrases courtes, des pauses, des fins de phrases affirmatives, des exemples concrets, une structure. Cette leçon se répète : chaque séance est une prise de parole complète, que tu écoutes et corriges point par point. C'est l'entraînement des orateurs : répéter, s'écouter, corriger un point à la fois.",k:"Ouverture, structure, exemple, conclusion. Et des pauses.",q:"Quelle prise de parole réelle as-tu dans les prochaines semaines ? Entraîne-toi dessus."},n:9999,
+   deep:"<ul><li><b>Grille</b> : l'ouverture accroche-t-elle ? La structure est-elle claire ? Y a-t-il un exemple ? Des pauses ? Les fins de phrases descendent-elles ? La conclusion reprend-elle l'ouverture ?</li><li><b>Dans la vraie vie</b> : propose de présenter un sujet en réunion ou à des amis.</li></ul>",
+   ex:[()=>DAYS[13].d(),SP("Prise de parole de 2 minutes","Deux minutes complètes : ouverture, trois points, un exemple, conclusion qui reprend l'ouverture.",TOPICS,120),SP("Défends ta position","Deux minutes pour convaincre, avec PREP et un exemple.",QUESTIONS,120)]}
+];
+const yesterday=()=>{const l=S.notes.length?S.notes[S.notes.length-1]:null;return l&&l.d!==today()?`<p class="yesterday">La dernière fois, tu voulais améliorer : <b>${esc(l.v)}</b></p>`:""};
+function LESSON(M){return{t:M.L.t,run:el=>{el.insertAdjacentHTML("beforeend",yesterday()+`<p class="lesson">${M.L.x}</p><p class="keep">${M.L.k}</p><div class="question"><b>À réfléchir</b>${M.L.q}</div><details class="deep"><summary>Approfondir (si tu as le temps)</summary>${M.deep}</details>`)}}}
+function RAPPEL(M,k){return{t:M.L.t,run:el=>{el.insertAdjacentHTML("beforeend",yesterday()+`<p class="keep">${M.L.k}</p><p class="small muted">Séance ${k+1}${M.n<99?" sur "+M.n:""} de cette leçon : place à la pratique.</p><details class="deep"><summary>Relire la leçon</summary><p class="lesson">${M.L.x}</p></details><details class="deep"><summary>Approfondir</summary>${M.deep}</details>`)}}}
+function parolePlan(){
+  const M=MODS[S.mod],k=S.sess;
+  if(k===0)return[tag(LESSON(M),"com","Parole · leçon","3 min"),tag(M.ex[0](),"com","Parole · exercice","6 min")];
+  const e=M.ex,i1=(2*k-1)%e.length,i2=(2*k)%e.length;
+  return[tag(RAPPEL(M,k),"com","Parole · rappel","30 s"),tag(e[i1](),"com","Parole · exercice 1","4 min"),...(i2!==i1?[tag(e[i2](),"com","Parole · exercice 2","4 min")]:[])];
+}
 function seance(){
-  const D=dayPlan(),L=LEVELS[S.level-1],ex=L.ex(),pickEx=ex[S.day%ex.length];
+  const L=LEVELS[S.level-1],ex=L.ex(),ce=ex[S.day%ex.length];
   const steps=[
-    tag(WARM,"chant","Échauffement","1 min"),
-    tag(LESSON(D),"com","Leçon du jour","2 min"),
     ...(S.centre==null?[tag(CALIB,"chant","Chant","1 min")]:[]),
-    tag(pickEx,"chant","Chant · niveau "+S.level,"3 min"),
-    tag(L.ep(),"chant","Chant · épreuve","2 min"),
-    tag(D.d(),"com","Défi parole","6 min"),
-    tag(BILAN,"com","Bilan","1 min")
+    tag(ce,"chant","Chant · niveau "+S.level,"2 min 30"),
+    tag(L.ep(),"chant","Chant · épreuve","2 min 30"),
+    ...parolePlan(),
+    tag(BILAN,"com","Bilan","30 s")
   ];
   startSeance("day",steps,{label:"Séance"});
 }
+function nextLesson(){if(S.mod<MODS.length-1){S.mod++;S.sess=0;save()}}
 function placementTest(){
   const steps=[...(S.centre==null?[CALIB]:[]),
     HOLD("Test 1 · une note","Écoute et tiens chaque note.",[0,3],{tol:25,id:"t1",gate:70}),
@@ -790,58 +824,65 @@ function finish(){
   const body=$("#sBody");$("#sProg").style.width="100%";$("#sFoot").hidden=true;$("#sHow").innerHTML="";body.innerHTML="";
   $("#seance").className="screen wrap chant";
   const add=h=>body.insertAdjacentHTML("beforeend",h);
+  const row=()=>add('<div class="row"></div>');
   const btn=(label,cls,fn)=>{const b=document.createElement("button");b.className="btn "+cls;b.textContent=label;b.onclick=fn;body.lastElementChild.appendChild(b)};
   if(R.kind==="test"){
     $("#sTitle").textContent="Résultat du test";
     const r=R.res;let lv;
     if(r.t1==null)lv=S.level;else if(r.t1<40)lv=1;else if(r.t1<70)lv=2;else{lv=3;if(r.t2>=80){lv=4;if(r.t3>=80){lv=5;if(r.t4>=75)lv=6}}}
-    add(`<p>Niveau conseillé : <b>${lv} · ${LEVELS[lv-1].n}</b>.</p><div class="row"></div>`);
+    add(`<p>Niveau conseillé : <b>${lv} · ${LEVELS[lv-1].n}</b>.</p>`);row();
     btn("Passer au niveau "+lv,"pri",()=>{S.level=lv;save();location.hash=""});
     btn("Garder le niveau "+S.level,"",()=>{location.hash=""});
     return;
   }
-  markDone();
+  markDone();S.day++;
   if(R.res.conf)S.conf.push({d:today(),v:R.res.conf});
   if(R.res.note)S.notes.push({d:today(),v:R.res.note});
   S.conf=S.conf.slice(-90);S.notes=S.notes.slice(-90);
-  const D=dayPlan();S.day++;
   $("#sTitle").textContent="Séance terminée";
+  /* chant */
   const L=LEVELS[S.level-1],ep=R.res.ep;
-  if(ep!=null){S.scores.push({d:today(),l:S.level,v:Math.round(ep)});S.scores=S.scores.slice(-60)}
-  add(`<p>Leçon du jour : <b>${D.t}</b>. À retenir : ${D.k}</p>`);
-  if(ep!=null&&ep>=L.thr&&S.level<6){
-    S.passed[S.level]=1;save();
-    add(`<p>Épreuve de chant réussie (<b class="mono">${Math.round(ep)} %</b>). Prêt pour le niveau ${S.level+1} : <b>${LEVELS[S.level].n}</b> ?</p><div class="row"></div>`);
-    btn("Passer au niveau "+(S.level+1),"pri",()=>{S.level++;save();location.hash=""});btn("Rester au niveau "+S.level,"",()=>{location.hash=""});return;
+  if(ep!=null){S.scores.push({d:today(),l:S.level,v:Math.round(ep)});S.scores=S.scores.slice(-60);if(ep>=L.thr)S.passed[S.level]=1}
+  if(ep!=null)add(`<p><b>Chant</b> : épreuve à <b class="mono">${Math.round(ep)} %</b> (objectif ${L.thr} %).</p>`);
+  if(ep!=null&&ep>=L.thr&&S.level<6){row();btn("Passer au niveau "+(S.level+1)+" : "+LEVELS[S.level].n,"pri",function(){S.level++;save();this.disabled=true;this.textContent="Niveau "+S.level+" activé"})}
+  /* parole */
+  const M=MODS[S.mod];S.sess++;
+  if(S.sess>=M.n&&S.mod<MODS.length-1){
+    const prev=S.mod;S.mod++;S.sess=0;
+    add(`<p><b>Parole</b> : leçon « ${M.L.t} » terminée. Prochaine séance : <b>${MODS[S.mod].L.t}</b>.</p>`);row();
+    btn("Rester une séance de plus sur « "+M.L.t+" »","",function(){S.mod=prev;S.sess=M.n-1;save();this.disabled=true;this.textContent="D'accord, encore une séance"});
+  }else{
+    add(`<p><b>Parole</b> : prochaine séance, encore de la pratique sur « ${M.L.t} »${M.n<99?" ("+(S.sess+1)+"/"+M.n+")":""}.</p>`);
+    if(S.mod<MODS.length-1){row();btn("Passer à la leçon suivante : "+MODS[S.mod+1].L.t,"",function(){nextLesson();this.disabled=true;this.textContent="Leçon suivante activée"})}
   }
-  if(ep!=null&&ep>=L.thr)S.passed[S.level]=1;
   save();
-  add(`<p>${ep!=null?`Épreuve de chant : <b class="mono">${Math.round(ep)} %</b> (objectif ${L.thr} %).`:""} À demain : prochaine leçon, <b>${dayPlan().t}</b>.</p><div class="row"></div>`);
-  if(S.level<6)btn("Trop facile ? Niveau "+(S.level+1),"",()=>{S.level++;save();location.hash=""});
-  btn("Retour à l'accueil","pri",()=>{location.hash=""});
+  row();btn("Retour à l'accueil","pri",()=>{location.hash=""});
 }
 
 /* ================= Écrans ================= */
 function daysHtml(){const log=store.get("av3:log",{});let h="";const now=new Date();for(let i=6;i>=0;i--){const d=new Date(now);d.setDate(now.getDate()-i);h+=`<i class="${log[dkey(d)]?"on":""}${i===0?" today":""}" title="${d.toLocaleDateString("fr-FR",{weekday:"long"})}"></i>`}return h}
 function renderHome(){
   $("#today").textContent=new Date().toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"});
-  const done=!!store.get("av3:log",{})[today()],s=streak(),D=dayPlan();
-  $("#dayCard").innerHTML=`<p class="eyebrow">Séance ${S.day+1} · 15 minutes</p><h2>${esc(D.t)}</h2>
+  const done=!!store.get("av3:log",{})[today()],st=streak(),M=MODS[S.mod],k=S.sess;
+  const parts=k===0?[["3 min","Leçon : "+M.L.t],["6 min","Exercice : "+M.ex[0]().t]]:[["30 s","Rappel : "+M.L.t],["9 min","Exercices de pratique"]];
+  $("#dayCard").innerHTML=`<p class="eyebrow">Séance ${S.day+1} · 15 minutes</p><h2>${esc(M.L.t)}</h2>
+    <p class="small muted">Leçon ${S.mod+1} sur ${MODS.length} · ${k===0?"découverte":"pratique, séance "+(k+1)+(M.n<99?" sur "+M.n:"")}</p>
     <ul class="plan">
-      <li><span class="m">1 min</span><span class="dot c"></span><span>Échauffement express</span></li>
-      <li><span class="m">2 min</span><span class="dot p"></span><span>Leçon : ${esc(D.t)}</span></li>
       <li><span class="m">5 min</span><span class="dot c"></span><span>Chant · niveau ${S.level}, ${esc(LEVELS[S.level-1].n)}</span></li>
-      <li><span class="m">6 min</span><span class="dot p"></span><span>Défi parole : ${esc(D.d().t)}</span></li>
-      <li><span class="m">1 min</span><span class="dot p"></span><span>Bilan</span></li>
+      ${parts.map(p=>`<li><span class="m">${p[0]}</span><span class="dot p"></span><span>${esc(p[1])}</span></li>`).join("")}
+      <li><span class="m">30 s</span><span class="dot p"></span><span>Bilan</span></li>
     </ul>
     <div class="status ${done?"done":""}"><i></i>${done?"Séance du jour faite":"Séance du jour à faire"}</div>
-    <div class="card-foot"><div class="days" aria-label="7 derniers jours">${daysHtml()}</div><span class="small muted">${s?"Série : "+s+" jour"+(s>1?"s":""):""}</span></div>
-    <button class="btn big pri" id="go">${done?"Faire la séance suivante":"Commencer"}</button>
-    <button class="link" data-go="parcours">Mon parcours et niveau de chant</button>`;
-  $("#go").onclick=seance;bindGo();
+    <div class="card-foot"><div class="days" aria-label="7 derniers jours">${daysHtml()}</div><span class="small muted">${st?"Série : "+st+" jour"+(st>1?"s":""):""}</span></div>
+    <button class="btn big pri" id="go">${done?"Faire une autre séance":"Commencer"}</button>
+    <div class="row" style="justify-content:space-between">${S.mod<MODS.length-1?`<button class="link" id="skip">Passer à la leçon suivante →</button>`:"<span></span>"}<button class="link" data-go="parcours">Mon parcours</button></div>`;
+  $("#go").onclick=seance;const sk=$("#skip");if(sk)sk.onclick=()=>{nextLesson();renderHome()};bindGo();
   if(window.matchMedia("(display-mode: standalone)").matches)$("#installTip").hidden=true;
 }
 function renderParcours(){
+  $("#modList").innerHTML=MODS.map((M,i)=>{const cur=i===S.mod,done=i<S.mod;
+    return `<div class="item ${cur?"cur":""}" style="${cur?"border-color:var(--com);box-shadow:inset 4px 0 0 var(--com)":""}"><span class="num">${i+1}</span><div class="txt"><b>${esc(M.L.t)}</b><span>${esc(M.L.k)}</span></div>${cur?'<span class="pill" style="background:var(--com);color:var(--bg)">actuelle</span>':`${done?'<span class="pill ok">vue</span>':""}<button class="btn sm" data-mod="${i}">Choisir</button>`}</div>`}).join("");
+  $$("[data-mod]").forEach(b=>b.onclick=()=>{S.mod=+b.dataset.mod;S.sess=0;save();renderParcours()});
   const last=a=>a.length?a[a.length-1].v:null,avg=a=>a.length?(a.reduce((s,x)=>s+x.v,0)/a.length):null,f1=v=>v==null?"–":(Math.round(v*10)/10).toString().replace(".",",");
   $("#mStats").innerHTML=[
     [S.day+"","séances faites"],
