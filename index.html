@@ -44,45 +44,51 @@ button:focus-visible,summary:focus-visible,input:focus-visible,a:focus-visible{o
 .eyebrow{font-family:var(--mono);font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0}
 
 /* Home */
-.home{padding-block:44px 64px;display:flex;flex-direction:column;gap:22px}
-.home h1{font-family:var(--display);font-weight:800;font-size:clamp(2rem,6.5vw,3.2rem);line-height:1.02;letter-spacing:-.02em;margin:0;text-wrap:balance}
-.modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
-.mode{text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:6px;min-width:0}
-.mode b{font-family:var(--display);font-weight:800;font-size:1.15rem;display:flex;align-items:center;gap:10px}
-.mode b::before{content:"";width:14px;height:14px;border-radius:50%;border:2px solid var(--muted);flex:0 0 auto}
-.mode span{font-size:.95rem;color:var(--muted);line-height:1.45}
-.mode:hover{border-color:var(--muted)}
-.mode[aria-checked="true"]{border-color:var(--ink)}
-.mode[aria-checked="true"] b::before{border-color:var(--ink);background:radial-gradient(circle,var(--ink) 0 40%,transparent 45%)}
-.picker{display:flex;flex-direction:column;gap:12px}
-.picker .lab{font-family:var(--display);font-weight:700;font-size:.95rem;margin:0}
-.ballots{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}
-.ballot{display:flex;align-items:center;gap:10px;background:var(--surface);border:1.5px solid var(--line);border-radius:6px;padding:10px 12px;font-family:var(--display);font-weight:700;font-size:.95rem;line-height:1.2;text-align:left;min-width:0}
-.ballot small{display:block;font-weight:500;font-size:.78rem;color:var(--muted);margin-top:2px}
-.ballot .sw{width:16px;height:16px;border-radius:3px;border:2px solid var(--p);flex:0 0 auto}
-.ballot[aria-pressed="true"]{border-color:var(--p)}
+.home{padding-block:36px 56px;display:flex;flex-direction:column;gap:28px}
+.home h1{font-family:var(--display);font-weight:800;font-size:clamp(2rem,6.5vw,3rem);line-height:1.02;letter-spacing:-.02em;margin:0}
+.grp{display:flex;flex-direction:column;gap:10px}
+.ghead{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.ballots{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
+.ballot{display:flex;align-items:center;gap:10px;background:var(--surface);border:1.5px solid var(--line);border-radius:8px;padding:14px 12px;font-family:var(--display);font-weight:700;font-size:.98rem;line-height:1.2;text-align:left;min-width:0;opacity:.6;transition:opacity .15s,border-color .15s}
+.ballot .sw{width:18px;height:18px;border-radius:4px;border:2px solid var(--p);flex:0 0 auto;display:grid;place-items:center}
+.ballot[aria-pressed="true"]{border-color:var(--p);opacity:1}
 .ballot[aria-pressed="true"] .sw{background:var(--p)}
-.ballot .slot{margin-left:auto;font-family:var(--mono);font-size:.72rem;font-weight:500;background:var(--p);color:var(--surface);border-radius:3px;padding:1px 6px}
-.ballot:hover{border-color:var(--p)}
-.vsbar{display:grid;grid-template-columns:1fr auto 1fr;align-items:stretch;gap:10px}
-.vss{border-radius:6px;padding:12px 14px;font-family:var(--display);font-weight:800;font-size:1.1rem;line-height:1.2;background:var(--surface);border:1.5px dashed var(--line);color:var(--muted);min-width:0;display:flex;align-items:center}
-.vss.on{border:0;border-top:5px solid var(--p);color:var(--ink)}
-.vss:last-child{justify-content:flex-end;text-align:right}
-.vsx{align-self:center;font-family:var(--mono);font-size:.8rem;color:var(--muted)}
-.go{align-self:flex-start;font-family:var(--display);font-weight:800;font-size:1.05rem;background:var(--ink);color:var(--bg);border:0;border-radius:999px;padding:13px 24px}
-.go:disabled{opacity:.35;cursor:not-allowed}
-.camp{border-top:1px solid var(--line);padding-top:22px;display:flex;flex-direction:column;gap:12px}
-.camp h2{font-family:var(--display);font-weight:800;font-size:1.25rem;margin:0}
-.camp .upd{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0}
-.camp ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
-.camp li{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:10px 14px;font-size:.94rem;line-height:1.5}
-.camp li b{font-family:var(--display);display:block;font-size:.95rem;margin-bottom:2px}
-.homenote{margin:0;font-size:.92rem;color:var(--muted);max-width:60ch}
+.ballot[aria-pressed="true"] .sw::after{content:"";width:5px;height:9px;border:solid var(--surface);border-width:0 2px 2px 0;transform:translateY(-1px) rotate(45deg)}
+.ballot:hover{border-color:var(--p);opacity:1}
+.vshint{margin:0;min-height:1.2em;display:flex;align-items:center;gap:4px;font-family:var(--display);font-weight:700;font-size:.85rem;color:var(--muted)}
+.vshint i{width:10px;height:10px;border-radius:50%;background:var(--p)}
+.vshint i+i{margin-right:6px}
+.themes{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
+.theme{background:var(--ink);color:var(--bg);border:0;border-radius:8px;padding:16px 14px;font-family:var(--display);font-weight:800;font-size:1rem;line-height:1.2;text-align:left;min-height:64px}
+.theme:hover{opacity:.88}
+.theme:disabled{opacity:.25;cursor:not-allowed}
+/* Plis */
+.fold{background:var(--surface);border:1px solid var(--line);border-radius:8px;scroll-margin-top:130px;min-width:0}
+.fold>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:16px 16px}
+.fold>summary::-webkit-details-marker{display:none}
+.fold .ft{flex:1;min-width:0;font-family:var(--display);font-weight:800;font-size:1.08rem;line-height:1.25}
+.fold .fc{font-family:var(--mono);font-size:.75rem;color:var(--muted)}
+.fold .dots{display:flex;gap:3px;flex:0 0 auto}
+.fold .dots i{width:9px;height:9px;border-radius:50%;background:var(--p)}
+.fchev{flex:0 0 auto;width:9px;height:9px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg) translateY(-3px);transition:transform .2s;margin-left:4px}
+.fold[open]>summary .fchev{transform:rotate(-135deg) translateY(-1px)}
+.fold[open]>summary{border-bottom:1px solid var(--line)}
+.fb{display:flex;flex-direction:column;gap:12px;padding:14px 16px 16px;min-width:0}
+.fb>.q{margin:0;color:var(--muted);font-size:.95rem}
+.fb .dp{padding:0}
+.fb .dtabs{padding:10px 0 0;border-bottom:0;border-top:1px solid var(--line);flex-wrap:wrap;gap:6px}
+.fb .dtab{border:1px solid var(--line);border-radius:999px;padding:5px 11px}
+.fb .dtab[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.fb .cand{border-top-width:4px}
+.camp .ci{margin:0;font-size:.94rem;line-height:1.5}
+.camp .ci b{font-family:var(--display)}
+.qbtn{flex:0 0 auto;background:var(--surface);border:1px solid var(--line);border-radius:999px;width:34px;height:34px;display:grid;place-items:center;color:var(--ink)}
+.qbtn[aria-expanded="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 
 /* Sticky bar */
 .strip{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
 .strip .wrap{padding-block:10px;display:flex;flex-direction:column;gap:10px}
-.toprow{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.toprow{display:flex;align-items:center;gap:10px}.toprow .modechip{margin-left:auto}
 .brand{flex:0 0 auto;white-space:nowrap;background:none;border:0;padding:0;font-family:var(--display);font-weight:800;font-size:1rem}
 .modechip{display:flex;align-items:center;gap:8px;min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-family:var(--display);font-weight:700;font-size:.84rem}
 .modechip .dots{display:flex;gap:3px;flex:0 0 auto}
@@ -243,15 +249,14 @@ footer p{margin:0 0 6px;max-width:64ch}
   .vcol .stance{font-size:.92rem}
   .md{padding-left:0}
   .world li{grid-template-columns:1fr}
-  .vsbar{grid-template-columns:1fr}.vsx{justify-self:center}.vss:last-child{justify-content:flex-start;text-align:left}
+  .fold>summary{padding:14px 12px}.fb{padding:12px 12px 14px}
 }
 @media (prefers-reduced-motion:reduce){.chev{transition:none}}
 </style>
 
 <div id="app"></div>
 <footer class="wrap">
-  <p>Mis à jour le 21 novembre 2026. Candidats classés par ordre alphabétique ; les couleurs reprennent celles des partis quand c'est possible, à titre de repère. Le programme complet de Bruno Retailleau n'étant pas publié, ses mesures s'appuient en partie sur des compilations non officielles, signalées comme telles.</p>
-  <p>Les arguments sans source précise sont signalés « argument courant ». Les mesures marquées « Programme 2022 » viennent d'un ancien programme, pas encore remplacé.</p>
+  <p>Mis à jour le 23 novembre 2026 · « Programme 2022 » : mesure d'un ancien programme pas encore remplacé.</p>
 </footer>
 
 <script>
@@ -321,24 +326,24 @@ const S={
   ps:["Public Sénat, retraites des candidats","https://www.publicsenat.fr/actualites/politique/reculer-ou-avancer-lage-legal-avec-ou-sans-capitalisation-ce-que-proposent-les-principaux-candidats-a-lelection-presidentielle-sur-les-retraites"]
 };
 const CANDS=[
-  {id:"attal",name:"Gabriel Attal",party:"Renaissance · veut une primaire de la droite et du centre"},
+  {id:"attal",name:"Gabriel Attal",party:"Renaissance"},
   {id:"glucksmann",name:"Raphaël Glucksmann",party:"Place publique et PS · désigné par la primaire le 11 octobre"},
-  {id:"lepen",name:"Marine Le Pen",party:"Rassemblement national · éligibilité suspendue à la Cour de cassation"},
+  {id:"lepen",name:"Marine Le Pen",party:"Rassemblement national"},
   {id:"melenchon",name:"Jean-Luc Mélenchon",party:"La France insoumise"},
   {id:"philippe",name:"Édouard Philippe",party:"Horizons"},
-  {id:"retailleau",name:"Bruno Retailleau",party:"Les Républicains · désigné le 19 avril 2026"},
+  {id:"retailleau",name:"Bruno Retailleau",party:"Les Républicains"},
   {id:"roussel",name:"Fabien Roussel",party:"Parti communiste français"},
-  {id:"tondelier",name:"Marine Tondelier",party:"Les Écologistes · propose une coalition autour de Mélenchon"},
-  {id:"villepin",name:"Dominique de Villepin",party:"La France humaniste · candidat depuis le 20 novembre 2026"}
+  {id:"tondelier",name:"Marine Tondelier",party:"Les Écologistes"},
+  {id:"villepin",name:"Dominique de Villepin",party:"La France humaniste"}
 ];
 // Point d'étape affiché sur l'accueil : [titre, texte, sources]
-const MAJ="21 novembre 2026";
+const MAJ="23 novembre 2026";
 const CAMP=[
-["Marine Le Pen peut se présenter, sous réserve","La cour d'appel a confirmé sa condamnation le 7 juillet 2026 mais réduit son inéligibilité à 45 mois, dont 30 avec sursis. Son pourvoi en cassation suspend la peine ; la Cour de cassation doit trancher au plus tard début avril 2027. Jordan Bardella serait candidat à sa place si elle était empêchée.",["lpa","lpcdj","lpfi"]],
-["Droite et centre : la primaire divise","Gabriel Attal veut une primaire avec Bruno Retailleau et David Lisnard. Édouard Philippe refuse d'y participer (« Je n'y participerai pas, point »). Une réunion sur les modalités est prévue la semaine du 23 novembre.",["atpr"]],
-["Gauche : Tondelier tend la main à Mélenchon","Le 18 novembre, Marine Tondelier s'est dite prête à travailler à une coalition autour de Jean-Luc Mélenchon ; il a répondu que cela « devrait pouvoir se faire ». Les adhérents écologistes votent sur leur stratégie du 10 au 13 décembre. Raphaël Glucksmann y voit une rupture avec la tradition écologiste pro-européenne.",["tdpm","tdof"]],
-["Deux nouveaux venus","Bruno Retailleau, désigné par Les Républicains en avril, et Dominique de Villepin, candidat depuis le 20 novembre avec 258 propositions, sont désormais comparés ici. Près de 40 personnes se sont déclarées au total, mais il faut 500 parrainages d'élus pour être sur la liste officielle.",["vfi","retes"]],
-["Les sondages, à cinq mois du vote","Dans les enquêtes Ifop et Elabe de mi-novembre, Marine Le Pen arrive en tête avec environ un tiers des intentions de vote, devant Jean-Luc Mélenchon (17 à 19 %). Suivent Édouard Philippe et Raphaël Glucksmann, puis Bruno Retailleau et Gabriel Attal. Un sondage n'est pas une prévision : les écarts varient selon les candidats testés.",["sond"]]
+["Le Pen peut se présenter, sous réserve","Inéligibilité réduite en appel le 7 juillet 2026. Son pourvoi suspend la peine ; la Cour de cassation tranche au plus tard début avril 2027. Sinon, Jordan Bardella.",["lpa","lpcdj","lpfi"]],
+["Droite et centre : la primaire divise","Attal la veut avec Retailleau et Lisnard ; Philippe refuse d'y participer.",["atpr"]],
+["Gauche : Tondelier tend la main à Mélenchon","Coalition proposée le 18 novembre ; vote des adhérents écologistes du 10 au 13 décembre. Glucksmann s'y oppose.",["tdpm","tdof"]],
+["Deux nouveaux candidats","Bruno Retailleau (LR) et Dominique de Villepin, déclaré le 20 novembre avec 258 propositions.",["vfi","retes"]],
+["Sondages de mi-novembre","Le Pen en tête avec environ un tiers des voix, Mélenchon deuxième (17 à 19 %), puis Philippe et Glucksmann.",["sond"]]
 ];
 // [titre, explication, sources, étiquette, contexte « aujourd'hui »]
 const LINK={
@@ -2434,16 +2439,16 @@ const last=c=>c.name.split(" ").slice(1).join(" ");
 const pv=id=>`style="--p:var(--c-${id})"`;
 const MI={};Object.values(D).forEach(t=>Object.entries(t.c).forEach(([cid,ms])=>ms.forEach(m=>MI[cid+"|"+m[0]]=m)));
 
-// État : mode d'affichage, sélection, face-à-face, thème courant
-const st={view:"home",mode:"all",sel:new Set(CANDS.map(c=>c.id)),vs:[],theme:"retraites"};
+// État : candidats sélectionnés (2 = face-à-face, automatiquement), thème courant
+const st={view:"home",sel:new Set(CANDS.map(c=>c.id)),theme:"retraites",q:false};
 try{const s=JSON.parse(store.get("app2027")||"{}");
-  if(["all","sel","vs"].includes(s.mode))st.mode=s.mode;
   if(Array.isArray(s.sel))st.sel=new Set(s.sel.filter(id=>CI[id]));
-  if(Array.isArray(s.vs))st.vs=s.vs.filter(id=>CI[id]).slice(0,2);
+  if(s.mode==="vs"&&Array.isArray(s.vs)&&s.vs.length===2)st.sel=new Set(s.vs.filter(id=>CI[id]));
   if(D[s.theme])st.theme=s.theme;}catch(e){}
-const save=()=>store.set("app2027",JSON.stringify({mode:st.mode,sel:[...st.sel],vs:st.vs,theme:st.theme}));
-const ready=()=>st.mode==="all"||(st.mode==="sel"&&st.sel.size>0)||(st.mode==="vs"&&st.vs.length===2);
-const shown=()=>st.mode==="vs"?st.vs.map(id=>CI[id]):st.mode==="sel"?CANDS.filter(c=>st.sel.has(c.id)):CANDS;
+const save=()=>store.set("app2027",JSON.stringify({sel:[...st.sel],theme:st.theme}));
+const ready=()=>st.sel.size>0;
+const isVs=()=>st.sel.size===2;
+const shown=()=>CANDS.filter(c=>st.sel.has(c.id));
 const dtab={};
 
 // Sources
@@ -2459,18 +2464,14 @@ const pin=c=>`<span class="pin" ${pv(c.id)}>${esc(last(c))}</span>`;
 function renderHome(focusSel){
   st.view="home";
   try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}
-  const M=[["all","Tous les candidats",`Les ${CANDS.length} programmes, thème par thème.`],["sel","Ma sélection","Choisissez les candidats à afficher."],["vs","Face-à-face","Deux candidats côte à côte, débat par débat."]];
-  let h=`<section class="home wrap"><p class="eyebrow">Présidentielle 2027</p><h1>Qui voulez-vous comparer ?</h1>
-  <div class="modes" role="radiogroup" aria-label="Mode de comparaison">`+M.map(([k,t,d])=>`<button type="button" class="mode" role="radio" aria-checked="${st.mode===k}" data-mode="${k}"><b>${t}</b><span>${d}</span></button>`).join("")+`</div>`;
-  if(st.mode==="sel"){
-    h+=`<div class="picker"><p class="lab">Cochez les candidats à afficher</p><div class="ballots">`+CANDS.map(c=>`<button type="button" class="ballot" data-id="${c.id}" aria-pressed="${st.sel.has(c.id)}" ${pv(c.id)}><span class="sw" aria-hidden="true"></span><span>${esc(c.name)}<small>${esc(c.party.split(" · ")[0])}</small></span></button>`).join("")+`</div></div>`;
-  }else if(st.mode==="vs"){
-    const slot=i=>{const c=CI[st.vs[i]];return c?`<div class="vss on" ${pv(c.id)}>${esc(c.name)}</div>`:`<div class="vss">Candidat ${i+1}</div>`};
-    h+=`<div class="picker"><div class="vsbar">${slot(0)}<span class="vsx">VS</span>${slot(1)}</div><p class="lab">Choisissez deux candidats</p><div class="ballots">`+CANDS.map(c=>{const i=st.vs.indexOf(c.id);return `<button type="button" class="ballot" data-id="${c.id}" aria-pressed="${i>=0}" ${pv(c.id)}><span class="sw" aria-hidden="true"></span><span>${esc(c.name)}<small>${esc(c.party.split(" · ")[0])}</small></span>${i>=0?`<span class="slot">${i+1}</span>`:""}</button>`}).join("")+`</div></div>`;
-  }
-  h+=`<button type="button" class="go" id="go" ${ready()?"":"disabled"}>Voir les programmes →</button>
-  <p class="homenote">Dix thèmes, découpés en grands débats. Pour chacun : ce que veut chaque candidat, comment ça marche aujourd'hui, ce qui se fait ailleurs, et les arguments pour et contre.</p>
-  <section class="camp" aria-labelledby="camph"><h2 id="camph">Où en est la campagne</h2><p class="upd">Mis à jour le ${MAJ}</p><ul>`+CAMP.map(([t,x,s])=>`<li><b>${esc(t)}</b>${esc(x)}${cite(s)}</li>`).join("")+`</ul></section></section>`;
+  const allOn=st.sel.size===CANDS.length;
+  let h=`<section class="home wrap"><h1>Programmes 2027</h1>
+  <div class="grp"><div class="ghead"><p class="eyebrow">Candidats</p><button type="button" class="tool" id="all">${allOn?"Tout désélectionner":"Tout sélectionner"}</button></div>
+  <div class="ballots">`+CANDS.map(c=>`<button type="button" class="ballot" data-id="${c.id}" aria-pressed="${st.sel.has(c.id)}" ${pv(c.id)}><span class="sw" aria-hidden="true"></span><span>${esc(c.name)}</span></button>`).join("")+`</div>`
+  +(isVs()?`<p class="vshint" aria-live="polite">${shown().map(c=>`<i ${pv(c.id)}></i>`).join("")}Face-à-face</p>`:`<p class="vshint" aria-live="polite"></p>`)+`</div>
+  <div class="grp"><p class="eyebrow">Thèmes</p><div class="themes">`+Object.entries(D).map(([k,t])=>`<button type="button" class="theme" data-theme="${k}" ${ready()?"":"disabled"}>${esc(t.label)}</button>`).join("")+`</div>`
+  +(ready()?"":`<p class="vshint">Choisissez au moins un candidat.</p>`)+`</div>
+  <details class="fold camp"><summary><span class="ft">Où en est la campagne</span><span class="fc">${MAJ}</span><span class="fchev" aria-hidden="true"></span></summary><div class="fb">`+CAMP.map(([t,x,s])=>`<p class="ci"><b>${esc(t)}</b> ${esc(x)}${cite(s)}</p>`).join("")+`</div></details></section>`;
   app.innerHTML=h;
   if(focusSel){const f=app.querySelector(focusSel);if(f)f.focus()}
 }
@@ -2478,15 +2479,15 @@ function renderHome(focusSel){
 /* ---------- Vue thème ---------- */
 function modeChip(){
   const cs=shown();
-  const txt=st.mode==="all"?`Tous les candidats (${CANDS.length})`:st.mode==="vs"?`${last(cs[0])} vs ${last(cs[1])}`:`Sélection : ${cs.map(last).join(", ")}`;
-  return `<button type="button" class="modechip" id="change" aria-label="Changer de candidats (${esc(txt)})"><span class="dots" aria-hidden="true">${cs.map(c=>`<i ${pv(c.id)}></i>`).join("")}</span><span class="txt">${esc(txt)}</span><u>Changer</u></button>`;
+  const txt=cs.length===CANDS.length?"Tous":isVs()?`${last(cs[0])} / ${last(cs[1])}`:cs.map(last).join(", ");
+  return `<button type="button" class="modechip" id="change" aria-label="Changer de candidats (${esc(txt)})"><span class="dots" aria-hidden="true">${cs.map(c=>`<i ${pv(c.id)}></i>`).join("")}</span><span class="txt">${esc(txt)}</span></button>`;
 }
 function renderTheme(){
   st.view="theme";
   app.innerHTML=`<nav class="strip" aria-label="Thèmes"><div class="wrap">
-    <div class="toprow"><button type="button" class="brand" id="brand">Programmes 2027</button>${modeChip()}</div>
+    <div class="toprow"><button type="button" class="brand" id="brand" aria-label="Accueil">← 2027</button>${modeChip()}<button type="button" class="qbtn" id="qbtn" aria-label="Chercher une mesure" aria-expanded="false"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
+    <div class="searchrow" id="qrow" hidden><input class="search" id="q" type="search" placeholder="SMIC, nucléaire, Parcoursup…" aria-label="Chercher une mesure"></div>
     <div class="tabs" role="toolbar">`+Object.entries(D).map(([k,t])=>`<button type="button" class="tab" data-key="${k}">${esc(t.label)}</button>`).join("")+`</div>
-    <div class="searchrow"><input class="search" id="q" type="search" placeholder="Chercher une mesure : SMIC, nucléaire, Parcoursup…" aria-label="Chercher une mesure"><button class="tool" id="toggleAll" type="button">Tout déplier</button></div>
   </div></nav><main class="wrap"><div class="bar" id="bar"></div><div class="list" id="list"></div></main>`;
   document.getElementById("q").addEventListener("input",()=>{clearTimeout(qt);qt=setTimeout(renderList,150)});
   renderList();
@@ -2498,34 +2499,40 @@ function selectTheme(k){
   try{history.replaceState(null,"","#"+k)}catch(e){}
   renderList();
   const b=app.querySelector(`.tab[data-key="${k}"]`);if(b&&b.scrollIntoView)b.scrollIntoView({inline:"center",block:"nearest",behavior:"smooth"});
-  const strip=app.querySelector(".strip");if(strip&&window.scrollY>strip.offsetTop)window.scrollTo({top:strip.offsetTop});
+  window.scrollTo({top:0});
 }
+// Un pli : titre seul, le contenu n'est construit qu'à l'ouverture
+function fold(title,dots,fill,id,count){
+  const d=document.createElement("details");d.className="fold";if(id)d.id=id;
+  d.innerHTML=`<summary><span class="ft">${title}</span>${count!=null?`<span class="fc">${count}</span>`:""}<span class="dots" aria-hidden="true">${dots.map(c=>`<i ${pv(c.id)}></i>`).join("")}</span><span class="fchev" aria-hidden="true"></span></summary><div class="fb"></div>`;
+  d._fill=fill;return d;
+}
+function vsGrid(cards){const g=document.createElement("div");g.className="vs";cards.forEach(x=>g.appendChild(x));return g}
 function renderList(){
   const bar=document.getElementById("bar"),list=document.getElementById("list"),term=document.getElementById("q").value.trim();
   list.innerHTML="";
   app.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-pressed",term.length<2&&b.dataset.key===st.theme?"true":"false"));
-  if(term.length>=2){renderSearch(term,bar,list);upd();return}
-  const t=D[st.theme],deb=DEB[st.theme];
+  if(term.length>=2){renderSearch(term,bar,list);return}
+  const t=D[st.theme],deb=DEB[st.theme],cs=shown();
+  bar.innerHTML=`<h2>${esc(t.label)}</h2>`;
+  const used=new Set();
   if(deb){
-    bar.innerHTML=`<h2>${esc(t.label)}</h2><p class="sub">${deb.length} grands débats. Pour chacun : la position des candidats, puis de quoi comprendre.</p><div class="dnav">`+deb.map(d=>`<button type="button" data-goto="${d.id}">${esc(d.t)}</button>`).join("")+`</div>`;
-    deb.forEach(d=>list.appendChild(debateEl(d)));
-    // Mesures du thème qui ne relèvent d'aucun débat
-    const used=new Set();deb.forEach(d=>Object.entries(d.pos).forEach(([cid,p])=>p.m.forEach(t=>used.add(cid+"|"+t))));
-    const rest=shown().map(c=>[c,(t.c[c.id]||[]).filter(m=>!used.has(c.id+"|"+m[0]))]).filter(([,ms])=>ms.length);
-    if(rest.length){
-      const h=document.createElement("div");h.className="bar";h.style.margin="10px 0 0";
-      h.innerHTML=`<h3 class="resth">Autres mesures du thème</h3><p class="sub">Les propositions qui ne relèvent d'aucun des débats ci-dessus.</p>`;list.appendChild(h);
-      const cards=rest.map(([c,ms])=>candCard(c,ms.map(m=>measureHTML(m,{cid:c.id}))));
-      if(st.mode==="vs"){const g=document.createElement("div");g.className="vs";cards.forEach(x=>g.appendChild(x));list.appendChild(g)}
-      else cards.forEach(x=>list.appendChild(x));
-    }
-  }else{
-    bar.innerHTML=`<h2>${esc(t.label)}</h2>`;
-    const cards=shown().map(c=>candCard(c,(t.c[c.id]||[]).map(m=>measureHTML(m,{cid:c.id}))));
-    if(st.mode==="vs"){const g=document.createElement("div");g.className="vs";cards.forEach(x=>g.appendChild(x));list.appendChild(g)}
-    else cards.forEach(x=>list.appendChild(x));
+    deb.forEach(d=>{
+      Object.entries(d.pos).forEach(([cid,p])=>p.m.forEach(x=>used.add(cid+"|"+x)));
+      const who=cs.filter(c=>d.pos[c.id]);
+      list.appendChild(fold(esc(d.t),who,b=>debateBody(d,b),"d-"+d.id));
+    });
   }
-  upd();
+  const rest=cs.map(c=>[c,(t.c[c.id]||[]).filter(m=>!used.has(c.id+"|"+m[0]))]).filter(([,ms])=>ms.length);
+  const cardsFor=r=>r.map(([c,ms])=>candCard(c,ms.map(m=>measureHTML(m,{cid:c.id}))));
+  if(deb){
+    if(rest.length)list.appendChild(fold("Autres mesures",rest.map(([c])=>c),b=>{const cards=cardsFor(rest);isVs()?b.appendChild(vsGrid(cards)):cards.forEach(x=>b.appendChild(x))},null,rest.reduce((n,[,ms])=>n+ms.length,0)));
+  }else if(isVs()){
+    list.appendChild(vsGrid(cs.map(c=>candCard(c,(t.c[c.id]||[]).map(m=>measureHTML(m,{cid:c.id}))))));
+  }else{
+    cs.forEach(c=>{const ms=t.c[c.id]||[];
+      list.appendChild(fold(esc(c.name),[c],b=>{b.innerHTML=`<div class="ms">${ms.length?ms.map(m=>measureHTML(m,{cid:c.id})).join(""):`<p class="empty">Aucune mesure recensée sur ce thème.</p>`}</div>`},null,ms.length))});
+  }
 }
 function candCard(c,rows,empty="Aucune mesure recensée sur ce thème dans les sources consultées."){
   const s=document.createElement("section");s.className="cand";s.style.setProperty("--p",`var(--c-${c.id})`);
@@ -2539,7 +2546,7 @@ function renderSearch(term,bar,list){
     Object.values(D).forEach(t=>(t.c[c.id]||[]).forEach(m=>{if(norm(m[0]+" "+(m[1]||"")+" "+(m[4]||"")).includes(n))rows.push(measureHTML(m,{cid:c.id,theme:t.label}))}));
     total+=rows.length;if(rows.length)list.appendChild(candCard(c,rows));
   });
-  bar.innerHTML=`<h2>Recherche : « ${esc(term)} »</h2><p class="sub">${total?`${total} mesure${total>1?"s":""} trouvée${total>1?"s":""}, tous thèmes confondus.`:"Aucune mesure ne correspond. Essayez un autre mot."}</p>`;
+  bar.innerHTML=`<h2>« ${esc(term)} »</h2><p class="sub">${total?`${total} mesure${total>1?"s":""}`:"Aucune mesure trouvée."}</p>`;
 }
 function measureHTML(m,o={}){
   const [mt,md,src,tag,ctx]=m;
@@ -2552,15 +2559,12 @@ function measureHTML(m,o={}){
 }
 
 /* ---------- Débats ---------- */
-const DT=[["pos","Positions"],["how","Comment ça marche"],["world","Ailleurs"],["appr","Les approches"],["pc","Pour et contre"],["impl","Effets"]];
-function debateEl(d){
-  const s=document.createElement("section");s.className="debate";s.id="d-"+d.id;
+const DT=[["pos","Positions"],["how","Comprendre"],["world","Ailleurs"],["appr","Approches"],["pc","Pour / contre"],["impl","Effets"]];
+function debateBody(d,b){
   const tabs=DT.filter(([k])=>k==="pos"||(d[k]&&d[k].length));
   const cur=dtab[d.id]||"pos";
-  s.innerHTML=`<header class="dh"><h3>${esc(d.t)}</h3><p class="q">${esc(d.q)}</p></header>
-  <div class="dtabs" role="tablist">`+tabs.map(([k,l])=>`<button type="button" class="dtab" role="tab" data-d="${d.id}" data-k="${k}" aria-selected="${k===cur}">${l}</button>`).join("")+`</div>
-  <div class="dp" role="tabpanel">${panel(d,cur)}</div>`;
-  return s;
+  b.innerHTML=`<p class="q">${esc(d.q)}</p><div class="dp" role="tabpanel">${panel(d,cur)}</div>
+  <div class="dtabs" role="tablist">`+tabs.map(([k,l])=>`<button type="button" class="dtab" role="tab" data-d="${d.id}" data-k="${k}" aria-selected="${k===cur}">${l}</button>`).join("")+`</div>`;
 }
 function panel(d,k){
   const cs=shown(),ids=new Set(cs.map(c=>c.id));
@@ -2606,12 +2610,12 @@ function scaleHTML(d,cs,ids){
 }
 function positionsHTML(d,cs){
   const ms=(c,p)=>p.m.map(t=>MI[c.id+"|"+t]).filter(Boolean).map(m=>measureHTML(m,{inDebate:1})).join("");
-  if(st.mode==="vs")return `<div class="vs">`+cs.map(c=>{const p=d.pos[c.id];
+  if(isVs())return `<div class="vs">`+cs.map(c=>{const p=d.pos[c.id];
     return `<div class="vcol" ${pv(c.id)}><p class="who">${esc(c.name)}</p>${p?`<p class="stance">${esc(p.s)}</p><div class="ms">${ms(c,p)}</div>`:`<p class="none">Pas de mesure recensée sur ce point.</p>`}</div>`}).join("")+`</div>`;
   const has=cs.filter(c=>d.pos[c.id]),abs=cs.filter(c=>!d.pos[c.id]);
   return `<div class="pos">`+has.map(c=>{const p=d.pos[c.id];
     return `<div class="prow" ${pv(c.id)}><span class="bar4"></span><p class="who">${esc(c.name)}<small>${esc(c.party.split(" · ")[0])}</small></p><p class="stance">${esc(p.s)}</p><div class="ms">${ms(c,p)}</div></div>`}).join("")+`</div>`
-    +(abs.length?`<p class="absent">Pas de mesure recensée sur ce point : ${abs.map(c=>esc(c.name)).join(", ")}.</p>`:"");
+    +(abs.length?`<p class="absent">Rien sur ce point : ${abs.map(c=>esc(last(c))).join(", ")}</p>`:"");
 }
 
 /* ---------- Notions (thèmes sans débats) ---------- */
@@ -2624,26 +2628,25 @@ function notionHTML(x){
 }
 
 /* ---------- Événements ---------- */
-function upd(){const t=document.getElementById("toggleAll");if(!t)return;const a=[...app.querySelectorAll("main details.m")];t.hidden=!a.length;t.textContent=a.length&&a.every(d=>d.open)?"Tout replier":"Tout déplier"}
-app.addEventListener("toggle",upd,true);
+function upd(){}
+app.addEventListener("toggle",e=>{const d=e.target;if(d.classList&&d.classList.contains("fold")&&d.open&&d._fill){d._fill(d.querySelector(".fb"));d._fill=null}},true);
 app.addEventListener("click",e=>{
   const el=e.target.closest("button");if(!el)return;
-  if(el.dataset.mode){st.mode=el.dataset.mode;save();renderHome(`[data-mode="${st.mode}"]`);return}
   if(el.classList.contains("ballot")&&st.view==="home"){
-    const id=el.dataset.id;
-    if(st.mode==="sel"){st.sel.has(id)?st.sel.delete(id):st.sel.add(id)}
-    else{const i=st.vs.indexOf(id);if(i>=0)st.vs.splice(i,1);else if(st.vs.length<2)st.vs.push(id);else st.vs[1]=id}
+    const id=el.dataset.id;st.sel.has(id)?st.sel.delete(id):st.sel.add(id);
     save();renderHome(`.ballot[data-id="${id}"]`);return;
   }
-  if(el.id==="go"){if(!ready())return;save();try{history.replaceState(null,"","#"+st.theme)}catch(e){}renderTheme();window.scrollTo({top:0});return}
-  if(el.id==="brand"||el.id==="change"){renderHome(".mode[aria-checked=\"true\"]");window.scrollTo({top:0});return}
+  if(el.id==="all"){st.sel=st.sel.size===CANDS.length?new Set():new Set(CANDS.map(c=>c.id));save();renderHome("#all");return}
+  if(el.dataset.theme){if(!ready())return;st.theme=el.dataset.theme;save();try{history.replaceState(null,"","#"+st.theme)}catch(e){}renderTheme();window.scrollTo({top:0});
+    const b=app.querySelector(`.tab[data-key="${st.theme}"]`);if(b&&b.scrollIntoView)b.scrollIntoView({inline:"center",block:"nearest"});return}
+  if(el.id==="brand"||el.id==="change"){renderHome();window.scrollTo({top:0});return}
+  if(el.id==="qbtn"){const r=document.getElementById("qrow"),q=document.getElementById("q");const o=r.hidden;r.hidden=!o;el.setAttribute("aria-expanded",o);if(o)q.focus();else if(q.value){q.value="";renderList()}return}
   if(el.classList.contains("tab")){selectTheme(el.dataset.key);return}
-  if(el.dataset.goto){const s=document.getElementById("d-"+el.dataset.goto);if(s)s.scrollIntoView({block:"start",behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});return}
   if(el.classList.contains("dtab")){
     const d=DEB[st.theme].find(x=>x.id===el.dataset.d);dtab[d.id]=el.dataset.k;
     const sec=document.getElementById("d-"+d.id);
     sec.querySelectorAll(".dtab").forEach(b=>b.setAttribute("aria-selected",b===el?"true":"false"));
-    sec.querySelector(".dp").innerHTML=panel(d,el.dataset.k);upd();return;
+    sec.querySelector(".dp").innerHTML=panel(d,el.dataset.k);return;
   }
   if(el.classList.contains("nlink")){
     const open=el.getAttribute("aria-expanded")==="true";
@@ -2651,11 +2654,9 @@ app.addEventListener("click",e=>{
     else el.insertAdjacentHTML("afterend",notionHTML(NI[el.dataset.n]));
     el.setAttribute("aria-expanded",open?"false":"true");return;
   }
-  if(el.id==="toggleAll"){const a=[...app.querySelectorAll("main details.m")];const o=!a.every(d=>d.open);a.forEach(d=>d.open=o);upd();return}
 });
 
-{const h=location.hash.slice(1);if(D[h]){st.theme=h;if(!ready())st.mode="all";renderTheme()}else renderHome()}
+{const h=location.hash.slice(1);if(D[h]){st.theme=h;if(!ready())st.sel=new Set(CANDS.map(c=>c.id));renderTheme()}else renderHome()}
 </script>
 
-</body>
-</html>
+</body></html>
