@@ -18,7 +18,7 @@
   --bg:#f3f4f6; --surface:#ffffff; --sunk:#f6f7f9; --ink:#151922; --muted:#5b6372; --line:#dde1e8;
   --focus:#2d55c8; --warn:#8a5a00; --warn-soft:#fbf1dc; --note:#eef1f7; --pro:#1f7a4d; --con:#b23a2e;
   --c-attal:#d29c00; --c-glucksmann:#d02f78; --c-lepen:#1f2f78; --c-melenchon:#dd4f36;
-  --c-philippe:#1590c6; --c-roussel:#a8102b; --c-tondelier:#2c9447;
+  --c-philippe:#1590c6; --c-retailleau:#0f7d7a; --c-roussel:#a8102b; --c-tondelier:#2c9447; --c-villepin:#8a5a2b;
   --display:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
   --body:"Source Serif 4",Georgia,"Times New Roman",serif;
   --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
@@ -28,12 +28,12 @@
   --bg:#0f1218; --surface:#171b23; --sunk:#1c212b; --ink:#e8ebf1; --muted:#9aa3b2; --line:#2a303c;
   --focus:#8aa8ff; --warn:#f0c46a; --warn-soft:#2e2615; --note:#1d2433; --pro:#5fcf93; --con:#f08070;
   --c-attal:#f0c23a; --c-glucksmann:#f069a6; --c-lepen:#7489e4; --c-melenchon:#f47c63;
-  --c-philippe:#5cbfeb; --c-roussel:#ec5767; --c-tondelier:#5ec77b; color-scheme:dark}}
+  --c-philippe:#5cbfeb; --c-retailleau:#45c2bb; --c-roussel:#ec5767; --c-tondelier:#5ec77b; --c-villepin:#d39a5c; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0f1218; --surface:#171b23; --sunk:#1c212b; --ink:#e8ebf1; --muted:#9aa3b2; --line:#2a303c;
   --focus:#8aa8ff; --warn:#f0c46a; --warn-soft:#2e2615; --note:#1d2433; --pro:#5fcf93; --con:#f08070;
   --c-attal:#f0c23a; --c-glucksmann:#f069a6; --c-lepen:#7489e4; --c-melenchon:#f47c63;
-  --c-philippe:#5cbfeb; --c-roussel:#ec5767; --c-tondelier:#5ec77b; color-scheme:dark}
+  --c-philippe:#5cbfeb; --c-retailleau:#45c2bb; --c-roussel:#ec5767; --c-tondelier:#5ec77b; --c-villepin:#d39a5c; color-scheme:dark}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;margin:0;-webkit-font-smoothing:antialiased}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
@@ -44,39 +44,51 @@ button:focus-visible,summary:focus-visible,input:focus-visible,a:focus-visible{o
 .eyebrow{font-family:var(--mono);font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0}
 
 /* Home */
-.home{padding-block:44px 64px;display:flex;flex-direction:column;gap:22px}
-.home h1{font-family:var(--display);font-weight:800;font-size:clamp(2rem,6.5vw,3.2rem);line-height:1.02;letter-spacing:-.02em;margin:0;text-wrap:balance}
-.modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
-.mode{text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:6px;min-width:0}
-.mode b{font-family:var(--display);font-weight:800;font-size:1.15rem;display:flex;align-items:center;gap:10px}
-.mode b::before{content:"";width:14px;height:14px;border-radius:50%;border:2px solid var(--muted);flex:0 0 auto}
-.mode span{font-size:.95rem;color:var(--muted);line-height:1.45}
-.mode:hover{border-color:var(--muted)}
-.mode[aria-checked="true"]{border-color:var(--ink)}
-.mode[aria-checked="true"] b::before{border-color:var(--ink);background:radial-gradient(circle,var(--ink) 0 40%,transparent 45%)}
-.picker{display:flex;flex-direction:column;gap:12px}
-.picker .lab{font-family:var(--display);font-weight:700;font-size:.95rem;margin:0}
-.ballots{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}
-.ballot{display:flex;align-items:center;gap:10px;background:var(--surface);border:1.5px solid var(--line);border-radius:6px;padding:10px 12px;font-family:var(--display);font-weight:700;font-size:.95rem;line-height:1.2;text-align:left;min-width:0}
-.ballot small{display:block;font-weight:500;font-size:.78rem;color:var(--muted);margin-top:2px}
-.ballot .sw{width:16px;height:16px;border-radius:3px;border:2px solid var(--p);flex:0 0 auto}
-.ballot[aria-pressed="true"]{border-color:var(--p)}
+.home{padding-block:36px 56px;display:flex;flex-direction:column;gap:28px}
+.home h1{font-family:var(--display);font-weight:800;font-size:clamp(2rem,6.5vw,3rem);line-height:1.02;letter-spacing:-.02em;margin:0}
+.grp{display:flex;flex-direction:column;gap:10px}
+.ghead{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.ballots{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
+.ballot{display:flex;align-items:center;gap:10px;background:var(--surface);border:1.5px solid var(--line);border-radius:8px;padding:14px 12px;font-family:var(--display);font-weight:700;font-size:.98rem;line-height:1.2;text-align:left;min-width:0;opacity:.6;transition:opacity .15s,border-color .15s}
+.ballot .sw{width:18px;height:18px;border-radius:4px;border:2px solid var(--p);flex:0 0 auto;display:grid;place-items:center}
+.ballot[aria-pressed="true"]{border-color:var(--p);opacity:1}
 .ballot[aria-pressed="true"] .sw{background:var(--p)}
-.ballot .slot{margin-left:auto;font-family:var(--mono);font-size:.72rem;font-weight:500;background:var(--p);color:var(--surface);border-radius:3px;padding:1px 6px}
-.ballot:hover{border-color:var(--p)}
-.vsbar{display:grid;grid-template-columns:1fr auto 1fr;align-items:stretch;gap:10px}
-.vss{border-radius:6px;padding:12px 14px;font-family:var(--display);font-weight:800;font-size:1.1rem;line-height:1.2;background:var(--surface);border:1.5px dashed var(--line);color:var(--muted);min-width:0;display:flex;align-items:center}
-.vss.on{border:0;border-top:5px solid var(--p);color:var(--ink)}
-.vss:last-child{justify-content:flex-end;text-align:right}
-.vsx{align-self:center;font-family:var(--mono);font-size:.8rem;color:var(--muted)}
-.go{align-self:flex-start;font-family:var(--display);font-weight:800;font-size:1.05rem;background:var(--ink);color:var(--bg);border:0;border-radius:999px;padding:13px 24px}
-.go:disabled{opacity:.35;cursor:not-allowed}
-.homenote{margin:0;font-size:.92rem;color:var(--muted);max-width:60ch}
+.ballot[aria-pressed="true"] .sw::after{content:"";width:5px;height:9px;border:solid var(--surface);border-width:0 2px 2px 0;transform:translateY(-1px) rotate(45deg)}
+.ballot:hover{border-color:var(--p);opacity:1}
+.vshint{margin:0;min-height:1.2em;display:flex;align-items:center;gap:4px;font-family:var(--display);font-weight:700;font-size:.85rem;color:var(--muted)}
+.vshint i{width:10px;height:10px;border-radius:50%;background:var(--p)}
+.vshint i+i{margin-right:6px}
+.themes{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
+.theme{background:var(--ink);color:var(--bg);border:0;border-radius:8px;padding:16px 14px;font-family:var(--display);font-weight:800;font-size:1rem;line-height:1.2;text-align:left;min-height:64px}
+.theme:hover{opacity:.88}
+.theme:disabled{opacity:.25;cursor:not-allowed}
+/* Plis */
+.fold{background:var(--surface);border:1px solid var(--line);border-radius:8px;scroll-margin-top:130px;min-width:0}
+.fold>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:16px 16px}
+.fold>summary::-webkit-details-marker{display:none}
+.fold .ft{flex:1;min-width:0;font-family:var(--display);font-weight:800;font-size:1.08rem;line-height:1.25}
+.fold .fc{font-family:var(--mono);font-size:.75rem;color:var(--muted)}
+.fold .dots{display:flex;gap:3px;flex:0 0 auto}
+.fold .dots i{width:9px;height:9px;border-radius:50%;background:var(--p)}
+.fchev{flex:0 0 auto;width:9px;height:9px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg) translateY(-3px);transition:transform .2s;margin-left:4px}
+.fold[open]>summary .fchev{transform:rotate(-135deg) translateY(-1px)}
+.fold[open]>summary{border-bottom:1px solid var(--line)}
+.fb{display:flex;flex-direction:column;gap:12px;padding:14px 16px 16px;min-width:0}
+.fb>.q{margin:0;color:var(--muted);font-size:.95rem}
+.fb .dp{padding:0}
+.fb .dtabs{padding:10px 0 0;border-bottom:0;border-top:1px solid var(--line);flex-wrap:wrap;gap:6px}
+.fb .dtab{border:1px solid var(--line);border-radius:999px;padding:5px 11px}
+.fb .dtab[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.fb .cand{border-top-width:4px}
+.camp .ci{margin:0;font-size:.94rem;line-height:1.5}
+.camp .ci b{font-family:var(--display)}
+.qbtn{flex:0 0 auto;background:var(--surface);border:1px solid var(--line);border-radius:999px;width:34px;height:34px;display:grid;place-items:center;color:var(--ink)}
+.qbtn[aria-expanded="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 
 /* Sticky bar */
 .strip{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
 .strip .wrap{padding-block:10px;display:flex;flex-direction:column;gap:10px}
-.toprow{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.toprow{display:flex;align-items:center;gap:10px}.toprow .modechip{margin-left:auto}
 .brand{flex:0 0 auto;white-space:nowrap;background:none;border:0;padding:0;font-family:var(--display);font-weight:800;font-size:1rem}
 .modechip{display:flex;align-items:center;gap:8px;min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-family:var(--display);font-weight:700;font-size:.84rem}
 .modechip .dots{display:flex;gap:3px;flex:0 0 auto}
@@ -237,15 +249,14 @@ footer p{margin:0 0 6px;max-width:64ch}
   .vcol .stance{font-size:.92rem}
   .md{padding-left:0}
   .world li{grid-template-columns:1fr}
-  .vsbar{grid-template-columns:1fr}.vsx{justify-self:center}.vss:last-child{justify-content:flex-start;text-align:left}
+  .fold>summary{padding:14px 12px}.fb{padding:12px 12px 14px}
 }
 @media (prefers-reduced-motion:reduce){.chev{transition:none}}
 </style>
 
 <div id="app"></div>
 <footer class="wrap">
-  <p>Mis à jour le 23 octobre 2026. Candidats classés par ordre alphabétique ; les couleurs reprennent celles des partis, à titre de repère.</p>
-  <p>Les arguments sans source précise sont signalés « argument courant ». Les mesures marquées « Programme 2022 » viennent d'un ancien programme, pas encore remplacé.</p>
+  <p>Mis à jour le 23 novembre 2026 · « Programme 2022 » : mesure d'un ancien programme pas encore remplacé.</p>
 </footer>
 
 <script>
@@ -294,6 +305,24 @@ const S={
   adp:["Public Sénat, le RIP sur Aéroports de Paris (2019)","https://www.publicsenat.fr/actualites/politique/referendum-sur-la-privatisation-d-adp-le-recueil-de-signatures-s-essouffle-pendant"],
   succ:["Legare, barème des droits de succession","https://legare.fr/fiscalite/bareme-droits-succession/"],
   ifrap:["IFRAP, coût des programmes de 2022","https://www.ifrap.org/budget-et-fiscalite/macron-le-pen-zemmour-melenchon-le-cout-de-leur-programme-pour-les-finances-publiques"],
+  retes:["ÉlyséeScope, programme économique de B. Retailleau (compilation)","https://www.elyseescope.com/questions/programme-economique-bruno-retailleau-2027"],
+  retmv:["MonVote2027, positions de B. Retailleau (compilation non officielle)","https://monvote2027.fr/candidat/retailleau"],
+  retjdd:["Le JDD, le plan constitutionnel de B. Retailleau (2026)","https://www.lejdd.fr/politique/immigration-securite-justice-le-plan-de-bruno-retailleau-pour-reformer-la-constitution-182508"],
+  retexp:["L'Express, 3 novembre 2026","https://actu.orange.fr/politique/presidentielle-2027-bruno-retailleau-promet-d-organiser-un-referendum-sur-l-immigration-en-cas-de-victoire-l-express-via-6medias-CNT000002txUGH.html"],
+  vprog:["La France humaniste, « Réussir à nouveau » (nov. 2026)","https://lafrancehumaniste.fr/programme/reussir-a-nouveau/"],
+  vlcp:["LCP, les 258 propositions de D. de Villepin (nov. 2026)","https://lcp.fr/actualites/presidentielle-2027-que-retenir-des-258-propositions-du-programme-de-dominique-de"],
+  vfi:["Franceinfo, 20 novembre 2026","https://www.franceinfo.fr/elections/dominique-de-villepin-annonce-sa-candidature-a-l-election-presidentielle-evoquant-une-decision-lourde-difficile_8292431.html"],
+  vvar:["Var Actu, 20 novembre 2026","https://www.varactu.fr/dominique-de-villepin-se-lance-dans-la-course-a-lelysee-avec-258-propositions/"],
+  rnr24:["France 24, la réforme des retraites du RN (17 nov. 2026)","https://www.france24.com/fr/france/20261117-france-presidentielle-2027-reforme-des-retraites-marine-le-pen-depart-a-60-ou-62-ans-capitalisation-conditions-durcies"],
+  rnreu:["Euronews, 17 novembre 2026","https://fr.euronews.com/2026/11/17/dose-de-capitalisation-depart-de-60-a-62-ans-marine-le-pen-devoile-sa-reforme-des-retraite"],
+  lpa:["France 24, la décision en appel (7 juillet 2026)","https://www.france24.com/fr/info-en-continu/20260707-in%C3%A9ligibilit%C3%A9-d%C3%A9tournements-ce-que-dit-la-d%C3%A9cision-condamnant-marine-le-pen-en-appel"],
+  lpcdj:["Le Club des juristes, Marine Le Pen condamnée en appel","https://www.leclubdesjuristes.com/justice/affaire-des-assistants-parlementaires-du-fn-coup-darret-a-la-candidature-de-marine-le-pen-16827/"],
+  lpfi:["Franceinfo, le pourvoi de M. Le Pen","https://www.franceinfo.fr/politique/front-national/affaire-des-assistants-fn-au-parlement-europeen/marine-le-pen-est-elle-vraiment-ineligible-a-l-election-presidentielle-comme-l-affirme-un-magistrat-honoraire-de-la-cour-de-cassation_8257378.html"],
+  gke:["Gaz d'aujourd'hui, le plan énergie de R. Glucksmann (nov. 2026)","https://www.gazdaujourdhui.fr/glucksmann-2027-nucleaire-renouvelable/"],
+  tdof:["Ouest-France, 19 novembre 2026","https://www.ouest-france.fr/politique/jean-luc-melenchon/presidentielle-lalliance-avec-marine-tondelier-devrait-pouvoir-se-faire-estime-jean-luc-melenchon-dd6366bc-e44b-11f1-9a72-32f9104dab1b"],
+  tdpm:["Politique Matin, 18 novembre 2026","https://www.politiquematin.fr/marine-tondelier-coalition-melenchon-18-novembre-2026-ecologistes"],
+  atpr:["LCP, Attal et la primaire (nov. 2026)","https://lcp.fr/actualites/c-est-ineluctable-gabriel-attal-s-accroche-a-sa-primaire-malgre-le-refus-d-edouard"],
+  sond:["Wikipédia, liste des sondages pour 2027","https://fr.wikipedia.org/wiki/Liste_de_sondages_sur_l%27%C3%A9lection_pr%C3%A9sidentielle_fran%C3%A7aise_de_2027"],
   ps:["Public Sénat, retraites des candidats","https://www.publicsenat.fr/actualites/politique/reculer-ou-avancer-lage-legal-avec-ou-sans-capitalisation-ce-que-proposent-les-principaux-candidats-a-lelection-presidentielle-sur-les-retraites"]
 };
 const CANDS=[
@@ -302,8 +331,19 @@ const CANDS=[
   {id:"lepen",name:"Marine Le Pen",party:"Rassemblement national"},
   {id:"melenchon",name:"Jean-Luc Mélenchon",party:"La France insoumise"},
   {id:"philippe",name:"Édouard Philippe",party:"Horizons"},
+  {id:"retailleau",name:"Bruno Retailleau",party:"Les Républicains"},
   {id:"roussel",name:"Fabien Roussel",party:"Parti communiste français"},
-  {id:"tondelier",name:"Marine Tondelier",party:"Les Écologistes"}
+  {id:"tondelier",name:"Marine Tondelier",party:"Les Écologistes"},
+  {id:"villepin",name:"Dominique de Villepin",party:"La France humaniste"}
+];
+// Point d'étape affiché sur l'accueil : [titre, texte, sources]
+const MAJ="23 novembre 2026";
+const CAMP=[
+["Le Pen peut se présenter, sous réserve","Inéligibilité réduite en appel le 7 juillet 2026. Son pourvoi suspend la peine ; la Cour de cassation tranche au plus tard début avril 2027. Sinon, Jordan Bardella.",["lpa","lpcdj","lpfi"]],
+["Droite et centre : la primaire divise","Attal la veut avec Retailleau et Lisnard ; Philippe refuse d'y participer.",["atpr"]],
+["Gauche : Tondelier tend la main à Mélenchon","Coalition proposée le 18 novembre ; vote des adhérents écologistes du 10 au 13 décembre. Glucksmann s'y oppose.",["tdpm","tdof"]],
+["Deux nouveaux candidats","Bruno Retailleau (LR) et Dominique de Villepin, déclaré le 20 novembre avec 258 propositions.",["vfi","retes"]],
+["Sondages de mi-novembre","Le Pen en tête avec environ un tiers des voix, Mélenchon deuxième (17 à 19 %), puis Philippe et Glucksmann.",["sond"]]
 ];
 // [titre, explication, sources, étiquette, contexte « aujourd'hui »]
 const LINK={
@@ -312,18 +352,18 @@ const LINK={
 "Formation à l'IA et discipline":"ia","Soutien scolaire pour tous":"ia","Un assistant médical IA pour tous":"ia","Une IA européenne souveraine":"ia",
 "Plan d'investissement de 200 Md€":"investissement","Un fonds d'avenir de 500 Md€":"investissement","Déficit à zéro en dix ans":"investissement","Déficit ramené à 2 %":"investissement",
 "350 députés et 200 sénateurs":"senat",
-"Passer à la 6e République":"constituante","Une « Première République écologique »":"constituante","Le référendum d'initiative citoyenne":"ric","RIC et proportionnelle":"ric","Référendums d'initiative citoyenne":"ric","Une journée référendaire chaque année":"ric",
+"Passer à la 6e République":"constituante","Une « Première République écologique »":"constituante","Le référendum d'initiative citoyenne":"ric","Élargir le référendum":"ric","Des référendums réguliers":"ric","RIC et proportionnelle":"ric","Référendums d'initiative citoyenne":"ric","Une journée référendaire chaque année":"ric",
 "Proportionnelle aux législatives":"proportionnelle","Proportionnelle intégrale":"proportionnelle",
-"Supprimer l'âge légal de départ":"retraite","Ajouter un pilier de capitalisation":"retraite","Capitalisation : 10 à 15 % des pensions":"retraite","Âge légal porté à 65 ans":"retraite","Retraite à 60 ans avec 40 annuités":"retraite","Revenir à 62 ans":"retraite","Retour immédiat à 62 ans":"retraite","Un pilier de capitalisation annoncé":"retraite","Pas d'âge unique de départ":"retraite","Retraite à 60 ans à taux plein":"retraite",
-"35 heures réelles, puis 32 heures":"temps","Semaine de 32 heures":"temps","32 heures dans les métiers pénibles":"temps","Semaine de quatre jours encouragée":"temps",
+"Supprimer l'âge légal de départ":"retraite","Points et « Fonds France »":"retraite","Un fonds de capitalisation obligatoire":"retraite","Une réforme par référendum en 2028":"retraite","Ajouter un pilier de capitalisation":"retraite","Capitalisation : 10 à 15 % des pensions":"retraite","Âge légal porté à 65 ans":"retraite","Retraite à 60 ans avec 40 annuités":"retraite","Revenir à 62 ans":"retraite","Retour immédiat à 62 ans":"retraite","Un pilier de capitalisation annoncé":"retraite","Pas d'âge unique de départ":"retraite","Retraite à 60 ans à taux plein":"retraite",
+"35 heures réelles, puis 32 heures":"temps","Semaine de 32 heures":"temps","Sortir des 35 heures":"temps","32 heures dans les métiers pénibles":"temps","Semaine de quatre jours encouragée":"temps",
 "Hausse du net financée par les méga-héritages":"salaire","Baisser les cotisations salariales":"salaire","+10 % de salaire sans cotisations patronales":"salaire","Deux heures de plus sans cotisations":"salaire","Alléger le poids des cotisations sur le travail":"salaire","Exonérations conditionnées aux hausses de salaire":"salaire",
 "Impôt sur le revenu à 14 tranches":"bareme","Impôt sur le revenu à 15 tranches":"bareme","Pas d'impôt sur le revenu avant 30 ans":"bareme",
-"Taxe Zucman":"fortune","Retour d'un ISF « climatique »":"fortune","Un impôt sur la fortune financière":"fortune","Rétablir l'impôt sur la grande fortune":"fortune","Taxe Zucman : 2 % au-delà de 100 M€":"fortune","ISF rétabli et renforcé":"fortune",
+"Taxe Zucman":"fortune","Retour d'un impôt sur la fortune":"fortune","Pas de hausse d'impôt sur le patrimoine":"fortune","Retour d'un ISF « climatique »":"fortune","Un impôt sur la fortune financière":"fortune","Rétablir l'impôt sur la grande fortune":"fortune","Taxe Zucman : 2 % au-delà de 100 M€":"fortune","ISF rétabli et renforcé":"fortune",
 "Héritage plafonné à 12 M€":"heritage","Pas de hausse des droits de succession":"heritage","Successions et donations allégées":"heritage","Héritage progressif":"heritage","Grande réforme fiscale":"heritage",
 "Contre-budget : 140 Md€ d'économies":"chiffrage",
 "Bloquer les prix de première nécessité":"prix","Carburant bloqué à 1,60 € le litre":"prix","Encadrer les prix des biens essentiels":"prix","TVA à 5,5 % sur l'énergie":"prix","Chèque énergie à 500 € plutôt que baisse des taxes":"prix",
 "Fin du 49.3":"navette","Proportionnelle et fin du 49.3":"navette",
-"Quitter l'OTAN":"otan","Pas d'armée européenne":"otan","Réarmement massif":"otan","Fonds de défense de 500 Md€":"otan","Défense à 55 Md€":"otan",
+"Quitter l'OTAN":"otan","Pas d'armée européenne":"otan","Réarmement massif":"otan","Fonds de défense de 500 Md€":"otan","Défense à 55 Md€":"otan","Défense à 3 % du PIB":"otan","Défense à 3,5 % du PIB":"otan",
 "Désobéir à certaines règles européennes":"desobeissance","Primauté du droit français":"desobeissance","Contribution à l'UE plafonnée à 5 Md€":"desobeissance",
 "Ukraine : une voie diplomatique":"frappes","Aide militaire à l'Ukraine":"frappes","Soutien à l'Ukraine":"frappes","Réarmement et Ukraine":"frappes"
 };
@@ -341,7 +381,8 @@ glucksmann:[
 lepen:[
 ["Revenir à 62 ans","C'est la position historique du RN : abroger la réforme de 2023, ramener l'âge légal à 62 ans avec 40 à 42 années de cotisation, et refuser tout nouveau recul de l'âge. Jordan Bardella, président du parti, a tenu au printemps 2026 des propos plus ouverts sur ce sujet, ce qui a créé un désaccord public entre les deux.",["lcp","rn"]],
 ["60 ans pour ceux qui ont commencé tôt","Un départ à 60 ans serait possible pour ceux qui ont commencé à travailler avant 20 ans et cotisé 40 années. C'est un dispositif de « carrières longues » élargi par rapport à celui qui existe aujourd'hui.",["rn"]],
-["Un pilier de capitalisation annoncé","Le RN a annoncé une réforme des retraites avec un « pilier de capitalisation », dont le détail doit être présenté dans les prochaines semaines. Les pensions resteraient indexées sur l'inflation.",["rnbud"]],
+["Un fonds de capitalisation obligatoire", "Présenté le 17 novembre 2026 avec Jordan Bardella. Les actifs de 52 ans ou moins cotiseraient à un fonds de capitalisation obligatoire, lancé avec les quelque 20 Md€ du Fonds de réserve pour les retraites. Il serait ensuite alimenté chaque année par au moins 12 Md€ de cotisations patronales déjà existantes, réaffectées : le « 1 % logement », la cotisation au Fonds national d'aide au logement et la moitié des cotisations à la formation professionnelle. Le RN vise un rendement de 4 à 6 % et annonce environ 81 000 € pour un salarié entrant sur le marché du travail en 2028. Les pensions seraient indexées sur l'inflation pendant cinq ans, et la réforme pourrait être soumise à référendum.", ["rnr24", "rnreu"]],
+["L'âge d'entrée dans la vie active pris en compte", "Le RN maintient un retour à 62 ans, voire 60 ans pour ceux qui ont commencé tôt. Jordan Bardella ajoute un troisième critère de calcul, l'âge auquel on a commencé à travailler, en plus de l'âge et de la durée de cotisation.", ["rnreu"]],
 ["Minimum vieillesse à 1 000 €","Le minimum vieillesse (ASPA), versé aux retraités aux très faibles ressources, serait porté à 1 000 € par mois. Les petites pensions seraient relevées, toutes les retraites indexées sur l'inflation, et la demi-part fiscale supplémentaire des veufs et veuves rétablie.",["rn"],"","Le minimum vieillesse est d'un peu plus de 1 000 € par mois pour une personne seule depuis 2025."]],
 melenchon:[
 ["Retraite à 60 ans avec 40 annuités","Abroger la réforme des 64 ans et rétablir le droit de partir à 60 ans à taux plein, c'est-à-dire sans réduction de pension, dès lors qu'on a cotisé 40 années. Le calendrier se fait en deux temps : dans son chiffrage du 14 octobre 2026, LFI prévoit d'abord un retour à 62 ans dès 2027 (environ 9 Md€), les 60 ans étant promis plus tard dans le mandat.",["lfi","lfi14"]],
@@ -356,7 +397,12 @@ roussel:[
 tondelier:[
 ["Retour immédiat à 62 ans","Abroger la réforme Borne et rétablir 62 ans comme âge minimum de départ, dès l'élection.",["eco"]],
 ["Objectif 60 ans pour les métiers durs","À plus long terme, viser la retraite à 60 ans, en commençant par ceux qui ont commencé à travailler tôt ou exercé des métiers pénibles. La pénibilité (travail de nuit, port de charges, chaleur…) ouvrirait droit à des trimestres de retraite supplémentaires.",["eco"]],
-["Une conférence travail-retraite","Une négociation avec les partenaires sociaux pour trouver comment ramener le régime général à l'équilibre d'ici 2050.",["eco"]]]
+["Une conférence travail-retraite","Une négociation avec les partenaires sociaux pour trouver comment ramener le régime général à l'équilibre d'ici 2050.",["eco"]]],
+retailleau:[
+["Réforme des retraites : détails à confirmer", "Il annonce une réforme de fond, mais son programme complet n'est pas publié et les comptes rendus divergent. Selon certains, l'âge du taux plein passerait à 65 ans avec une part de capitalisation ; selon d'autres, on pourrait partir dès 63 ans avec un taux plein garanti à 65 ans. Cette fiche sera précisée quand le texte officiel paraîtra.", ["retes", "retmv"]]],
+villepin:[
+["Une réforme par référendum en 2028", "Il refuse d'imposer une réforme dès son élection. Il prévoit une conférence sociale avec syndicats et patronat, une convention citoyenne, un débat au Parlement, puis un référendum en 2028.", ["vprog", "vlcp"]],
+["Points et « Fonds France »", "Sur le fond, il propose un système par points, où chaque euro cotisé donne les mêmes droits, complété par une capitalisation publique. Un fonds public, le « Fonds France », alimenterait des livrets personnels de retraite avec les dividendes des autoroutes, reprises en gestion publique à la fin des concessions. C'est lui qui, Premier ministre, les avait privatisées en 2006.", ["vprog", "vlcp"]]]
 }},
 travail:{label:"Travail & salaires",c:{
 attal:[
@@ -395,7 +441,10 @@ tondelier:[
 ["Salaire minimum à 2 000 € brut","Dès 2027, soit environ 1 560 € net, un niveau comparable aux propositions de Glucksmann et Mélenchon.",["eco"]],
 ["Exonérations conditionnées aux hausses de salaire","L'État exonère aujourd'hui les entreprises d'une partie des cotisations sur les bas salaires. Ces exonérations ne seraient accordées que si l'entreprise augmente les salaires sous 2 000 € net ou revalorise ses grilles.",["eco"]],
 ["Un « congé climatique » de 5 jours","Cinq jours par an pour protéger les salariés lors de fortes chaleurs ou de catastrophes (inondations, tempêtes).",["eco"]],
-["32 heures dans les métiers pénibles","Réduire le temps de travail à 32 heures pour les métiers pénibles, et indexer le point d'indice des fonctionnaires sur l'inflation.",["fvt","eco"]]]
+["32 heures dans les métiers pénibles","Réduire le temps de travail à 32 heures pour les métiers pénibles, et indexer le point d'indice des fonctionnaires sur l'inflation.",["fvt","eco"]]],
+retailleau:[
+["Sortir des 35 heures", "La durée légale de 35 heures par semaine serait remplacée par une référence annuelle de 1 623 heures, à négocier dans les entreprises. Les heures supplémentaires seraient totalement exonérées de cotisations sociales.", ["retmv", "retes"]],
+["Un revenu d'incitation à l'activité", "Le RSA, la prime d'activité et l'allocation de solidarité spécifique (versée aux chômeurs en fin de droits) seraient fusionnés en une seule aide, conçue pour que reprendre un travail rapporte toujours plus.", ["retmv"]]]
 }},
 fiscalite:{label:"Fiscalité & économie",c:{
 attal:[
@@ -448,7 +497,16 @@ tondelier:[
 ["Héritage progressif","Simplifier la fiscalité de l'héritage et la rendre plus progressive, pour taxer davantage les gros héritages.",["eco"]],
 ["Plus d'impôt pour les grandes entreprises","Hausse de la fiscalité sur les grands groupes, sans taux précisé.",["eco"]],
 ["Encadrer les prix des biens essentiels","Logement, énergie, eau, transports, alimentation de qualité et biens culturels, pour empêcher la spéculation. L'encadrement des loyers serait étendu et rendu permanent.",["eco"]],
-["Prêt à taux zéro pour décarboner les PME","Un prêt long terme sans intérêts pour les investissements des PME et ETI qui réduisent leurs émissions.",["eco"]]]
+["Prêt à taux zéro pour décarboner les PME","Un prêt long terme sans intérêts pour les investissements des PME et ETI qui réduisent leurs émissions.",["eco"]]],
+retailleau:[
+["100 Md€ d'économies en cinq ans", "Il veut rompre avec un modèle qu'il juge trop centré sur l'État : environ 100 Md€ d'économies sur le quinquennat, ce qui suppose de ne pas remplacer une large part des fonctionnaires partant à la retraite. Le nombre de postes supprimés varie selon les estimations.", ["retes"]],
+["40 Md€ rendus aux entreprises", "Baisse des impôts de production et des cotisations sociales, votée dans une loi de finances rectificative dès l'été 2027.", ["retes"]],
+["Pas de hausse d'impôt sur le patrimoine", "Ni ISF ni taxe Zucman : l'effort passerait par les dépenses, pas par les impôts.", ["retes"]]],
+villepin:[
+["Retour d'un impôt sur la fortune", "Un impôt unique sur le patrimoine, à partir de 2,2 M€ selon la presse, remplacerait l'IFI, qui ne taxe aujourd'hui que l'immobilier.", ["vlcp", "vvar"]],
+["Une CSG universelle", "Plus de 200 Md€ de cotisations qui financent des prestations sans lien avec le salaire (famille, santé) basculeraient vers la CSG, prélevée sur tous les revenus. Le travail serait moins taxé, les revenus du capital et les pensions davantage. Il propose aussi de soumettre à la CSG la consommation d'intelligence artificielle des entreprises.", ["vlcp", "vprog"]],
+["Fin des niches fiscales en cinq ans", "Suppression progressive des niches fiscales, ces réductions et crédits d'impôt ciblés, et un déficit maintenu sous 3 % du PIB.", ["vvar"]],
+["Autoroutes rendues à l'État", "Les autoroutes reviendraient en gestion publique à la fin des concessions, et leurs bénéfices financeraient l'épargne retraite.", ["vlcp", "vprog"]]]
 }},
 ecologie:{label:"Écologie & énergie",c:{
 attal:[
@@ -459,6 +517,7 @@ attal:[
 ["Voiture électrique d'occasion aidée","Le leasing social permet de louer une voiture électrique neuve à partir d'environ 100 € par mois aux ménages modestes. Il serait étendu aux voitures d'occasion, qui bénéficieraient aussi du bonus écologique.",["re"]],
 ["Rénovation et recyclage","Rénovation thermique massive des logements contre les canicules et le froid, relance de l'exploitation minière en France et en Europe, et 30 % des besoins en matières couverts par le réemploi et le recyclage.",["re"]]],
 glucksmann:[
+["200 Md€ pour l'énergie", "Présenté le 9 novembre 2026 avec Yannick Jadot : 200 Md€ d'investissements publics sur cinq ans, un doublement des capacités renouvelables d'ici 2035, et le maintien du nucléaire dans le mix électrique.", ["gke"]],
 ["Une grande loi climat","Une loi qui engagerait tous les ministères à respecter les limites de la planète, avec –90 % d'émissions en 2040 et la neutralité climat en 2050.",["pp"]],
 ["Un bouclier pour la sobriété","Loi contre la fast-fashion (vêtements à bas prix renouvelés en permanence), score carbone obligatoire sur les produits, extinction des publicités lumineuses la nuit, fin du plastique à usage unique d'ici 2030.",["pp"]],
 ["Relancer MaPrimeRénov'","Cette aide à la rénovation énergétique est jugée trop complexe. Il veut la simplifier pour accélérer les rénovations complètes, plus efficaces que les petits travaux isolés.",["pp"]],
@@ -501,7 +560,11 @@ tondelier:[
 ["Agriculture bio à 21 % en 2030","Puis 25 % en 2032, et sortie des pesticides de synthèse et engrais azotés d'ici 2050.",["eco"],"","Environ 10 % des surfaces agricoles sont en bio."],
 ["120 000 km de pistes cyclables","Doubler le réseau cyclable continu d'ici 2032.",["eco"]],
 ["Geler les grands projets","Canal Seine-Nord, autoroute A69, liaison Lyon-Turin et extensions d'aéroports, jugés inutiles ou trop polluants.",["eco"]],
-["Électricité découplée des énergies fossiles","Le prix de l'électricité ne suivrait plus celui du gaz. Un parc de voitures électriques à vocation sociale serait créé.",["eco"]]]
+["Électricité découplée des énergies fossiles","Le prix de l'électricité ne suivrait plus celui du gaz. Un parc de voitures électriques à vocation sociale serait créé.",["eco"]]],
+retailleau:[
+["Nucléaire oui, éolien et solaire moins aidés", "Priorité au nucléaire, et réduction des subventions aux nouvelles installations éoliennes et solaires.", ["retmv"]]],
+villepin:[
+["Objectif neutralité carbone", "Il reprend l'objectif de neutralité carbone, sans détailler encore le calendrier ni les moyens dans les comptes rendus disponibles.", ["vvar"]]]
 }},
 immigration:{label:"Immigration",c:{
 attal:[
@@ -539,7 +602,15 @@ tondelier:[
 ["Droit du sol garanti","Pour les enfants nés en France, quelle que soit la situation administrative des parents.",["eco"]],
 ["Voies légales et sûres","Par une révision du pacte européen sur la migration et l'asile adopté en 2024.",["eco"]],
 ["Remplacer Frontex","L'agence européenne de garde-frontières serait remplacée par une structure chargée des droits des migrants et du sauvetage en mer et sur terre.",["eco"]],
-["Fin des refoulements aux frontières","Fin des renvois illégaux et de la présence militaire aux frontières, notamment dans le Briançonnais et sur le littoral nord, et fin de l'externalisation de l'asile vers des pays tiers.",["eco"]]]
+["Fin des refoulements aux frontières","Fin des renvois illégaux et de la présence militaire aux frontières, notamment dans le Briançonnais et sur le littoral nord, et fin de l'externalisation de l'asile vers des pays tiers.",["eco"]]],
+retailleau:[
+["Un référendum sur l'immigration", "Il promet, s'il est élu, un référendum sur l'immigration (BFMTV, 3 novembre 2026). Cela suppose d'abord de réviser l'article 11 de la Constitution, qui ne permet pas aujourd'hui de soumettre ce sujet au référendum.", ["retexp", "retjdd"]],
+["Supprimer le droit du sol", "Un enfant né en France de parents étrangers ne deviendrait plus français du seul fait de sa naissance et de sa résidence.", ["retmv"]],
+["Quotas migratoires votés", "Le Parlement fixerait chaque année le nombre d'entrées par catégorie.", ["retmv"]],
+["Cinq ans de résidence avant certaines aides", "Certaines prestations sociales seraient réservées aux étrangers ayant cinq ans de résidence et de travail en France.", ["retmv"]]],
+villepin:[
+["Une loi pluriannuelle sur l'immigration", "Une loi fixerait la politique migratoire sur plusieurs années, après consultation, avec une immigration choisie selon le mérite et la réciprocité avec les pays d'origine.", ["vprog", "vlcp"]],
+["Enregistrement biométrique des sans-papiers", "Enregistrement biométrique obligatoire des étrangers sans titre de séjour.", ["vprog"]]]
 }},
 securite:{label:"Sécurité & justice",c:{
 attal:[
@@ -584,7 +655,9 @@ tondelier:[
 ["Plafonner le nombre de détenus","Un numerus clausus : on ne pourrait pas incarcérer au-delà des places disponibles, pour mettre fin à la surpopulation.",["eco"]],
 ["Légaliser le cannabis","Production, vente et consommation encadrées par l'État.",["eco"]],
 ["Contrôler la police autrement","L'IGPN (la « police des polices ») serait remplacée par un organisme indépendant rattaché à la Défenseure des droits, et le parquet rendu indépendant du gouvernement.",["eco"]],
-["Loi contre les violences sexuelles","Une loi globale dotée de 3 Md€.",["eco"]]]
+["Loi contre les violences sexuelles","Une loi globale dotée de 3 Md€.",["eco"]]],
+retailleau:[
+["Rétablir les courtes peines", "Revenir sur la loi Belloubet de 2019, qui a interdit les peines de prison de moins d'un mois et poussé à aménager celles de moins d'un an.", ["retmv"]]]
 }},
 institutions:{label:"Institutions",c:{
 attal:[
@@ -620,7 +693,13 @@ tondelier:[
 ["Proportionnelle intégrale","Sans prime majoritaire, par circonscriptions régionales.",["eco"]],
 ["Une « Première République écologique »","Comme LFI, elle veut sortir de la 5e République par une Assemblée constituante, avec un processus transparent et participatif, pour abolir ce qu'elle appelle la « monarchie présidentielle ». Elle veut aussi supprimer le 49.3, qui permet au gouvernement de faire passer un texte sans vote.",["eco","fvt"]],
 ["L'habitabilité dans la Constitution","Inscrire le respect des limites planétaires (climat, eau, sols, biodiversité) et un principe de non-régression : une loi ne pourrait pas réduire la protection de l'environnement.",["eco"]],
-["Loi anti-concentration des médias","Sur le modèle norvégien : un même groupe ne pourrait pas détenir plus de deux titres de presse nationaux, une télévision et une radio nationales.",["eco"]]]
+["Loi anti-concentration des médias","Sur le modèle norvégien : un même groupe ne pourrait pas détenir plus de deux titres de presse nationaux, une télévision et une radio nationales.",["eco"]]],
+retailleau:[
+["Élargir le référendum", "Le référendum pourrait porter sur tout le domaine de la loi, y compris l'immigration, et le référendum d'initiative partagée demanderait 2,4 millions de signatures au lieu d'environ 4,8 millions. Il faut pour cela réviser l'article 11 de la Constitution.", ["retjdd"]]],
+villepin:[
+["Vote à 16 ans et vote obligatoire", "Le droit de vote serait ouvert dès 16 ans, avec en contrepartie une obligation de voter.", ["vlcp", "vprog"]],
+["Reconnaître le vote blanc", "Les votes blancs seraient comptés dans les résultats.", ["vlcp"]],
+["Des référendums réguliers", "Consulter régulièrement les Français par référendum.", ["vvar", "vfi"]]]
 }},
 europe:{label:"Europe & défense",c:{
 attal:[
@@ -661,7 +740,15 @@ tondelier:[
 ["Stop au gaz, à l'uranium et aux engrais russes","Arrêt immédiat des importations, qui financent indirectement la guerre.",["eco"]],
 ["Budget européen à 2 % du PIB","En 2035, puis 5 % en 2050, contre environ 1 % aujourd'hui, avec une étape fédérale.",["eco"]],
 ["Avoirs russes pour l'Ukraine","Les 140 Md€ d'avoirs russes gelés en Europe financeraient les réparations de guerre.",["eco"]],
-["Non au Mercosur","Opposition à l'accord de libre-échange entre l'UE et l'Amérique du Sud, qu'elle qualifie de « faute politique, écologique et sociale ».",["fvt"]]]
+["Non au Mercosur","Opposition à l'accord de libre-échange entre l'UE et l'Amérique du Sud, qu'elle qualifie de « faute politique, écologique et sociale ».",["fvt"]]],
+retailleau:[
+["Défense à 3 % du PIB", "Porter le budget de la défense à 3 % du PIB, contre environ 2 % aujourd'hui.", ["retmv"]],
+["OTAN et soutien à l'Ukraine", "Rester dans l'OTAN et continuer à soutenir l'Ukraine.", ["retmv"]],
+["Une Europe des nations", "Une Union fondée sur la souveraineté des États et la subsidiarité, et une directive « retour » révisée pour faciliter les expulsions.", ["retmv"]]],
+villepin:[
+["Défense à 3,5 % du PIB", "Garder la loi de programmation militaire et viser 3,5 % du PIB pour la défense, si la situation économique le permet.", ["vprog"]],
+["Ukraine : soutien durable et adhésion progressive", "Pérenniser le soutien à l'Ukraine et organiser son rapprochement progressif avec l'Union européenne.", ["vprog"]],
+["Une Europe des trois cercles", "Une Union organisée en cercles d'intégration plus ou moins poussée, autour d'un noyau de pays qui iraient plus loin ensemble.", ["vlcp"]]]
 }},
 sante:{label:"Santé, social & famille",c:{
 attal:[
@@ -948,11 +1035,13 @@ pos:{
   glucksmann:{s:"Abroger la réforme de 2023, puis un âge qui varie selon la pénibilité du métier. Aucun chiffre pour l'instant.",m:["Abroger la réforme de 2023","Pas d'âge unique de départ"]},
   lepen:{s:"62 ans, et 60 ans pour ceux qui ont commencé à travailler avant 20 ans.",m:["Revenir à 62 ans","60 ans pour ceux qui ont commencé tôt"]},
   attal:{s:"Plus d'âge légal : seule la durée de cotisation compte.",m:["Supprimer l'âge légal de départ"]},
-  philippe:{s:"65 ans et 45 années de cotisation, avec des exemptions pour environ un tiers des salariés.",m:["Âge légal porté à 65 ans"]}
+  philippe:{s:"65 ans et 45 années de cotisation, avec des exemptions pour environ un tiers des salariés.",m:["Âge légal porté à 65 ans"]},
+  retailleau:{s:"Une réforme annoncée, mais l'âge proposé diffère selon les comptes rendus (63 ou 65 ans).",m:["Réforme des retraites : détails à confirmer"]},
+  villepin:{s:"Pas de réforme imposée : concertation, convention citoyenne, puis référendum en 2028.",m:["Une réforme par référendum en 2028"]}
 },
 scale:{label:"Âge minimum de départ proposé",min:60,max:66,now:62.75,nowLabel:"Aujourd'hui : 62 ans et 9 mois",
   pts:{melenchon:60,roussel:60,tondelier:62,lepen:62,philippe:65},
-  offLabel:"Pas d'âge unique",off:{attal:"Seule la durée de cotisation compte.",glucksmann:"L'âge dépendrait de la pénibilité, sans chiffre."}},
+  offLabel:"Pas d'âge unique",off:{attal:"Seule la durée de cotisation compte.",glucksmann:"L'âge dépendrait de la pénibilité, sans chiffre.",retailleau:"63 ou 65 ans selon les sources, à confirmer.",villepin:"Décidé par référendum en 2028."}},
 how:[
   ["Le système fonctionne par répartition : les cotisations prélevées sur les salaires d'aujourd'hui paient les pensions des retraités d'aujourd'hui. Il n'y a pas de cagnotte individuelle. L'équilibre dépend donc du nombre de cotisants par retraité, qui baisse avec le vieillissement de la population.",["cor26"]],
   "Deux règles décident du départ. L'âge légal est l'âge minimum pour partir. La durée de cotisation est le nombre de trimestres nécessaires pour toucher une pension complète, dite « à taux plein ». Partir sans tous ses trimestres fait perdre 1,25 % de pension par trimestre manquant (la décote) ; travailler plus longtemps en fait gagner autant (la surcote). À 67 ans, la décote disparaît dans tous les cas.",
@@ -999,7 +1088,8 @@ impl:[
 pos:{
   attal:{s:"Un pilier de capitalisation, alimenté par l'intéressement des salariés, et 1 000 € versés par l'État à chaque naissance.",m:["Ajouter un pilier de capitalisation","1 000 € de l'État pour chaque enfant"]},
   philippe:{s:"Un pilier obligatoire et collectif, qui fournirait 10 à 15 % des pensions d'ici quinze ans.",m:["Capitalisation : 10 à 15 % des pensions"]},
-  lepen:{s:"Un pilier de capitalisation annoncé, dont le détail reste à venir.",m:["Un pilier de capitalisation annoncé"]}
+  lepen:{s:"Un fonds obligatoire pour les actifs de 52 ans ou moins, financé par au moins 12 Md€ par an de cotisations patronales réaffectées.",m:["Un fonds de capitalisation obligatoire"]},
+  villepin:{s:"Une capitalisation publique, le « Fonds France », financée par les dividendes des autoroutes.",m:["Points et « Fonds France »"]}
 },
 how:[
   "Dans la répartition, les cotisations de l'année paient les pensions de l'année. Dans la capitalisation, chacun, ou un fonds collectif, épargne et place cet argent ; la pension dépend de ce qui a été épargné et du rendement obtenu.",
@@ -1146,7 +1236,8 @@ pos:{
   roussel:{s:"Semaine de 32 heures sans baisse de salaire.",m:["Semaine de 32 heures"]},
   tondelier:{s:"32 heures dans les métiers pénibles, et 5 jours de « congé climatique » par an.",m:["32 heures dans les métiers pénibles","Un « congé climatique » de 5 jours"]},
   attal:{s:"Supprimer le plafond d'heures supplémentaires et encourager la semaine de quatre jours, sans réduire le nombre d'heures.",m:["Supprimer le plafond d'heures supplémentaires","Semaine de quatre jours encouragée"]},
-  philippe:{s:"Travailler deux heures de plus par semaine, sans cotisations sur ces heures.",m:["Deux heures de plus sans cotisations"]}
+  philippe:{s:"Travailler deux heures de plus par semaine, sans cotisations sur ces heures.",m:["Deux heures de plus sans cotisations"]},
+  retailleau:{s:"Fin de la durée légale hebdomadaire, remplacée par 1 623 heures par an, et heures supplémentaires sans cotisations.",m:["Sortir des 35 heures"]}
 },
 how:[
   "La durée légale est de 35 heures par semaine depuis les lois Aubry (1998 et 2000). C'est le seuil des heures supplémentaires, pas un maximum : les salariés à temps complet travaillent en moyenne autour de 39 heures. Un salarié ne peut pas dépasser 48 heures par semaine, ni 220 heures supplémentaires par an sauf accord collectif.",
@@ -1238,7 +1329,9 @@ pos:{
   glucksmann:{s:"Une grande réforme de l'impôt pour moins taxer le travail et plus l'héritage ; taxe sur les héritages de plus de 2 M€.",m:["Grande réforme fiscale","Hausse du net financée par les méga-héritages"]},
   lepen:{s:"Pas d'ISF, mais un impôt sur la fortune financière à la place de l'IFI ; successions allégées pour les classes moyennes.",m:["Un impôt sur la fortune financière","Successions et donations allégées"]},
   attal:{s:"Aucune hausse des droits de succession, donations facilitées.",m:["Pas de hausse des droits de succession"]},
-  philippe:{s:"Aucun nouvel impôt pendant cinq ans.",m:["Pas de nouvel impôt pendant cinq ans"]}
+  philippe:{s:"Aucun nouvel impôt pendant cinq ans.",m:["Pas de nouvel impôt pendant cinq ans"]},
+  retailleau:{s:"Ni ISF ni taxe Zucman.",m:["Pas de hausse d'impôt sur le patrimoine"]},
+  villepin:{s:"Un impôt unique sur le patrimoine à la place de l'IFI, et la fin progressive des niches fiscales.",m:["Retour d'un impôt sur la fortune", "Fin des niches fiscales en cinq ans"]}
 },
 how:[
   ["L'ISF taxait de 1989 à 2017 tout le patrimoine au-delà de 1,3 M€, de 0,5 % à 1,5 % par an. Depuis 2018, l'impôt sur la fortune immobilière (IFI) ne taxe plus que l'immobilier, pour garder en France les capitaux investis dans les entreprises.",["lfi"]],
@@ -1277,7 +1370,9 @@ pos:{
   philippe:{s:"Déficit ramené à 2 % du PIB, règle d'or dans la Constitution, 250 000 postes publics en moins.",m:["Déficit ramené à 2 %","250 000 postes de fonctionnaires en moins"]},
   lepen:{s:"140 Md€ d'économies par an d'ici 2032 et 30 Md€ de baisses d'impôts, pour un déficit sous 3 % en 2030.",m:["Contre-budget : 140 Md€ d'économies"]},
   melenchon:{s:"106 Md€ de recettes nouvelles et 82 Md€ de dépenses nouvelles en 2027, soit environ 25 Md€ de baisse du déficit.",m:["Plan d'investissement de 200 Md€"]},
-  roussel:{s:"Récupérer 80 à 100 Md€ de fraude fiscale et financer un fonds d'avenir de 500 Md€.",m:["80 à 100 Md€ de fraude à récupérer","Un fonds d'avenir de 500 Md€"]}
+  roussel:{s:"Récupérer 80 à 100 Md€ de fraude fiscale et financer un fonds d'avenir de 500 Md€.",m:["80 à 100 Md€ de fraude à récupérer","Un fonds d'avenir de 500 Md€"]},
+  retailleau:{s:"Environ 100 Md€ d'économies en cinq ans et 40 Md€ de baisses d'impôts pour les entreprises.",m:["100 Md€ d'économies en cinq ans", "40 Md€ rendus aux entreprises"]},
+  villepin:{s:"Déficit sous 3 % du PIB, financement de la protection sociale basculé vers la CSG.",m:["Fin des niches fiscales en cinq ans", "Une CSG universelle"]}
 },
 how:[
   ["Le déficit public a atteint 5,1 % du PIB en 2025 (152,5 Md€) et la dette 115,6 % du PIB, soit environ 3 460 Md€. Le gouvernement vise 5 % en 2026.",["insdef"]],
@@ -1367,7 +1462,9 @@ pos:{
   lepen:{s:"Nouveaux réacteurs et barrages, arrêt de l'éolien et démontage progressif des parcs, moratoire sur le solaire.",m:["Relancer nucléaire et hydroélectricité","Stop à l'éolien"]},
   roussel:{s:"Un mix 100 % public et décarboné, nucléaire et renouvelables.",m:["Nucléaire et pôle public de l'énergie"]},
   tondelier:{s:"Pas de nouveaux réacteurs ; la part du nucléaire baisserait au profit des renouvelables, sans calendrier chiffré.",m:["Sortie progressive du nucléaire"]},
-  melenchon:{s:"Abandonner les EPR, sortir du nucléaire et viser 100 % de renouvelables.",m:["Sortir du nucléaire"]}
+  melenchon:{s:"Abandonner les EPR, sortir du nucléaire et viser 100 % de renouvelables.",m:["Sortir du nucléaire"]},
+  glucksmann:{s:"Garder le nucléaire et doubler les renouvelables d'ici 2035, avec 200 Md€ d'investissements publics.",m:["200 Md€ pour l'énergie"]},
+  retailleau:{s:"Priorité au nucléaire, moins de subventions pour l'éolien et le solaire.",m:["Nucléaire oui, éolien et solaire moins aidés"]}
 },
 how:[
   ["En 2025, 95 % de l'électricité produite en France était bas-carbone. Le nucléaire a produit 373 TWh, soit environ les deux tiers ; les renouvelables (hydraulique, éolien, solaire) environ 27 %. La France a exporté un record de 92 TWh vers ses voisins.",["rte"]],
@@ -1516,7 +1613,9 @@ pos:{
   glucksmann:{s:"Des voies légales d'immigration de travail, et une convention citoyenne pour décider de la politique migratoire.",m:["Voies légales d'immigration de travail","Une convention citoyenne sur l'immigration"]},
   tondelier:{s:"Des voies d'entrée légales et sûres, par une révision du pacte européen.",m:["Voies légales et sûres"]},
   melenchon:{s:"Visas facilités, régularisation des travailleurs, étudiants et parents d'enfants scolarisés.",m:["Régularisations et carte de 10 ans"]},
-  roussel:{s:"Une politique d'accueil et des voies d'accès légales et sûres.",m:["Une politique d'accueil d'humanité"]}
+  roussel:{s:"Une politique d'accueil et des voies d'accès légales et sûres.",m:["Une politique d'accueil d'humanité"]},
+  retailleau:{s:"Un référendum sur l'immigration et des quotas votés chaque année.",m:["Un référendum sur l'immigration", "Quotas migratoires votés"]},
+  villepin:{s:"Une loi pluriannuelle, préparée après consultation, avec une immigration choisie selon le mérite.",m:["Une loi pluriannuelle sur l'immigration"]}
 },
 how:[
   ["En 2025, la France a délivré environ 384 000 premiers titres de séjour, en hausse de 11 % (chiffre provisoire, révisé ensuite autour de 377 000). Les étudiants et les motifs familiaux en sont les deux premières sources, devant l'asile et le travail.",["fiimm","tsej"]],
@@ -1558,7 +1657,8 @@ pos:{
   lepen:{s:"Supprimer le droit du sol, et réserver aides sociales, logement social et emploi en priorité aux Français.",m:["Supprimer le droit du sol","Priorité nationale"]},
   melenchon:{s:"Droit du sol dès la naissance, droit de vote des étrangers aux élections locales, maintien de l'AME.",m:["Droit du sol intégral","Droit de vote des étrangers aux élections locales","Garder l'aide médicale d'État"]},
   tondelier:{s:"Droit du sol garanti quelle que soit la situation des parents, et accès aux soins sans délai.",m:["Droit du sol garanti","Droits garantis aux exilés"]},
-  glucksmann:{s:"Vote des étrangers non européens aux élections locales, et abrogation de la loi immigration de 2024.",m:["Vote à 16 ans","Abroger la loi immigration de 2024"]}
+  glucksmann:{s:"Vote des étrangers non européens aux élections locales, et abrogation de la loi immigration de 2024.",m:["Vote à 16 ans","Abroger la loi immigration de 2024"]},
+  retailleau:{s:"Supprimer le droit du sol, et cinq ans de résidence avant certaines aides.",m:["Supprimer le droit du sol", "Cinq ans de résidence avant certaines aides"]}
 },
 how:[
   "Le droit du sol français n'est pas automatique à la naissance. Un enfant né en France de parents étrangers devient français à 18 ans s'il y a vécu au moins cinq ans depuis ses 11 ans ; il peut le demander plus tôt, dès 13 ans, sous conditions. Un enfant né en France d'un parent lui-même né en France est français dès la naissance (double droit du sol).",
@@ -1603,7 +1703,8 @@ pos:{
   attal:{s:"Permettre de refouler aux frontières intérieures de l'espace Schengen.",m:["Réformer Schengen"]},
   glucksmann:{s:"Remplacer Dublin par une répartition des demandeurs en Europe, et une force européenne de sauvetage en mer.",m:["Fin du système de Dublin","Sauvetage en mer européen"]},
   melenchon:{s:"Suspendre Dublin et renégocier les accords du Touquet avec le Royaume-Uni.",m:["Suspendre Dublin, renégocier le Touquet"]},
-  tondelier:{s:"Remplacer Frontex par une agence de sauvetage, et mettre fin aux refoulements aux frontières.",m:["Remplacer Frontex","Fin des refoulements aux frontières"]}
+  tondelier:{s:"Remplacer Frontex par une agence de sauvetage, et mettre fin aux refoulements aux frontières.",m:["Remplacer Frontex","Fin des refoulements aux frontières"]},
+  villepin:{s:"Enregistrement biométrique obligatoire des étrangers sans titre de séjour.",m:["Enregistrement biométrique des sans-papiers"]}
 },
 how:[
   ["L'asile protège ceux qui fuient des persécutions. La demande est examinée par l'OFPRA, puis en appel par la Cour nationale du droit d'asile. En 2025, la France a reçu environ 116 700 premières demandes et accordé une protection dans environ 63 600 cas en première instance.",["fiimm"]],
@@ -1650,7 +1751,8 @@ pos:{
   attal:{s:"Plus de places de prison imposées aux communes, fin du juge d'application des peines, justice des mineurs durcie.",m:["Plus de places de prison","Supprimer le juge d'application des peines","Justice des mineurs durcie"]},
   glucksmann:{s:"Recruter dans la justice et réduire la surpopulation par des peines adaptées et la réinsertion.",m:["Justice et prisons"]},
   tondelier:{s:"Plafonner le nombre de détenus au nombre de places, et recruter 9 000 magistrats en dix ans.",m:["Plafonner le nombre de détenus","Recruter dans la justice"]},
-  roussel:{s:"Plus de moyens pour la justice et des prisons plus humaines.",m:["Plan pour la justice et les prisons"]}
+  roussel:{s:"Plus de moyens pour la justice et des prisons plus humaines.",m:["Plan pour la justice et les prisons"]},
+  retailleau:{s:"Rétablir les peines de prison de moins d'un mois.",m:["Rétablir les courtes peines"]}
 },
 how:[
   ["Les prisons françaises comptent plus de 90 000 détenus en septembre 2026 pour environ 63 300 places, soit un taux d'occupation de 142 % ; il dépasse 175 % dans les maisons d'arrêt, où sont les courtes peines et les personnes en attente de jugement. Près de 8 000 détenus dorment sur un matelas au sol.",["prison","prison2"]],
@@ -1816,7 +1918,9 @@ pos:{
   lepen:{s:"Un RIC sur tous les sujets.",m:["RIC et proportionnelle"]},
   glucksmann:{s:"Référendums locaux et nationaux à l'initiative des citoyens, et conventions citoyennes généralisées.",m:["Référendums d'initiative citoyenne"]},
   attal:{s:"Une journée référendaire chaque année, avec des questions préparées avec les partis et les syndicats.",m:["Une journée référendaire chaque année"]},
-  roussel:{s:"Des citoyens associés à l'écriture des lois.",m:["Participation citoyenne"]}
+  roussel:{s:"Des citoyens associés à l'écriture des lois.",m:["Participation citoyenne"]},
+  retailleau:{s:"Un référendum ouvert à tout le domaine de la loi, et un RIP à 2,4 millions de signatures.",m:["Élargir le référendum"]},
+  villepin:{s:"Des référendums réguliers.",m:["Des référendums réguliers"]}
 },
 how:[
   ["Depuis 2008, la Constitution prévoit un référendum d'initiative partagée (RIP). Il doit être lancé par 185 parlementaires puis soutenu par environ 4,7 millions d'électeurs en neuf mois. Il n'a jamais abouti : la tentative sur Aéroports de Paris en 2019 a réuni 1,09 million de signatures.",["adp"]],
@@ -1913,7 +2017,9 @@ pos:{
   glucksmann:{s:"Aide militaire fortement augmentée, à l'Ukraine comme à la Moldavie et à l'Arménie.",m:["Aide militaire à l'Ukraine"]},
   tondelier:{s:"Aide militaire, avoirs russes gelés pour l'Ukraine, et arrêt immédiat des achats de gaz, d'uranium et d'engrais russes.",m:["Soutien à l'Ukraine","Avoirs russes pour l'Ukraine","Stop au gaz, à l'uranium et aux engrais russes"]},
   attal:{s:"Poursuivre le soutien, saisir les avoirs russes gelés.",m:["Réarmement et Ukraine"]},
-  melenchon:{s:"Une voie diplomatique : cessez-le-feu, retrait des troupes russes et négociations de paix.",m:["Ukraine : une voie diplomatique"]}
+  melenchon:{s:"Une voie diplomatique : cessez-le-feu, retrait des troupes russes et négociations de paix.",m:["Ukraine : une voie diplomatique"]},
+  retailleau:{s:"Continuer à soutenir l'Ukraine.",m:["OTAN et soutien à l'Ukraine"]},
+  villepin:{s:"Soutien durable et rapprochement progressif avec l'Union européenne.",m:["Ukraine : soutien durable et adhésion progressive"]}
 },
 how:[
   "La Russie a envahi l'Ukraine en février 2022. L'aide occidentale prend trois formes : armes et munitions, argent pour faire fonctionner l'État ukrainien, et sanctions contre la Russie.",
@@ -1957,7 +2063,9 @@ pos:{
   attal:{s:"Poursuivre le réarmement et faire de la dissuasion « avancée » un outil européen.",m:["Réarmement et Ukraine"]},
   lepen:{s:"Budget des armées à 55 Md€.",m:["Défense à 55 Md€"]},
   melenchon:{s:"Sortir du commandement intégré de l'OTAN puis de l'organisation, pas d'armée européenne, conscription citoyenne de 9 mois.",m:["Quitter l'OTAN","Pas d'armée européenne","Une conscription citoyenne de 9 mois"]},
-  roussel:{s:"Quitter l'OTAN et signer le traité d'interdiction des armes nucléaires.",m:["Quitter l'OTAN","Signer le traité d'interdiction des armes nucléaires"]}
+  roussel:{s:"Quitter l'OTAN et signer le traité d'interdiction des armes nucléaires.",m:["Quitter l'OTAN","Signer le traité d'interdiction des armes nucléaires"]},
+  retailleau:{s:"Défense à 3 % du PIB, maintien dans l'OTAN.",m:["Défense à 3 % du PIB", "OTAN et soutien à l'Ukraine"]},
+  villepin:{s:"Défense à 3,5 % du PIB si l'économie le permet.",m:["Défense à 3,5 % du PIB"]}
 },
 how:[
   ["La loi de programmation militaire actualisée en août 2026 prévoit environ 436 Md€ pour les armées sur 2024-2030, soit 36 Md€ de plus que prévu. Le budget 2026 de la mission Défense est d'environ 57 Md€ hors pensions.",["lpm","lpmlcp","pfl26"]],
@@ -2005,7 +2113,9 @@ pos:{
   philippe:{s:"Achever le marché unique et protéger l'industrie européenne face à la Chine.",m:["Achever le marché unique","Protéger le marché européen face à la Chine"]},
   lepen:{s:"Constitution française au-dessus du droit européen, contribution française plafonnée à 5 Md€, non au Mercosur.",m:["Primauté du droit français","Contribution à l'UE plafonnée à 5 Md€","Non au Mercosur"]},
   melenchon:{s:"Rester dans l'UE à ses conditions : renégocier les traités, et désobéir aux règles jugées bloquantes.",m:["Désobéir à certaines règles européennes","Veto contre le libre-échange"]},
-  roussel:{s:"Fin de la règle des 3 % de déficit et contrôle démocratique de la Banque centrale européenne.",m:["Fin de la règle des 3 % de déficit"]}
+  roussel:{s:"Fin de la règle des 3 % de déficit et contrôle démocratique de la Banque centrale européenne.",m:["Fin de la règle des 3 % de déficit"]},
+  retailleau:{s:"Une Europe des nations, et une directive « retour » révisée.",m:["Une Europe des nations"]},
+  villepin:{s:"Une Europe en trois cercles d'intégration.",m:["Une Europe des trois cercles"]}
 },
 how:[
   "L'UE décide surtout de deux façons : à la majorité qualifiée (55 % des pays représentant 65 % de la population) pour la plupart des sujets, et à l'unanimité pour les impôts, la politique étrangère ou l'élargissement. Le droit européen prime sur les lois nationales, ce que la Cour de justice fait respecter.",
@@ -2329,16 +2439,16 @@ const last=c=>c.name.split(" ").slice(1).join(" ");
 const pv=id=>`style="--p:var(--c-${id})"`;
 const MI={};Object.values(D).forEach(t=>Object.entries(t.c).forEach(([cid,ms])=>ms.forEach(m=>MI[cid+"|"+m[0]]=m)));
 
-// État : mode d'affichage, sélection, face-à-face, thème courant
-const st={view:"home",mode:"all",sel:new Set(CANDS.map(c=>c.id)),vs:[],theme:"retraites"};
+// État : candidats sélectionnés (2 = face-à-face, automatiquement), thème courant
+const st={view:"home",sel:new Set(CANDS.map(c=>c.id)),theme:"retraites",q:false};
 try{const s=JSON.parse(store.get("app2027")||"{}");
-  if(["all","sel","vs"].includes(s.mode))st.mode=s.mode;
   if(Array.isArray(s.sel))st.sel=new Set(s.sel.filter(id=>CI[id]));
-  if(Array.isArray(s.vs))st.vs=s.vs.filter(id=>CI[id]).slice(0,2);
+  if(s.mode==="vs"&&Array.isArray(s.vs)&&s.vs.length===2)st.sel=new Set(s.vs.filter(id=>CI[id]));
   if(D[s.theme])st.theme=s.theme;}catch(e){}
-const save=()=>store.set("app2027",JSON.stringify({mode:st.mode,sel:[...st.sel],vs:st.vs,theme:st.theme}));
-const ready=()=>st.mode==="all"||(st.mode==="sel"&&st.sel.size>0)||(st.mode==="vs"&&st.vs.length===2);
-const shown=()=>st.mode==="vs"?st.vs.map(id=>CI[id]):st.mode==="sel"?CANDS.filter(c=>st.sel.has(c.id)):CANDS;
+const save=()=>store.set("app2027",JSON.stringify({sel:[...st.sel],theme:st.theme}));
+const ready=()=>st.sel.size>0;
+const isVs=()=>st.sel.size===2;
+const shown=()=>CANDS.filter(c=>st.sel.has(c.id));
 const dtab={};
 
 // Sources
@@ -2354,17 +2464,14 @@ const pin=c=>`<span class="pin" ${pv(c.id)}>${esc(last(c))}</span>`;
 function renderHome(focusSel){
   st.view="home";
   try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}
-  const M=[["all","Tous les candidats","Les sept programmes, thème par thème."],["sel","Ma sélection","Choisissez les candidats à afficher."],["vs","Face-à-face","Deux candidats côte à côte, débat par débat."]];
-  let h=`<section class="home wrap"><p class="eyebrow">Présidentielle 2027</p><h1>Qui voulez-vous comparer ?</h1>
-  <div class="modes" role="radiogroup" aria-label="Mode de comparaison">`+M.map(([k,t,d])=>`<button type="button" class="mode" role="radio" aria-checked="${st.mode===k}" data-mode="${k}"><b>${t}</b><span>${d}</span></button>`).join("")+`</div>`;
-  if(st.mode==="sel"){
-    h+=`<div class="picker"><p class="lab">Cochez les candidats à afficher</p><div class="ballots">`+CANDS.map(c=>`<button type="button" class="ballot" data-id="${c.id}" aria-pressed="${st.sel.has(c.id)}" ${pv(c.id)}><span class="sw" aria-hidden="true"></span><span>${esc(c.name)}<small>${esc(c.party.split(" · ")[0])}</small></span></button>`).join("")+`</div></div>`;
-  }else if(st.mode==="vs"){
-    const slot=i=>{const c=CI[st.vs[i]];return c?`<div class="vss on" ${pv(c.id)}>${esc(c.name)}</div>`:`<div class="vss">Candidat ${i+1}</div>`};
-    h+=`<div class="picker"><div class="vsbar">${slot(0)}<span class="vsx">VS</span>${slot(1)}</div><p class="lab">Choisissez deux candidats</p><div class="ballots">`+CANDS.map(c=>{const i=st.vs.indexOf(c.id);return `<button type="button" class="ballot" data-id="${c.id}" aria-pressed="${i>=0}" ${pv(c.id)}><span class="sw" aria-hidden="true"></span><span>${esc(c.name)}<small>${esc(c.party.split(" · ")[0])}</small></span>${i>=0?`<span class="slot">${i+1}</span>`:""}</button>`}).join("")+`</div></div>`;
-  }
-  h+=`<button type="button" class="go" id="go" ${ready()?"":"disabled"}>Voir les programmes →</button>
-  <p class="homenote">Dix thèmes, découpés en grands débats. Pour chacun : ce que veut chaque candidat, comment ça marche aujourd'hui, ce qui se fait ailleurs, et les arguments pour et contre.</p></section>`;
+  const allOn=st.sel.size===CANDS.length;
+  let h=`<section class="home wrap"><h1>Programmes 2027</h1>
+  <div class="grp"><div class="ghead"><p class="eyebrow">Candidats</p><button type="button" class="tool" id="all">${allOn?"Tout désélectionner":"Tout sélectionner"}</button></div>
+  <div class="ballots">`+CANDS.map(c=>`<button type="button" class="ballot" data-id="${c.id}" aria-pressed="${st.sel.has(c.id)}" ${pv(c.id)}><span class="sw" aria-hidden="true"></span><span>${esc(c.name)}</span></button>`).join("")+`</div>`
+  +(isVs()?`<p class="vshint" aria-live="polite">${shown().map(c=>`<i ${pv(c.id)}></i>`).join("")}Face-à-face</p>`:`<p class="vshint" aria-live="polite"></p>`)+`</div>
+  <div class="grp"><p class="eyebrow">Thèmes</p><div class="themes">`+Object.entries(D).map(([k,t])=>`<button type="button" class="theme" data-theme="${k}" ${ready()?"":"disabled"}>${esc(t.label)}</button>`).join("")+`</div>`
+  +(ready()?"":`<p class="vshint">Choisissez au moins un candidat.</p>`)+`</div>
+  <details class="fold camp"><summary><span class="ft">Où en est la campagne</span><span class="fc">${MAJ}</span><span class="fchev" aria-hidden="true"></span></summary><div class="fb">`+CAMP.map(([t,x,s])=>`<p class="ci"><b>${esc(t)}</b> ${esc(x)}${cite(s)}</p>`).join("")+`</div></details></section>`;
   app.innerHTML=h;
   if(focusSel){const f=app.querySelector(focusSel);if(f)f.focus()}
 }
@@ -2372,15 +2479,15 @@ function renderHome(focusSel){
 /* ---------- Vue thème ---------- */
 function modeChip(){
   const cs=shown();
-  const txt=st.mode==="all"?"Tous les candidats (7)":st.mode==="vs"?`${last(cs[0])} vs ${last(cs[1])}`:`Sélection : ${cs.map(last).join(", ")}`;
-  return `<button type="button" class="modechip" id="change" aria-label="Changer de candidats (${esc(txt)})"><span class="dots" aria-hidden="true">${cs.map(c=>`<i ${pv(c.id)}></i>`).join("")}</span><span class="txt">${esc(txt)}</span><u>Changer</u></button>`;
+  const txt=cs.length===CANDS.length?"Tous":isVs()?`${last(cs[0])} / ${last(cs[1])}`:cs.map(last).join(", ");
+  return `<button type="button" class="modechip" id="change" aria-label="Changer de candidats (${esc(txt)})"><span class="dots" aria-hidden="true">${cs.map(c=>`<i ${pv(c.id)}></i>`).join("")}</span><span class="txt">${esc(txt)}</span></button>`;
 }
 function renderTheme(){
   st.view="theme";
   app.innerHTML=`<nav class="strip" aria-label="Thèmes"><div class="wrap">
-    <div class="toprow"><button type="button" class="brand" id="brand">Programmes 2027</button>${modeChip()}</div>
+    <div class="toprow"><button type="button" class="brand" id="brand" aria-label="Accueil">← 2027</button>${modeChip()}<button type="button" class="qbtn" id="qbtn" aria-label="Chercher une mesure" aria-expanded="false"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
+    <div class="searchrow" id="qrow" hidden><input class="search" id="q" type="search" placeholder="SMIC, nucléaire, Parcoursup…" aria-label="Chercher une mesure"></div>
     <div class="tabs" role="toolbar">`+Object.entries(D).map(([k,t])=>`<button type="button" class="tab" data-key="${k}">${esc(t.label)}</button>`).join("")+`</div>
-    <div class="searchrow"><input class="search" id="q" type="search" placeholder="Chercher une mesure : SMIC, nucléaire, Parcoursup…" aria-label="Chercher une mesure"><button class="tool" id="toggleAll" type="button">Tout déplier</button></div>
   </div></nav><main class="wrap"><div class="bar" id="bar"></div><div class="list" id="list"></div></main>`;
   document.getElementById("q").addEventListener("input",()=>{clearTimeout(qt);qt=setTimeout(renderList,150)});
   renderList();
@@ -2392,34 +2499,40 @@ function selectTheme(k){
   try{history.replaceState(null,"","#"+k)}catch(e){}
   renderList();
   const b=app.querySelector(`.tab[data-key="${k}"]`);if(b&&b.scrollIntoView)b.scrollIntoView({inline:"center",block:"nearest",behavior:"smooth"});
-  const strip=app.querySelector(".strip");if(strip&&window.scrollY>strip.offsetTop)window.scrollTo({top:strip.offsetTop});
+  window.scrollTo({top:0});
 }
+// Un pli : titre seul, le contenu n'est construit qu'à l'ouverture
+function fold(title,dots,fill,id,count){
+  const d=document.createElement("details");d.className="fold";if(id)d.id=id;
+  d.innerHTML=`<summary><span class="ft">${title}</span>${count!=null?`<span class="fc">${count}</span>`:""}<span class="dots" aria-hidden="true">${dots.map(c=>`<i ${pv(c.id)}></i>`).join("")}</span><span class="fchev" aria-hidden="true"></span></summary><div class="fb"></div>`;
+  d._fill=fill;return d;
+}
+function vsGrid(cards){const g=document.createElement("div");g.className="vs";cards.forEach(x=>g.appendChild(x));return g}
 function renderList(){
   const bar=document.getElementById("bar"),list=document.getElementById("list"),term=document.getElementById("q").value.trim();
   list.innerHTML="";
   app.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-pressed",term.length<2&&b.dataset.key===st.theme?"true":"false"));
-  if(term.length>=2){renderSearch(term,bar,list);upd();return}
-  const t=D[st.theme],deb=DEB[st.theme];
+  if(term.length>=2){renderSearch(term,bar,list);return}
+  const t=D[st.theme],deb=DEB[st.theme],cs=shown();
+  bar.innerHTML=`<h2>${esc(t.label)}</h2>`;
+  const used=new Set();
   if(deb){
-    bar.innerHTML=`<h2>${esc(t.label)}</h2><p class="sub">${deb.length} grands débats. Pour chacun : la position des candidats, puis de quoi comprendre.</p><div class="dnav">`+deb.map(d=>`<button type="button" data-goto="${d.id}">${esc(d.t)}</button>`).join("")+`</div>`;
-    deb.forEach(d=>list.appendChild(debateEl(d)));
-    // Mesures du thème qui ne relèvent d'aucun débat
-    const used=new Set();deb.forEach(d=>Object.entries(d.pos).forEach(([cid,p])=>p.m.forEach(t=>used.add(cid+"|"+t))));
-    const rest=shown().map(c=>[c,(t.c[c.id]||[]).filter(m=>!used.has(c.id+"|"+m[0]))]).filter(([,ms])=>ms.length);
-    if(rest.length){
-      const h=document.createElement("div");h.className="bar";h.style.margin="10px 0 0";
-      h.innerHTML=`<h3 class="resth">Autres mesures du thème</h3><p class="sub">Les propositions qui ne relèvent d'aucun des débats ci-dessus.</p>`;list.appendChild(h);
-      const cards=rest.map(([c,ms])=>candCard(c,ms.map(m=>measureHTML(m,{cid:c.id}))));
-      if(st.mode==="vs"){const g=document.createElement("div");g.className="vs";cards.forEach(x=>g.appendChild(x));list.appendChild(g)}
-      else cards.forEach(x=>list.appendChild(x));
-    }
-  }else{
-    bar.innerHTML=`<h2>${esc(t.label)}</h2>`;
-    const cards=shown().map(c=>candCard(c,(t.c[c.id]||[]).map(m=>measureHTML(m,{cid:c.id}))));
-    if(st.mode==="vs"){const g=document.createElement("div");g.className="vs";cards.forEach(x=>g.appendChild(x));list.appendChild(g)}
-    else cards.forEach(x=>list.appendChild(x));
+    deb.forEach(d=>{
+      Object.entries(d.pos).forEach(([cid,p])=>p.m.forEach(x=>used.add(cid+"|"+x)));
+      const who=cs.filter(c=>d.pos[c.id]);
+      list.appendChild(fold(esc(d.t),who,b=>debateBody(d,b),"d-"+d.id));
+    });
   }
-  upd();
+  const rest=cs.map(c=>[c,(t.c[c.id]||[]).filter(m=>!used.has(c.id+"|"+m[0]))]).filter(([,ms])=>ms.length);
+  const cardsFor=r=>r.map(([c,ms])=>candCard(c,ms.map(m=>measureHTML(m,{cid:c.id}))));
+  if(deb){
+    if(rest.length)list.appendChild(fold("Autres mesures",rest.map(([c])=>c),b=>{const cards=cardsFor(rest);isVs()?b.appendChild(vsGrid(cards)):cards.forEach(x=>b.appendChild(x))},null,rest.reduce((n,[,ms])=>n+ms.length,0)));
+  }else if(isVs()){
+    list.appendChild(vsGrid(cs.map(c=>candCard(c,(t.c[c.id]||[]).map(m=>measureHTML(m,{cid:c.id}))))));
+  }else{
+    cs.forEach(c=>{const ms=t.c[c.id]||[];
+      list.appendChild(fold(esc(c.name),[c],b=>{b.innerHTML=`<div class="ms">${ms.length?ms.map(m=>measureHTML(m,{cid:c.id})).join(""):`<p class="empty">Aucune mesure recensée sur ce thème.</p>`}</div>`},null,ms.length))});
+  }
 }
 function candCard(c,rows,empty="Aucune mesure recensée sur ce thème dans les sources consultées."){
   const s=document.createElement("section");s.className="cand";s.style.setProperty("--p",`var(--c-${c.id})`);
@@ -2433,7 +2546,7 @@ function renderSearch(term,bar,list){
     Object.values(D).forEach(t=>(t.c[c.id]||[]).forEach(m=>{if(norm(m[0]+" "+(m[1]||"")+" "+(m[4]||"")).includes(n))rows.push(measureHTML(m,{cid:c.id,theme:t.label}))}));
     total+=rows.length;if(rows.length)list.appendChild(candCard(c,rows));
   });
-  bar.innerHTML=`<h2>Recherche : « ${esc(term)} »</h2><p class="sub">${total?`${total} mesure${total>1?"s":""} trouvée${total>1?"s":""}, tous thèmes confondus.`:"Aucune mesure ne correspond. Essayez un autre mot."}</p>`;
+  bar.innerHTML=`<h2>« ${esc(term)} »</h2><p class="sub">${total?`${total} mesure${total>1?"s":""}`:"Aucune mesure trouvée."}</p>`;
 }
 function measureHTML(m,o={}){
   const [mt,md,src,tag,ctx]=m;
@@ -2446,15 +2559,12 @@ function measureHTML(m,o={}){
 }
 
 /* ---------- Débats ---------- */
-const DT=[["pos","Positions"],["how","Comment ça marche"],["world","Ailleurs"],["appr","Les approches"],["pc","Pour et contre"],["impl","Effets"]];
-function debateEl(d){
-  const s=document.createElement("section");s.className="debate";s.id="d-"+d.id;
+const DT=[["pos","Positions"],["how","Comprendre"],["world","Ailleurs"],["appr","Approches"],["pc","Pour / contre"],["impl","Effets"]];
+function debateBody(d,b){
   const tabs=DT.filter(([k])=>k==="pos"||(d[k]&&d[k].length));
   const cur=dtab[d.id]||"pos";
-  s.innerHTML=`<header class="dh"><h3>${esc(d.t)}</h3><p class="q">${esc(d.q)}</p></header>
-  <div class="dtabs" role="tablist">`+tabs.map(([k,l])=>`<button type="button" class="dtab" role="tab" data-d="${d.id}" data-k="${k}" aria-selected="${k===cur}">${l}</button>`).join("")+`</div>
-  <div class="dp" role="tabpanel">${panel(d,cur)}</div>`;
-  return s;
+  b.innerHTML=`<p class="q">${esc(d.q)}</p><div class="dp" role="tabpanel">${panel(d,cur)}</div>
+  <div class="dtabs" role="tablist">`+tabs.map(([k,l])=>`<button type="button" class="dtab" role="tab" data-d="${d.id}" data-k="${k}" aria-selected="${k===cur}">${l}</button>`).join("")+`</div>`;
 }
 function panel(d,k){
   const cs=shown(),ids=new Set(cs.map(c=>c.id));
@@ -2500,12 +2610,12 @@ function scaleHTML(d,cs,ids){
 }
 function positionsHTML(d,cs){
   const ms=(c,p)=>p.m.map(t=>MI[c.id+"|"+t]).filter(Boolean).map(m=>measureHTML(m,{inDebate:1})).join("");
-  if(st.mode==="vs")return `<div class="vs">`+cs.map(c=>{const p=d.pos[c.id];
+  if(isVs())return `<div class="vs">`+cs.map(c=>{const p=d.pos[c.id];
     return `<div class="vcol" ${pv(c.id)}><p class="who">${esc(c.name)}</p>${p?`<p class="stance">${esc(p.s)}</p><div class="ms">${ms(c,p)}</div>`:`<p class="none">Pas de mesure recensée sur ce point.</p>`}</div>`}).join("")+`</div>`;
   const has=cs.filter(c=>d.pos[c.id]),abs=cs.filter(c=>!d.pos[c.id]);
   return `<div class="pos">`+has.map(c=>{const p=d.pos[c.id];
     return `<div class="prow" ${pv(c.id)}><span class="bar4"></span><p class="who">${esc(c.name)}<small>${esc(c.party.split(" · ")[0])}</small></p><p class="stance">${esc(p.s)}</p><div class="ms">${ms(c,p)}</div></div>`}).join("")+`</div>`
-    +(abs.length?`<p class="absent">Pas de mesure recensée sur ce point : ${abs.map(c=>esc(c.name)).join(", ")}.</p>`:"");
+    +(abs.length?`<p class="absent">Rien sur ce point : ${abs.map(c=>esc(last(c))).join(", ")}</p>`:"");
 }
 
 /* ---------- Notions (thèmes sans débats) ---------- */
@@ -2518,26 +2628,25 @@ function notionHTML(x){
 }
 
 /* ---------- Événements ---------- */
-function upd(){const t=document.getElementById("toggleAll");if(!t)return;const a=[...app.querySelectorAll("main details.m")];t.hidden=!a.length;t.textContent=a.length&&a.every(d=>d.open)?"Tout replier":"Tout déplier"}
-app.addEventListener("toggle",upd,true);
+function upd(){}
+app.addEventListener("toggle",e=>{const d=e.target;if(d.classList&&d.classList.contains("fold")&&d.open&&d._fill){d._fill(d.querySelector(".fb"));d._fill=null}},true);
 app.addEventListener("click",e=>{
   const el=e.target.closest("button");if(!el)return;
-  if(el.dataset.mode){st.mode=el.dataset.mode;save();renderHome(`[data-mode="${st.mode}"]`);return}
   if(el.classList.contains("ballot")&&st.view==="home"){
-    const id=el.dataset.id;
-    if(st.mode==="sel"){st.sel.has(id)?st.sel.delete(id):st.sel.add(id)}
-    else{const i=st.vs.indexOf(id);if(i>=0)st.vs.splice(i,1);else if(st.vs.length<2)st.vs.push(id);else st.vs[1]=id}
+    const id=el.dataset.id;st.sel.has(id)?st.sel.delete(id):st.sel.add(id);
     save();renderHome(`.ballot[data-id="${id}"]`);return;
   }
-  if(el.id==="go"){if(!ready())return;save();try{history.replaceState(null,"","#"+st.theme)}catch(e){}renderTheme();window.scrollTo({top:0});return}
-  if(el.id==="brand"||el.id==="change"){renderHome(".mode[aria-checked=\"true\"]");window.scrollTo({top:0});return}
+  if(el.id==="all"){st.sel=st.sel.size===CANDS.length?new Set():new Set(CANDS.map(c=>c.id));save();renderHome("#all");return}
+  if(el.dataset.theme){if(!ready())return;st.theme=el.dataset.theme;save();try{history.replaceState(null,"","#"+st.theme)}catch(e){}renderTheme();window.scrollTo({top:0});
+    const b=app.querySelector(`.tab[data-key="${st.theme}"]`);if(b&&b.scrollIntoView)b.scrollIntoView({inline:"center",block:"nearest"});return}
+  if(el.id==="brand"||el.id==="change"){renderHome();window.scrollTo({top:0});return}
+  if(el.id==="qbtn"){const r=document.getElementById("qrow"),q=document.getElementById("q");const o=r.hidden;r.hidden=!o;el.setAttribute("aria-expanded",o);if(o)q.focus();else if(q.value){q.value="";renderList()}return}
   if(el.classList.contains("tab")){selectTheme(el.dataset.key);return}
-  if(el.dataset.goto){const s=document.getElementById("d-"+el.dataset.goto);if(s)s.scrollIntoView({block:"start",behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});return}
   if(el.classList.contains("dtab")){
     const d=DEB[st.theme].find(x=>x.id===el.dataset.d);dtab[d.id]=el.dataset.k;
     const sec=document.getElementById("d-"+d.id);
     sec.querySelectorAll(".dtab").forEach(b=>b.setAttribute("aria-selected",b===el?"true":"false"));
-    sec.querySelector(".dp").innerHTML=panel(d,el.dataset.k);upd();return;
+    sec.querySelector(".dp").innerHTML=panel(d,el.dataset.k);return;
   }
   if(el.classList.contains("nlink")){
     const open=el.getAttribute("aria-expanded")==="true";
@@ -2545,11 +2654,9 @@ app.addEventListener("click",e=>{
     else el.insertAdjacentHTML("afterend",notionHTML(NI[el.dataset.n]));
     el.setAttribute("aria-expanded",open?"false":"true");return;
   }
-  if(el.id==="toggleAll"){const a=[...app.querySelectorAll("main details.m")];const o=!a.every(d=>d.open);a.forEach(d=>d.open=o);upd();return}
 });
 
-{const h=location.hash.slice(1);if(D[h]){st.theme=h;if(!ready())st.mode="all";renderTheme()}else renderHome()}
+{const h=location.hash.slice(1);if(D[h]){st.theme=h;if(!ready())st.sel=new Set(CANDS.map(c=>c.id));renderTheme()}else renderHome()}
 </script>
 
-</body>
-</html>
+</body></html>
