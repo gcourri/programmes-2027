@@ -2657,6 +2657,22 @@ app.addEventListener("click",e=>{
 });
 
 {const h=location.hash.slice(1);if(D[h]){st.theme=h;if(!ready())st.sel=new Set(CANDS.map(c=>c.id));renderTheme()}else renderHome()}
+
+// GitHub Pages laisse le navigateur garder la page 10 minutes en cache : on vérifie en ligne
+// si une version plus récente existe et, si oui, on recharge une seule fois.
+const BUILD="2026-11-23b";
+function fresh(){
+  if(!/^https?:$/.test(location.protocol))return;
+  fetch(location.pathname,{cache:"reload"}).then(r=>r.ok?r.text():"").then(t=>{
+    const m=t.match(/const BUILD="([^"]+)"/);
+    if(!m||m[1]===BUILD)return;
+    const k="reload:"+m[1];
+    try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,"1")}catch(e){}
+    location.reload();
+  }).catch(()=>{});
+}
+fresh();
+addEventListener("pageshow",e=>{if(e.persisted)fresh()});
 </script>
 
 </body></html>
