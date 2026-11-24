@@ -256,7 +256,7 @@ footer p{margin:0 0 6px;max-width:64ch}
 
 <div id="app"></div>
 <footer class="wrap">
-  <p>Mis à jour le 23 novembre 2026 · « Programme 2022 » : mesure d'un ancien programme pas encore remplacé.</p>
+  <p>Mis à jour le 24 novembre 2026 · « Programme 2022 » : mesure d'un ancien programme pas encore remplacé.</p>
 </footer>
 
 <script>
@@ -323,6 +323,18 @@ const S={
   tdpm:["Politique Matin, 18 novembre 2026","https://www.politiquematin.fr/marine-tondelier-coalition-melenchon-18-novembre-2026-ecologistes"],
   atpr:["LCP, Attal et la primaire (nov. 2026)","https://lcp.fr/actualites/c-est-ineluctable-gabriel-attal-s-accroche-a-sa-primaire-malgre-le-refus-d-edouard"],
   sond:["Wikipédia, liste des sondages pour 2027","https://fr.wikipedia.org/wiki/Liste_de_sondages_sur_l%27%C3%A9lection_pr%C3%A9sidentielle_fran%C3%A7aise_de_2027"],
+  lfi26:["L'Avenir en commun, programme de la Nouvelle France (LFI, 2026)","https://melenchon2027.fr/programme/livre/"],
+  lfi26s:["L'Avenir en commun 2026, « À chacun selon ses besoins »","https://melenchon2027.fr/programme/livre/mettre-en-securite-sociale/chapitre1"],
+  lfi26r:["L'Avenir en commun 2026, « Partager les richesses »","https://melenchon2027.fr/programme/livre/une-economie-au-service-des-besoins/chapitre2"],
+  lfi26p:["L'Avenir en commun 2026, « Planification écologique »","https://melenchon2027.fr/programme/livre/pour-une-bifurcation-ecologique-et-sociale/chapitre1"],
+  lfi26e:["L'Avenir en commun 2026, « Les grands chantiers de la bifurcation »","https://melenchon2027.fr/programme/livre/pour-une-bifurcation-ecologique-et-sociale/chapitre3"],
+  lfi26i:["L'Avenir en commun 2026, « Le pouvoir au peuple »","https://melenchon2027.fr/programme/livre/fonder-la-6e-republique/chapitre1"],
+  lfi26m:["L'Avenir en commun 2026, « Une France indépendante au service de la paix »","https://melenchon2027.fr/programme/livre/un-monde-ordonne/chapitre2"],
+  lfi26u:["L'Avenir en commun 2026, « Se libérer du libéralisme en Europe »","https://melenchon2027.fr/programme/livre/un-monde-ordonne/chapitre1"],
+  lfi26x:["L'Avenir en commun 2026, politique migratoire","https://melenchon2027.fr/programme/livre/un-monde-ordonne/chapitre3"],
+  glw:["WikiGlucksmann, programme par thème (compilation non officielle, nov. 2026)","https://www.wikiglucksmann.fr/programme.html"],
+  glr:["R. Glucksmann, livret « Révolution écologique » (9 nov. 2026)","https://www.wikiglucksmann.fr/p.php?d=revolution-ecologique&p=9"],
+  glpsc:["R. Glucksmann, plan de sortie de crise (22 oct. 2026)","https://www.wikiglucksmann.fr/docs/glucks2027-plan-sortie-de-crise-2026-10-22.pdf"],
   ps:["Public Sénat, retraites des candidats","https://www.publicsenat.fr/actualites/politique/reculer-ou-avancer-lage-legal-avec-ou-sans-capitalisation-ce-que-proposent-les-principaux-candidats-a-lelection-presidentielle-sur-les-retraites"]
 };
 const CANDS=[
@@ -337,28 +349,29 @@ const CANDS=[
   {id:"villepin",name:"Dominique de Villepin",party:"La France humaniste"}
 ];
 // Point d'étape affiché sur l'accueil : [titre, texte, sources]
-const MAJ="23 novembre 2026";
+const MAJ="24 novembre 2026";
 const CAMP=[
 ["Le Pen peut se présenter, sous réserve","Inéligibilité réduite en appel le 7 juillet 2026. Son pourvoi suspend la peine ; la Cour de cassation tranche au plus tard début avril 2027. Sinon, Jordan Bardella.",["lpa","lpcdj","lpfi"]],
 ["Droite et centre : la primaire divise","Attal la veut avec Retailleau et Lisnard ; Philippe refuse d'y participer.",["atpr"]],
 ["Gauche : Tondelier tend la main à Mélenchon","Coalition proposée le 18 novembre ; vote des adhérents écologistes du 10 au 13 décembre. Glucksmann s'y oppose.",["tdpm","tdof"]],
+["Programmes publiés à gauche","LFI a publié la nouvelle édition de L'Avenir en commun (SMIC à 1 700 €, sortie du nucléaire d'ici 2060) ; Glucksmann publie le sien par livrets depuis le 9 novembre (200 Md€ pour l'énergie, SMIC à 1 700 €).",["lfi26","glr"]],
 ["Deux nouveaux candidats","Bruno Retailleau (LR) et Dominique de Villepin, déclaré le 20 novembre avec 258 propositions.",["vfi","retes"]],
 ["Sondages de mi-novembre","Le Pen en tête avec environ un tiers des voix, Mélenchon deuxième (17 à 19 %), puis Philippe et Glucksmann.",["sond"]]
 ];
 // [titre, explication, sources, étiquette, contexte « aujourd'hui »]
 const LINK={
-"Fin de Parcoursup":"parcoursup","Remplacer Parcoursup":"parcoursup","Un capital formation universel":"parcoursup","Fin de la sélection à l'université":"parcoursup",
+"Fin de Parcoursup":"parcoursup","Abroger Parcoursup":"parcoursup","Remplacer Parcoursup":"parcoursup","Un capital formation universel":"parcoursup","Fin de la sélection à l'université":"parcoursup",
 "19 élèves par classe, 160 000 enseignants":"lyceens","Moins de 20 élèves par classe":"lyceens","19 élèves par classe en primaire":"lyceens",
 "Formation à l'IA et discipline":"ia","Soutien scolaire pour tous":"ia","Un assistant médical IA pour tous":"ia","Une IA européenne souveraine":"ia",
 "Plan d'investissement de 200 Md€":"investissement","Un fonds d'avenir de 500 Md€":"investissement","Déficit à zéro en dix ans":"investissement","Déficit ramené à 2 %":"investissement",
 "350 députés et 200 sénateurs":"senat",
 "Passer à la 6e République":"constituante","Une « Première République écologique »":"constituante","Le référendum d'initiative citoyenne":"ric","Élargir le référendum":"ric","Des référendums réguliers":"ric","RIC et proportionnelle":"ric","Référendums d'initiative citoyenne":"ric","Une journée référendaire chaque année":"ric",
 "Proportionnelle aux législatives":"proportionnelle","Proportionnelle intégrale":"proportionnelle",
-"Supprimer l'âge légal de départ":"retraite","Points et « Fonds France »":"retraite","Un fonds de capitalisation obligatoire":"retraite","Une réforme par référendum en 2028":"retraite","Ajouter un pilier de capitalisation":"retraite","Capitalisation : 10 à 15 % des pensions":"retraite","Âge légal porté à 65 ans":"retraite","Retraite à 60 ans avec 40 annuités":"retraite","Revenir à 62 ans":"retraite","Retour immédiat à 62 ans":"retraite","Un pilier de capitalisation annoncé":"retraite","Pas d'âge unique de départ":"retraite","Retraite à 60 ans à taux plein":"retraite",
+"Supprimer l'âge légal de départ":"retraite","Points et « Fonds France »":"retraite","Un fonds de capitalisation obligatoire":"retraite","Une réforme par référendum en 2028":"retraite","Ajouter un pilier de capitalisation":"retraite","Capitalisation : 10 à 15 % des pensions":"retraite","Âge légal porté à 65 ans":"retraite","Retraite à 60 ans avec 40 annuités":"retraite","Revenir à 62 ans":"retraite","Retour immédiat à 62 ans":"retraite","Un pilier de capitalisation annoncé":"retraite","Départs anticipés selon la pénibilité":"retraite","Supprimer la décote":"retraite","Retraite à 60 ans à taux plein":"retraite",
 "35 heures réelles, puis 32 heures":"temps","Semaine de 32 heures":"temps","Sortir des 35 heures":"temps","32 heures dans les métiers pénibles":"temps","Semaine de quatre jours encouragée":"temps",
 "Hausse du net financée par les méga-héritages":"salaire","Baisser les cotisations salariales":"salaire","+10 % de salaire sans cotisations patronales":"salaire","Deux heures de plus sans cotisations":"salaire","Alléger le poids des cotisations sur le travail":"salaire","Exonérations conditionnées aux hausses de salaire":"salaire",
 "Impôt sur le revenu à 14 tranches":"bareme","Impôt sur le revenu à 15 tranches":"bareme","Pas d'impôt sur le revenu avant 30 ans":"bareme",
-"Taxe Zucman":"fortune","Retour d'un impôt sur la fortune":"fortune","Pas de hausse d'impôt sur le patrimoine":"fortune","Retour d'un ISF « climatique »":"fortune","Un impôt sur la fortune financière":"fortune","Rétablir l'impôt sur la grande fortune":"fortune","Taxe Zucman : 2 % au-delà de 100 M€":"fortune","ISF rétabli et renforcé":"fortune",
+"Taxe Zucman":"fortune","Contribution climat sur les très grandes fortunes":"fortune","Retour d'un impôt sur la fortune":"fortune","Pas de hausse d'impôt sur le patrimoine":"fortune","Retour d'un ISF « climatique »":"fortune","Un impôt sur la fortune financière":"fortune","Rétablir l'impôt sur la grande fortune":"fortune","Taxe Zucman : 2 % au-delà de 100 M€":"fortune","ISF rétabli et renforcé":"fortune",
 "Héritage plafonné à 12 M€":"heritage","Pas de hausse des droits de succession":"heritage","Successions et donations allégées":"heritage","Héritage progressif":"heritage","Grande réforme fiscale":"heritage",
 "Contre-budget : 140 Md€ d'économies":"chiffrage",
 "Bloquer les prix de première nécessité":"prix","Carburant bloqué à 1,60 € le litre":"prix","Encadrer les prix des biens essentiels":"prix","TVA à 5,5 % sur l'énergie":"prix","Chèque énergie à 500 € plutôt que baisse des taxes":"prix",
@@ -374,8 +387,8 @@ attal:[
 ["Ajouter un pilier de capitalisation","En France, les retraites fonctionnent surtout par répartition : les cotisations des actifs d'aujourd'hui paient directement les pensions des retraités d'aujourd'hui. Avec la capitalisation, chacun épargne pour sa propre retraite dans un fonds placé sur les marchés financiers. Attal veut ajouter un « vrai pilier » de capitalisation à côté de la répartition, sans en avoir encore fixé la taille. Pour l'alimenter, la moitié de l'intéressement et de la participation versés par les entreprises irait automatiquement sur des plans d'épargne retraite.",["re","ps"]],
 ["1 000 € de l'État pour chaque enfant","À la naissance, chaque enfant recevrait un plan d'épargne retraite doté de 1 000 € par l'État. Parents et grands-parents pourraient ensuite le compléter jusqu'à ses 18 ans, avec un avantage fiscal. L'argent serait placé pendant des décennies, ce qui doit lui permettre de croître avant la retraite.",["re"]]],
 glucksmann:[
-["Abroger la réforme de 2023","La réforme Borne de 2023 devait porter l'âge légal de 62 à 64 ans. Glucksmann veut l'abroger, mais précise que ce n'est qu'un point de départ : le système serait ensuite réformé en négociation avec les syndicats et le patronat.",["pp","lcp"]],
-["Pas d'âge unique de départ","Il refuse un retour à 60 ans pour tout le monde. Son idée est de faire dépendre l'âge de départ des conditions de travail et de l'espérance de vie : les carrières longues ou pénibles pourraient partir plus tôt, certaines dès 60 ans, tandis que ceux qui vivent plus longtemps en bonne santé travailleraient plus longtemps. Aucun âge ni aucun critère précis n'est encore chiffré.",["pp","pps"]],
+["Abroger la réforme de 2023", "La réforme Borne de 2023 devait porter l'âge légal de 62 à 64 ans. Glucksmann veut l'abroger et revenir à 62 ans, sans capitalisation (débat de la primaire, 4 octobre 2026). Le système serait ensuite réformé en négociation avec les syndicats et le patronat.", ["glw", "pp", "lcp"]],
+["Départs anticipés selon la pénibilité", "Il refuse un retour à 60 ans pour tout le monde. L'âge légal serait de 62 ans, mais les carrières longues et les métiers pénibles pourraient partir plus tôt. Il veut tenir compte des écarts d'espérance de vie en bonne santé selon les métiers. Les critères précis ne sont pas encore chiffrés.", ["glw", "pp", "pps"]],
 ["Pensions dignes et régimes simplifiés","Mieux prendre en compte la pénibilité et les carrières hachées (temps partiel, chômage, interruptions pour enfants), qui donnent aujourd'hui des pensions plus faibles, surtout pour les femmes. Il veut aussi réduire le nombre de régimes de retraite, aujourd'hui plusieurs dizaines, pour un système plus lisible et mieux équilibré financièrement.",["pp"]],
 ["Un Haut Conseil de pilotage des retraites","Une instance où syndicats et patronat seraient majoritaires, chargée de piloter l'équilibre du système. Pour avoir plus de cotisants, il mise sur l'emploi des seniors, l'immigration légale de travail et une entrée plus rapide des jeunes dans l'emploi.",["pp"]]],
 lepen:[
@@ -385,8 +398,9 @@ lepen:[
 ["L'âge d'entrée dans la vie active pris en compte", "Le RN maintient un retour à 62 ans, voire 60 ans pour ceux qui ont commencé tôt. Jordan Bardella ajoute un troisième critère de calcul, l'âge auquel on a commencé à travailler, en plus de l'âge et de la durée de cotisation.", ["rnreu"]],
 ["Minimum vieillesse à 1 000 €","Le minimum vieillesse (ASPA), versé aux retraités aux très faibles ressources, serait porté à 1 000 € par mois. Les petites pensions seraient relevées, toutes les retraites indexées sur l'inflation, et la demi-part fiscale supplémentaire des veufs et veuves rétablie.",["rn"],"","Le minimum vieillesse est d'un peu plus de 1 000 € par mois pour une personne seule depuis 2025."]],
 melenchon:[
-["Retraite à 60 ans avec 40 annuités","Abroger la réforme des 64 ans et rétablir le droit de partir à 60 ans à taux plein, c'est-à-dire sans réduction de pension, dès lors qu'on a cotisé 40 années. Le calendrier se fait en deux temps : dans son chiffrage du 14 octobre 2026, LFI prévoit d'abord un retour à 62 ans dès 2027 (environ 9 Md€), les 60 ans étant promis plus tard dans le mandat.",["lfi","lfi14"]],
-["Aucune pension sous le SMIC","Toute retraite d'une carrière complète serait portée au moins au niveau du SMIC revalorisé, soit 1 600 € net. Le minimum vieillesse, pour ceux qui n'ont pas une carrière complète, serait relevé jusqu'au seuil de pauvreté. L'idée est de relever le bas de l'échelle des pensions sans plafonner les plus hautes.",["lfi"]]],
+["Supprimer la décote", "Partir sans tous ses trimestres fait aujourd'hui perdre 1,25 % de pension par trimestre manquant. LFI veut supprimer cette décote, qui pénalise surtout les femmes et les carrières précaires, faire compter les périodes de RSA pour la retraite et supprimer les avantages fiscaux de l'épargne retraite par capitalisation.", ["lfi26s"]],
+["Retraite à 60 ans avec 40 annuités", "Abroger la réforme des 64 ans et rétablir le droit de partir à 60 ans à taux plein, c'est-à-dire sans réduction de pension, dès lors qu'on a cotisé 40 années. Le calendrier se fait en deux temps : dans son chiffrage du 14 octobre 2026, LFI prévoit d'abord un retour à 62 ans dès 2027 (environ 9 Md€), les 60 ans étant promis plus tard dans le mandat.", ["lfi26s", "lfi14"]],
+["Aucune pension sous le SMIC", "Toute retraite d'une carrière complète (salarié, indépendant, agriculteur) serait portée au moins au niveau du SMIC revalorisé, soit 1 700 € net dans l'édition 2026 du programme. Le minimum vieillesse, pour ceux qui n'ont pas une carrière complète, serait relevé jusqu'au seuil de pauvreté.", ["lfi26s"]]],
 philippe:[
 ["Âge légal porté à 65 ans","Il veut relever progressivement l'âge légal à 65 ans et porter la durée de cotisation à 45 ans. Il prévoit qu'environ un tiers des salariés en soient exemptés, en raison de carrières longues ou de métiers pénibles. Il justifie la mesure par l'allongement de l'espérance de vie et le déficit du système.",["phe","hor"],"","L'âge légal est bloqué à 62 ans et 9 mois depuis la suspension de la réforme de 2023."],
 ["Capitalisation : 10 à 15 % des pensions","Un pilier de capitalisation obligatoire et collectif, construit sur quinze ans, qui représenterait à terme 10 à 15 % des pensions. Les salariés épargneraient dans des fonds collectifs, à côté du système par répartition. Cette épargne servirait aussi à financer des entreprises technologiques françaises.",["hor","ps"]],
@@ -412,8 +426,8 @@ attal:[
 ["Une « Constitution du travail »","Le Code du travail fait plusieurs milliers de pages. Attal veut le réécrire autour de quelques articles fondamentaux, valables partout, et laisser le reste être négocié par branche professionnelle et par entreprise.",["re"]],
 ["Semaine de quatre jours encouragée","Là où c'est possible, le salarié pourrait travailler sur quatre jours au lieu de cinq, sans réduire le nombre d'heures travaillées dans le mois. L'objectif affiché est de mieux concilier travail et vie personnelle (garde alternée, aide à un proche).",["re"]]],
 glucksmann:[
-["SMIC à 1 600 € net","Le SMIC serait relevé à 1 600 € net par mois dans les deux ans suivant l'élection, soit une hausse d'environ 11 %.",["pp"],"","Le SMIC est d'un peu plus de 1 400 € net par mois pour un temps plein."],
-["Hausse du net financée par les méga-héritages","C'est sa mesure de campagne la plus mise en avant. Il veut baisser la CSG prélevée sur les salaires, une contribution payée par le salarié, pour augmenter le net sans coût pour l'employeur. Pour compenser, il taxerait davantage les héritages de plus de 2 M€, soit environ le 1 % des plus gros. Il estime le rendement à environ 15 Md€, reversés sur les fiches de paie : environ 120 € net de plus par mois pour un salaire de 2 000 € net. Il ne s'agit donc pas d'une baisse de cotisations patronales : aucune source consultée ne mentionne de suppression de taxe payée par l'employeur. Ses critiques à gauche lui reprochent de ne rien demander aux entreprises et de financer la Sécurité sociale par l'impôt plutôt que par les cotisations.",["pps","ppp","wg","fr"],"","La CSG sur les salaires est de 9,2 %, dont une partie est déductible de l'impôt."],
+["SMIC à 1 700 € net", "Dans son plan de sortie de crise du 22 octobre 2026, il propose de porter le SMIC à 1 700 € net et de réunir une conférence salariale. Le 14 novembre, il a réclamé une hausse immédiate de 100 €. Avec sa baisse de la CSG, il chiffre le gain à environ 190 € par mois au SMIC.", ["glpsc", "glw"], "", "Le SMIC est d'un peu plus de 1 400 € net par mois pour un temps plein."],
+["Hausse du net financée par les méga-héritages","C'est sa mesure de campagne la plus mise en avant. Il veut baisser la CSG prélevée sur les salaires, une contribution payée par le salarié, et la rendre progressive, pour augmenter le net sans coût pour l'employeur. Pour compenser, il taxerait davantage les héritages de plus de 2 M€, soit environ le 1 % des plus gros. Il estime le rendement à environ 15 Md€, reversés sur les fiches de paie : environ 100 € net de plus par mois pour un salaire de 2 000 €, et 86 € au SMIC (BFMTV, 8 novembre 2026). Il ne s'agit donc pas d'une baisse de cotisations patronales : aucune source consultée ne mentionne de suppression de taxe payée par l'employeur. Ses critiques à gauche lui reprochent de ne rien demander aux entreprises et de financer la Sécurité sociale par l'impôt plutôt que par les cotisations.",["glw","pps","ppp","fr"],"","La CSG sur les salaires est de 9,2 %, dont une partie est déductible de l'impôt."],
 ["Conférences salariales","Des négociations immédiates entre l'État, les syndicats et le patronat, branche par branche, en commençant par les métiers essentiels précaires et pénibles (aide à domicile, nettoyage, logistique…). Il veut aussi limiter les écarts de salaire dans une même entreprise et indexer le point d'indice des fonctionnaires sur l'inflation.",["pp"]],
 ["Garantie à l'emploi","Généraliser les « Territoires zéro chômeur de longue durée », une expérience où des entreprises locales embauchent en CDI des chômeurs de longue durée pour des activités utiles, financées en partie par les économies d'allocations. Il veut aussi créer un CDI d'insertion et des comités locaux pour l'emploi.",["pp"]],
 ["Plus de pouvoir aux salariés","Des représentants des salariés au conseil d'administration dès 100 salariés, un « chèque syndical » financé par l'employeur que chaque salarié verse au syndicat de son choix, et la priorité des accords de branche sur les accords d'entreprise.",["pp"]],
@@ -423,11 +437,11 @@ lepen:[
 ["+10 % de salaire sans cotisations patronales","Les entreprises pourraient augmenter les salaires de 10 %, jusqu'à 3 SMIC, sans payer de cotisations patronales sur la part de la hausse. L'employeur serait ainsi encouragé à augmenter les salaires. L'État devrait compenser le manque à gagner pour la Sécurité sociale.",["rn"]],
 ["Chèque formation pour les apprentis","Un chèque mensuel de 200 à 300 € versé aux apprentis, aux alternants et à leurs employeurs, pour développer l'apprentissage.",["rn"]]],
 melenchon:[
-["SMIC à 1 600 € net et indexation","Le SMIC passerait immédiatement à 1 600 € net. Tous les salaires, dans le privé comme dans le public, seraient indexés sur l'inflation : ils augmenteraient automatiquement chaque fois que les prix augmentent. Les opposants craignent l'effet sur les petites entreprises et sur l'inflation elle-même.",["lfi"],"","Le SMIC est d'un peu plus de 1 400 € net ; il est déjà indexé, mais pas les autres salaires."],
-["35 heures réelles, puis 32 heures","La durée légale est déjà de 35 heures, mais de nombreux dispositifs permettent de la dépasser. LFI veut la rendre effective, avec des heures supplémentaires majorées de 25 % pour les quatre premières et 50 % au-delà. La semaine passerait à 32 heures dans les métiers pénibles ou de nuit, puis serait généralisée par la négociation. L'idée est de partager le travail pour créer des emplois ; les critiques soulignent le coût pour les entreprises si le salaire est maintenu.",["lfi"]],
-["Une 6e semaine de congés payés","Pour tous les salariés, contre cinq aujourd'hui.",["lfi"]],
-["Écart de salaire maximal de 1 à 20","Dans une même entreprise, le plus haut salaire ne pourrait pas dépasser 20 fois le plus bas. Avec un SMIC à 1 600 €, cela plafonnerait le salaire maximal autour de 32 000 € net par mois.",["lfi"]],
-["Limiter les contrats précaires","CDD et intérim ne pourraient pas dépasser 10 % des effectifs dans les PME et 5 % dans les grandes entreprises.",["lfi"]]],
+["SMIC à 1 700 € net et indexation", "Le SMIC passerait immédiatement à 1 700 € net : l'édition 2026 du programme relève l'objectif, qui était de 1 600 €. Tous les salaires, dans le privé comme dans le public, seraient indexés sur l'inflation : ils augmenteraient automatiquement chaque fois que les prix augmentent. Le point d'indice des fonctionnaires serait revalorisé de 10 %. Les opposants craignent l'effet sur les petites entreprises et sur l'inflation elle-même.", ["lfi26r"], "", "Le SMIC est d'un peu plus de 1 400 € net ; il est déjà indexé, mais pas les autres salaires."],
+["35 heures réelles, puis 32 heures","La durée légale est déjà de 35 heures, mais de nombreux dispositifs permettent de la dépasser. LFI veut la rendre effective, avec des heures supplémentaires majorées de 25 % pour les quatre premières et 50 % au-delà. La semaine passerait à 32 heures dans les métiers pénibles ou de nuit, puis serait généralisée par la négociation. L'idée est de partager le travail pour créer des emplois ; les critiques soulignent le coût pour les entreprises si le salaire est maintenu.",["lfi26s"]],
+["Une 6e semaine de congés payés","Pour tous les salariés, contre cinq aujourd'hui.",["lfi26s"]],
+["Écart de salaire maximal de 1 à 20", "Dans une même entreprise, le plus haut salaire ne pourrait pas dépasser 20 fois le plus bas. Avec un SMIC à 1 700 €, cela plafonnerait le salaire maximal autour de 34 000 € net par mois. Parachutes dorés, retraites chapeaux et stock-options seraient interdits.", ["lfi26r"]],
+["Limiter les contrats précaires","CDD et intérim ne pourraient pas dépasser 10 % des effectifs dans les PME et 5 % dans les grandes entreprises.",["lfi26s"]]],
 philippe:[
 ["Deux heures de plus sans cotisations","Les salariés qui travaillent deux heures de plus par semaine ne paieraient pas de cotisations sociales sur ces heures. Selon lui, un salarié au SMIC gagnerait environ 1 000 € de plus par an.",["phe"]],
 ["Chômage : 12 mois maximum avant 50 ans","La durée maximale d'indemnisation passerait de 18 à 12 mois pour les moins de 50 ans, pour inciter à reprendre plus vite un emploi.",["phe"]],
@@ -453,12 +467,14 @@ attal:[
 ["Pas de hausse des droits de succession","Toute hausse est exclue. Les donations du vivant, notamment aux petits-enfants, petits-neveux et petites-nièces, seraient facilitées.",["re"]],
 ["Droits de douane ciblés contre la Chine","Taxes à l'importation sur les produits chinois vendus à perte (acier, voitures électriques, panneaux solaires), contrôle strict des investissements chinois dans les ports, télécoms et centres de données.",["re"]]],
 glucksmann:[
+["Contribution climat sur les très grandes fortunes", "Une contribution exceptionnelle, levée une seule année, sur les patrimoines de plus de 100 M€ (5 % selon Public Sénat). Elle rapporterait 50 Md€, versés à un fonds pour la transition écologique.", ["glr", "glw"]],
+["Un livret d'épargne pour les collectivités", "Le plafond du livret A serait doublé et fusionné avec le LDDS dans un « livret de souveraineté écologique et sociale » rémunéré à 2,5 %, qui financerait des prêts à taux bas aux collectivités.", ["glr"]],
 ["Grande réforme fiscale","Il veut rééquilibrer l'impôt entre le travail, le capital, l'héritage et les retraites aisées. Son constat : le système actuel favorise les héritiers et les retraités aisés par rapport aux actifs. Aucun taux n'est encore fixé.",["pp"]],
 ["Taxes sur le numérique et la pollution","Hausse de la taxe sur les géants du numérique, « taxe Amazon » sur le commerce en ligne pour financer le commerce local, taxe sur les jets privés, yachts et SUV, et fin de l'exonération de taxe sur le kérosène des avions.",["pp"]],
 ["Crédit d'impôt recherche recentré","Ce crédit d'impôt, qui rembourse une partie des dépenses de recherche des entreprises, coûte environ 7 Md€ par an et profite surtout aux grands groupes. Il serait plafonné pour eux et recentré sur les PME et les jeunes entreprises innovantes.",["pp"]],
 ["Logement abordable","Un fonds national pour aider les communes à acheter des terrains, des objectifs de logements sociaux relevés, une taxe progressive sur les logements vides et l'encadrement des loyers dans les zones tendues.",["pp"]],
 ["Acheter français","Orienter la commande publique vers des critères de durabilité et de souveraineté, avec un indice d'achat local.",["pp"]],
-["Chèque énergie à 500 € plutôt que baisse des taxes","Il refuse une baisse générale des taxes sur les carburants, qu'il chiffre à 29 Md€ et qui profiterait aussi aux plus aisés. Il propose plutôt de porter le chèque énergie à 500 € pour environ 6 millions de ménages modestes et de l'étendre à environ 10 millions de ménages des classes moyennes, pour environ 4 Md€.",["wg"]],
+["Chèque énergie à 500 € plutôt que baisse des taxes", "Il refuse une baisse générale des taxes sur les carburants, qu'il chiffre à 29 Md€ et qui profiterait aussi aux plus aisés. Dès l'élection, il verserait un chèque énergie de 500 € à six millions de familles modestes et de 200 € à dix millions de familles des classes moyennes, financé par les superprofits. Il veut aussi encadrer les marges pour baisser de 20 centimes le prix à la pompe.", ["glr", "glpsc"]],
 ["Taxer les superprofits des géants fossiles","Une taxe européenne sur les bénéfices exceptionnels des grandes compagnies pétrolières et gazières, comme TotalEnergies, quand les prix de l'énergie flambent.",["wg"]]],
 lepen:[
 ["Contre-budget : 140 Md€ d'économies","Présenté le 6 octobre 2026 : 140 Md€ d'économies par an d'ici 2032 et 30 Md€ de baisses d'impôts nettes sur le quinquennat, pour un déficit sous 3 % du PIB en 2030. Les économies viendraient de la Sécurité sociale (fraude, allocation sociale unique), de la fin des subventions aux renouvelables, de la « priorité nationale », de la baisse de la contribution à l'UE et d'environ 200 000 postes publics non remplacés (agences et collectivités). Plus de 120 petites taxes seraient supprimées, et une règle d'or budgétaire adoptée par référendum. L'Institut de l'Entreprise juge environ 80 % de ces économies mal documentées ou juridiquement fragiles.",["rnbud"]],
@@ -471,10 +487,11 @@ lepen:[
 ["Péages –15 %, fin de la redevance","Renationaliser les autoroutes pour baisser les péages de 15 %, et privatiser l'audiovisuel public.",["rn"]],
 ["Logement : 100 000 logements sociaux par an","Dont 20 000 pour les étudiants et jeunes travailleurs. Elle veut aussi abroger la loi SRU, qui impose aux communes un quota de 20 à 25 % de logements sociaux.",["rn"]]],
 melenchon:[
+["Fin de la flat tax", "Depuis 2018, les revenus du capital (dividendes, intérêts, plus-values) sont taxés à un taux forfaitaire unique, la « flat tax ». Ils seraient de nouveau imposés au barème, comme les salaires. L'impôt sur les sociétés deviendrait progressif, plus léger pour les PME et modulé selon que les bénéfices sont réinvestis ou distribués.", ["lfi26r"]],
 ["Impôt sur le revenu à 14 tranches","Le barème actuel compte 5 tranches, de 0 % à 45 %. LFI propose 14 tranches : l'impôt monterait plus progressivement, avec des taux plus faibles pour les revenus modestes et moyens et nettement plus élevés pour les très hauts revenus. La CSG, prélevée aujourd'hui au même taux sur tous les revenus, deviendrait elle aussi progressive.",["lfi"]],
 ["Taxe Zucman","Un impôt minimum de 2 % par an sur les patrimoines de plus de 100 M€. LFI en attend 15 Md€ par an. Si un très grand patrimoine paie déjà au moins 2 % de sa fortune en impôts, il ne paie rien de plus ; sinon, il paie la différence. L'idée vient de l'économiste Gabriel Zucman, qui montre que les plus grandes fortunes paient proportionnellement moins d'impôts que la moyenne.",["lfi"]],
 ["Retour d'un ISF « climatique »","Rétablir l'impôt de solidarité sur la fortune sur tout le patrimoine, et taxer davantage les fortunes placées dans des activités polluantes, pour pousser les plus riches à réorienter leurs placements.",["lfi"]],
-["Héritage plafonné à 12 M€","Au-delà de 12 M€ reçus par une personne au cours de sa vie (environ 100 fois le patrimoine médian), l'État prendrait le surplus. Dons et héritages seraient additionnés sur toute la vie. Chacun ne pourrait transmettre que cinq logements ; au-delà, ils seraient réquisitionnés pour le logement social.",["lfi"]],
+["Héritage plafonné à 12 M€","Au-delà de 12 M€ reçus par une personne au cours de sa vie (environ 100 fois le patrimoine médian), l'État prendrait le surplus. Dons et héritages seraient additionnés sur toute la vie. Chacun ne pourrait transmettre que cinq logements ; au-delà, ils seraient réquisitionnés pour le logement social. Les héritages de moins de 150 000 € seraient exonérés de droits de succession.",["lfi26r"]],
 ["TVA allégée sur l'essentiel","TVA réduite sur les produits de première nécessité, compensée par une « TVA grand luxe » plus élevée.",["lfi"]],
 ["Bloquer les prix de première nécessité","Une mesure phare de LFI contre la vie chère : l'État fixerait par décret un prix maximum pour les produits essentiels (alimentation de base, énergie, carburants), pour empêcher les hausses jugées abusives. LFI a déjà défendu une version temporaire, déclenchée en cas de crise, visant l'énergie et cinq fruits et légumes de saison ; l'Assemblée l'avait rejetée en 2022. Les critiques craignent des pénuries ou des pertes pour les producteurs si le prix bloqué est inférieur au coût de production.",["lfi"]],
 ["200 000 logements publics par an","Pendant cinq ans, aux normes écologiques les plus exigeantes.",["lfi"]]],
@@ -517,7 +534,9 @@ attal:[
 ["Voiture électrique d'occasion aidée","Le leasing social permet de louer une voiture électrique neuve à partir d'environ 100 € par mois aux ménages modestes. Il serait étendu aux voitures d'occasion, qui bénéficieraient aussi du bonus écologique.",["re"]],
 ["Rénovation et recyclage","Rénovation thermique massive des logements contre les canicules et le froid, relance de l'exploitation minière en France et en Europe, et 30 % des besoins en matières couverts par le réemploi et le recyclage.",["re"]]],
 glucksmann:[
-["200 Md€ pour l'énergie", "Présenté le 9 novembre 2026 avec Yannick Jadot : 200 Md€ d'investissements publics sur cinq ans, un doublement des capacités renouvelables d'ici 2035, et le maintien du nucléaire dans le mix électrique.", ["gke"]],
+["Un million de voitures électriques et de pompes à chaleur", "Un million de voitures électriques en leasing social sur cinq ans, à 100 € par mois sans apport, dont 100 000 tout de suite pour les aides à domicile et les soignants en zone rurale. Un million de pompes à chaleur à 1 € par jour, en priorité dans les logements chauffés au fioul ou au gaz.", ["glr"]],
+["Un droit à la fraîcheur", "Avec les collectivités : ombrage urbain, refuges climatiques, piscines gratuites et location de climatiseurs d'urgence pendant les canicules, et 4 000 écoles primaires rénovées chaque année.", ["glr"]],
+["200 Md€ pour l'énergie", "Présenté le 9 novembre 2026 avec Yannick Jadot dans le livret « Révolution écologique » : 200 Md€ d'argent public sur le quinquennat pour sortir des énergies fossiles, avec la neutralité carbone en 2050 et une dette stabilisée en 2032. Les capacités renouvelables seraient au moins doublées d'ici 2035, par un contrat entre l'État et chaque région. Les réacteurs nucléaires existants seraient prolongés et sécurisés, et EDF, Framatome et Orano sortiraient de leurs partenariats avec le russe Rosatom.", ["glr", "gke"]],
 ["Une grande loi climat","Une loi qui engagerait tous les ministères à respecter les limites de la planète, avec –90 % d'émissions en 2040 et la neutralité climat en 2050.",["pp"]],
 ["Un bouclier pour la sobriété","Loi contre la fast-fashion (vêtements à bas prix renouvelés en permanence), score carbone obligatoire sur les produits, extinction des publicités lumineuses la nuit, fin du plastique à usage unique d'ici 2030.",["pp"]],
 ["Relancer MaPrimeRénov'","Cette aide à la rénovation énergétique est jugée trop complexe. Il veut la simplifier pour accélérer les rénovations complètes, plus efficaces que les petits travaux isolés.",["pp"]],
@@ -532,13 +551,13 @@ lepen:[
 ["Sortir du marché européen de l'électricité","Le prix de l'électricité française est en partie fixé par le marché européen. Elle veut en sortir pour fixer des tarifs basés sur les coûts français, et supprimer les tarifs d'achat garantis aux énergies intermittentes (éolien, solaire).",["rn"]],
 ["Supprimer le Fonds vert et le plan vélo","Le Fonds vert, qui finance la transition écologique des collectivités, ne serait gardé que pour les inondations et les feux de forêt. MaPrimeRénov' serait remplacée par un dispositif « 100 % Rénov ».",["rn"]]],
 melenchon:[
-["–65 % d'émissions en 2030","Au lieu de –50 % aujourd'hui (par rapport à 1990), avec un bilan public chaque année.",["lfi"]],
+["–65 % d'émissions d'ici 2033", "Baisser de 65 % les émissions de gaz à effet de serre d'ici 2033, avec un bilan public chaque année qui inclurait les émissions importées. Les entreprises les plus polluantes devraient tenir une comptabilité carbone certifiée.", ["lfi26p"]],
 ["Plan d'investissement de 200 Md€","Pour des projets utiles à la fois à l'écologie et au social : rénovation, transports, énergies renouvelables.",["lfi"]],
 ["Planification écologique et « règle verte »","Le principe central du volet écologique : ne pas prélever sur la nature plus qu'elle ne peut reconstituer, ni produire plus de déchets qu'elle ne peut absorber. Cette règle serait inscrite dans la Constitution et guiderait toutes les décisions publiques. L'État planifierait la transition secteur par secteur (énergie, transports, agriculture), plutôt que de compter surtout sur le marché et les prix.",["lfi"]],
-["Sortir du nucléaire","Abandonner les projets d'EPR, planifier le démantèlement des centrales et la reconversion des sites, et viser 100 % d'énergies renouvelables grâce à la sobriété et à l'efficacité. Le calendrier exact reste discuté.",["lfi"],"","Le nucléaire produit environ 65 à 70 % de l'électricité française."],
+["Sortir du nucléaire", "Arrêter le programme de nouveaux réacteurs EPR2, ne pas prolonger les centrales au-delà de 60 ans et les fermer progressivement, en garantissant la reconversion des salariés. Sortir des énergies fossiles avant 2050 et atteindre 100 % d'énergies renouvelables au plus tard en 2060, grâce à la sobriété et à l'efficacité énergétiques.", ["lfi26e"]],
 ["Isoler 700 000 logements par an","Et remplacer progressivement le chauffage au fioul par des pompes à chaleur.",["lfi"]],
 ["Renationaliser SNCF, EDF et Engie","Mettre fin à la libéralisation de l'électricité et du gaz, et refuser la mise en concurrence des lignes ferroviaires.",["lfi"]],
-["Agriculture sans glyphosate","Glyphosate et néonicotinoïdes interdits immédiatement, prix planchers garantis aux producteurs, interdiction de vendre à perte, et 300 000 emplois agricoles créés.",["lfi"]],
+["Agriculture sans glyphosate", "Glyphosate et néonicotinoïdes interdits immédiatement, ainsi que l'importation de produits qui en contiennent ; prix planchers garantis aux producteurs, et 500 000 emplois agricoles créés.", ["lfi26e"]],
 ["Moins d'avion et de SUV","Supprimer les vols intérieurs quand le train fait le trajet en moins de 4 heures, et limiter la taille et le poids des SUV vendus.",["lfi"]]],
 philippe:[
 ["Nucléaire, renouvelables et électrification","Relancer le nucléaire, développer les renouvelables et électrifier massivement les usages (voitures, chauffage, industrie) pour assurer la souveraineté énergétique.",["hor"]],
@@ -572,6 +591,7 @@ attal:[
 ["Moins de regroupement familial","« Accueillir moins pour accueillir mieux » : priorité à l'immigration de travail, et regroupement familial (venue de la famille d'un étranger installé en France) mieux encadré et réduit.",["re"]],
 ["Réformer Schengen","Permettre aux pays de refouler aux frontières les personnes en situation irrégulière.",["re"]]],
 glucksmann:[
+["Régulariser les travailleurs sans papiers", "Régulariser environ 300 000 travailleurs sans papiers, en reprenant la proposition de loi déposée par les députés socialistes, pour mettre fin à une clandestinité qu'il juge entretenue par « l'hypocrisie actuelle ».", ["glw"]],
 ["Sauvetage en mer européen","Une force européenne de sauvetage en Méditerranée et la reconnaissance d'un « devoir de sauver ».",["pp"]],
 ["Fin du système de Dublin","Aujourd'hui, le règlement de Dublin rend le premier pays d'arrivée responsable de la demande d'asile, ce qui pèse surtout sur l'Italie et la Grèce. Il veut le remplacer par une répartition des demandeurs entre pays européens.",["pp"]],
 ["Voies légales d'immigration de travail","Avec des accords avec les pays d'origine, pour limiter l'immigration irrégulière.",["pp"]],
@@ -587,9 +607,9 @@ lepen:[
 melenchon:[
 ["Droit du sol intégral","Tout enfant né en France serait français dès la naissance, et l'accès à la nationalité serait facilité.",["lfi"]],
 ["Droit de vote des étrangers aux élections locales","Les étrangers non européens résidant en France pourraient voter aux municipales, comme les Européens aujourd'hui.",["lfi"]],
-["Régularisations et carte de 10 ans","Visas facilités, régularisation des travailleurs, étudiants et parents d'enfants scolarisés, et carte de séjour de 10 ans comme titre de référence.",["lfi"]],
-["Suspendre Dublin, renégocier le Touquet","Les accords du Touquet font contrôler par la France la frontière britannique sur son sol, à Calais. Il veut les renégocier, suspendre Dublin et abroger les dernières lois asile et immigration.",["lfi"]],
-["Garder l'aide médicale d'État","L'AME couvre les soins des sans-papiers. Elle serait maintenue, et l'enfermement des enfants en centre de rétention ainsi que les tests osseux pour estimer l'âge seraient interdits.",["lfi"]]],
+["Régularisations et carte de 10 ans", "Visas facilités, régularisation des travailleurs, étudiants et parents d'enfants scolarisés sans papiers, et carte de séjour de 10 ans comme titre de référence.", ["lfi26x"]],
+["Refuser le pacte européen, fermer les CRA", "La France refuserait d'appliquer le pacte européen sur la migration et l'asile. Les centres de rétention administrative, où sont enfermés les étrangers en attente d'expulsion, seraient fermés et remplacés par un accompagnement juridique et un hébergement ouvert. La liste des pays d'origine « sûrs » serait supprimée, et les dernières lois asile et immigration abrogées.", ["lfi26x", "lfi26u"]],
+["Garder l'aide médicale d'État", "L'AME couvre les soins des sans-papiers. Elle serait intégrée au régime général de la Sécurité sociale, et les restrictions d'accès décidées en 2026 seraient abrogées. L'enfermement des enfants en rétention serait interdit.", ["lfi26s", "lfi26x"]]],
 philippe:[
 ["Diviser par deux l'immigration légale","Passer bien en dessous de 200 000 titres de séjour par an, en réduisant l'immigration familiale et en instaurant des quotas pour l'immigration économique.",["phe","hor"],"","Environ 340 000 premiers titres de séjour ont été délivrés en 2024."],
 ["Dénoncer l'accord de 1968 avec l'Algérie","Pour aligner les Algériens sur le droit commun et reprendre le contrôle des flux avec ce pays.",["hor"]],
@@ -619,6 +639,7 @@ attal:[
 ["Réécrire le code de procédure pénale","Pour le simplifier et éviter que des vices de procédure fassent échapper des criminels à leur peine.",["re"]],
 ["Justice des mineurs durcie","Comparution immédiate possible pour les mineurs et évolution de l'excuse de minorité, qui réduit aujourd'hui les peines encourues par les moins de 18 ans.",["re"]]],
 glucksmann:[
+["Fin des armes mutilantes en manifestation", "Mettre fin à l'usage des armes mutilantes dans les manifestations et réformer la doctrine du maintien de l'ordre. Il veut aussi indemniser plus vite les commerçants et particuliers victimes de violences.", ["glpsc"]],
 ["Police de proximité","Une police ancrée dans les quartiers, qui connaît les habitants et mise sur la prévention et la médiation. Un dispositif de ce type a existé de 1998 à 2003.",["pp"]],
 ["Équipes d'intervention rapide","Des équipes mobiles avec éducateurs et médiateurs pour prévenir la délinquance dans les quartiers prioritaires.",["pp"]],
 ["Contre le narcotrafic","Plus d'enquêteurs spécialisés, un service national de renseignement criminel, un Tracfin (cellule anti-blanchiment) renforcé et un parquet financier européen.",["pp"]],
@@ -666,6 +687,7 @@ attal:[
 ["Administration plus rapide","Inscrire dans la Constitution qu'une administration doit répondre en deux mois maximum, son silence valant accord, et limiter à 18 mois la durée totale des recours.",["re"]],
 ["Un « spoil system » à la française","Le président élu nommerait les directeurs des grandes administrations, chargés d'appliquer son programme, comme aux États-Unis.",["re"]]],
 glucksmann:[
+["Une République écologique", "Déclarer l'état d'urgence écologique, inscrire à l'article 1 de la Constitution que la République est écologique, et voter une loi de programmation écologique qui s'imposerait chaque année au budget, sur le modèle de la loi de programmation militaire.", ["glr"]],
 ["Fin du 49.3","L'article 49.3 permet au gouvernement de faire adopter un texte sans vote. Il propose que le Premier ministre soit investi par un vote de l'Assemblée, et qu'une motion de censure doive proposer un remplaçant (« censure constructive », comme en Allemagne).",["pp"]],
 ["Proportionnelle aux législatives","Les sièges seraient répartis selon le pourcentage de voix de chaque parti, par circonscriptions régionales, au lieu du scrutin majoritaire actuel par circonscription.",["pp"]],
 ["Moins de pouvoirs exceptionnels","Supprimer l'article 16, qui donne les pleins pouvoirs au président en cas de crise grave, renforcer l'initiative du Parlement et réformer le Conseil constitutionnel.",["pp"]],
@@ -677,10 +699,11 @@ lepen:[
 ["Un ministère de la Mer et de l'Outre-mer","Ministère d'État, au sommet de la hiérarchie gouvernementale.",["rn"]],
 ["Supprimer les CESER","Les conseils économiques, sociaux et environnementaux régionaux, assemblées consultatives jugées inutiles.",["rn"]]],
 melenchon:[
+["Vote à 16 ans et vote obligatoire", "Droit de vote dès 16 ans, vote blanc reconnu, vote obligatoire, et un seuil de participation pour valider une élection. Pour la présidentielle, des parrainages de citoyens remplaceraient les 500 signatures d'élus.", ["lfi26i"]],
 ["Passer à la 6e République","C'est la mesure n° 1 du programme LFI. Le mouvement juge que la 5e République concentre trop de pouvoirs entre les mains du président, ce qu'il appelle la « monarchie présidentielle », et veut changer de Constitution. Le processus se déroulerait en trois temps. D'abord, un référendum organisé après l'élection fixerait les règles d'une Assemblée constituante : mode de scrutin, parité, part éventuelle de membres tirés au sort. Ensuite, cette assemblée rédigerait la nouvelle Constitution pendant deux ans ; aucun ancien parlementaire ne pourrait y siéger, et ses membres ne pourraient pas se présenter aux élections suivantes. Enfin, le texte serait soumis à référendum ; s'il est rejeté, l'assemblée reprend ses travaux. LFI veut y voir figurer le RIC, la révocation des élus en cours de mandat, la proportionnelle et de nouveaux droits, comme celui de mourir dans la dignité. Ce sont toutefois les constituants qui trancheraient.",["lfi"],"","La France vit sous la Constitution de 1958 (5e République), révisée 25 fois."],
-["Le référendum d'initiative citoyenne","Avec assez de signatures (900 000 dans la proposition de loi LFI de 2019), les citoyens pourraient révoquer un élu, proposer ou abroger une loi, ou modifier la Constitution, sans l'accord du Parlement.",["lfi"],"","Le référendum d'initiative partagée actuel exige 4,7 millions de signatures et n'a jamais abouti."],
-["Proportionnelle et fin du 49.3","Assemblée élue à la proportionnelle, et suppression des procédures de « vote forcé » comme le 49.3.",["lfi"]],
-["Dons aux partis plafonnés à 200 €","Contre 7 500 € aujourd'hui, pour limiter l'influence des grands donateurs.",["lfi"]]],
+["Le référendum d'initiative citoyenne","Avec assez de signatures (900 000 dans la proposition de loi LFI de 2019), les citoyens pourraient révoquer un élu, proposer ou abroger une loi, ou modifier la Constitution, sans l'accord du Parlement.",["lfi26i","lfi"],"","Le référendum d'initiative partagée actuel exige 4,7 millions de signatures et n'a jamais abouti."],
+["Proportionnelle et fin du 49.3","Assemblée élue à la proportionnelle, et suppression des procédures de « vote forcé » comme le 49.3.",["lfi26i","lfi"]],
+["Dons aux partis plafonnés plus bas", "Abaisser le plafond des dons individuels aux partis, aujourd'hui de 7 500 € par an, pour limiter l'influence des grands donateurs. Le programme de 2022 le fixait à 200 € ; l'édition 2026 ne donne pas de chiffre.", ["lfi26i", "lfi"]]],
 philippe:[
 ["Juges plus responsables","Révision de la composition du Conseil supérieur de la magistrature, qui gère la carrière des juges, et devoir de rendre des comptes aux victimes.",["hor"]],
 ["Plus d'autorité au garde des Sceaux","Le ministre de la Justice pourrait davantage orienter le parquet (les procureurs).",["hor"]],
@@ -708,6 +731,8 @@ attal:[
 ["Un marché unique des capitaux","Un seul régulateur et un même produit d'épargne dans toute l'Europe, pour financer les entreprises européennes.",["re"]],
 ["Réarmement et Ukraine","Poursuivre le réarmement, soutenir l'Ukraine, saisir les avoirs russes gelés, et faire de la dissuasion nucléaire « avancée » un outil de puissance européenne.",["re"]]],
 glucksmann:[
+["Protéger le ciel ukrainien", "Protéger l'ouest et le centre de l'Ukraine contre les missiles et les drones, et saisir les quelque 210 Md€ d'avoirs russes gelés.", ["glw"]],
+["Un « Buy European Act »", "Réserver les marchés publics européens aux productions européennes, et renforcer la taxe carbone aux frontières pour lutter contre le dumping.", ["glw", "glr"]],
 ["Fonds de défense de 500 Md€","Financé par un emprunt commun européen, et réservé aux productions européennes pour développer l'industrie de défense du continent.",["pp"]],
 ["Dissuasion nucléaire étendue","La France proposerait à ses partenaires de les couvrir par sa dissuasion nucléaire, en gardant seule la décision d'emploi.",["pp"]],
 ["Aide militaire à l'Ukraine","Fortement augmentée, ainsi qu'à la Moldavie et à l'Arménie.",["pp"]],
@@ -719,11 +744,11 @@ lepen:[
 ["Contribution à l'UE plafonnée à 5 Md€","La France verse aujourd'hui près de 29 Md€ par an au budget européen et en reçoit moins en retour. Le RN veut plafonner ce versement à 5 Md€, ce qui supposerait une renégociation avec les autres pays ou un refus de payer, contraire aux traités.",["rnbud"]],
 ["Non au Mercosur","Refus de l'accord de libre-échange entre l'UE et l'Amérique du Sud, jugé dangereux pour l'agriculture française.",["fv"]]],
 melenchon:[
-["Quitter l'OTAN","Sortir immédiatement du commandement militaire intégré, que la France a réintégré en 2009, puis de l'organisation par étapes.",["lfi"]],
-["Ukraine : une voie diplomatique","La France œuvrerait à un cessez-le-feu, au retrait des troupes russes et à des négociations de paix. Le 23 septembre 2026, il a suggéré un lien entre les frappes ukrainiennes en Russie et la montée de la menace russe en Europe, tout en rappelant que la Russie est l'envahisseur. Le ministre des Affaires étrangères l'a accusé de réécrire l'histoire de la guerre.",["lfi","anw"]],
+["Quitter l'OTAN","Sortir immédiatement du commandement militaire intégré, que la France a réintégré en 2009, puis de l'organisation par étapes.",["lfi26m","lfi"]],
+["Ukraine : une voie diplomatique","La France œuvrerait à un cessez-le-feu, au retrait des troupes russes et à des négociations de paix. Le 23 septembre 2026, il a suggéré un lien entre les frappes ukrainiennes en Russie et la montée de la menace russe en Europe, tout en rappelant que la Russie est l'envahisseur. Le ministre des Affaires étrangères l'a accusé de réécrire l'histoire de la guerre.",["lfi26m","lfi","anw"]],
 ["Veto contre le libre-échange","Bloquer le Mercosur et tout nouvel accord commercial, ainsi que tout élargissement de l'UE sans harmonisation sociale et fiscale.",["lfi"]],
 ["Désobéir à certaines règles européennes","Il ne veut pas quitter l'UE mais y rester « à ses conditions ». Plan A : proposer aux autres pays de réécrire les traités. Plan B, appliqué en parallèle : mettre en œuvre le programme en France et cesser d'appliquer les règles jugées bloquantes (budget, concurrence, travailleurs détachés).",["lfi","gc"]],
-["Pas d'armée européenne","Il refuse toute défense européenne intégrée, qu'il voit comme un alignement sur l'OTAN face à la Russie, et défend un non-alignement de la France. En 2022, il rejetait l'objectif de dépenses fixé par l'OTAN : selon lui, c'est la stratégie qui doit fixer le budget, et non l'inverse.",["elys","psd"]],
+["Pas d'armée européenne", "Il refuse l'« Europe de la défense » telle qu'elle est conçue, qu'il voit comme un « pilier européen de l'OTAN », et défend un non-alignement de la France. Il rejette l'objectif de 5 % du PIB pour la défense, qu'il qualifie de « tribut » exigé par les États-Unis, et veut une défense souveraine centrée sur le cyber, le spatial et le renseignement, avec un pôle public de l'armement.", ["lfi26m", "lfi26u"]],
 ["Une conscription citoyenne de 9 mois","Pour les moins de 25 ans, payée au SMIC, mêlant formation militaire et missions d'utilité publique (secours, environnement).",["lfi"]],
 ["Reconnaître l'État de Palestine","Dans le cadre d'une politique étrangère non alignée.",["lfi"]]],
 philippe:[
@@ -772,7 +797,7 @@ melenchon:[
 ["Soins à moins de 30 minutes","Réouverture progressive d'urgences, maternités et Ehpad publics pour que chacun en ait un à moins de trente minutes.",["lfi"]],
 ["10 000 places en Ehpad public par an","Pendant cinq ans, avec plus de personnel.",["lfi"]],
 ["Droit de mourir dans la dignité","Inscrit dans la Constitution, y compris avec une aide active, et accès garanti aux soins palliatifs.",["lfi"]],
-["Revenu au seuil de pauvreté","Une « garantie d'autonomie » portant le revenu de chacun au seuil de pauvreté, et l'allocation aux adultes handicapés au niveau du SMIC. Le chiffrage du 14 octobre 2026 la fixe à 1 337 € par mois pour les jeunes, pour 9,5 Md€ par an.",["lfi","lfi14"]]],
+["Revenu au seuil de pauvreté", "Une « garantie d'autonomie » porterait le revenu de chaque personne au seuil de pauvreté, soit 1 337 € par mois pour une personne seule, et l'allocation aux adultes handicapés au niveau du SMIC. Le chiffrage du 14 octobre 2026 l'estime à 9,5 Md€ par an pour les jeunes.", ["lfi26s", "lfi14"]]],
 philippe:[
 ["Stabiliser les dépenses de santé","Dépenser mieux, en misant sur la prévention et la technologie plutôt que sur la hausse des moyens.",["hor"]],
 ["Une allocation familiale unique de 350 €","Versée dès le premier enfant (aujourd'hui, les allocations commencent au deuxième), dégressive selon les revenus, et remplaçant les dispositifs actuels. Les familles actives avec enfants auraient environ 3 000 € d'impôt en moins.",["phe","hor"]],
@@ -800,6 +825,9 @@ attal:[
 ["Un emploi garanti en lycée pro","Dès la première, chaque élève de lycée professionnel signerait un contrat lui garantissant un emploi ou une alternance à la fin de son diplôme.",["lyon"]],
 ["Un mois d'engagement civique","Chaque jeune ferait au moins un mois d'engagement civique avant 25 ans. Le bac reposerait davantage sur les épreuves finales que sur le contrôle continu.",["lyon"]]],
 glucksmann:[
+["Abroger Parcoursup", "Dans son plan du 22 octobre 2026 : abroger Parcoursup, lancer des états généraux de l'orientation et revenir sur la réforme Blanquer du lycée. Il veut aussi annuler les suppressions de postes d'enseignants prévues en 2027.", ["glpsc"]],
+["Stages payés 1 000 €", "Une rémunération d'au moins 1 000 € par mois pour les stages de plus de deux mois, des bourses revalorisées et les aides au logement maintenues.", ["glpsc", "glw"]],
+["Une loi de programmation pour l'école", "Une loi sur cinq ans pour l'éducation et la culture : rénovation des bâtiments, salaires des enseignants, effectifs par classe.", ["glw"]],
 ["Moins d'élèves par enseignant","D'abord en primaire, avec un tutorat sur le temps scolaire assuré par des adultes formés.",["pp"]],
 ["Enseignants : +10 %, jusqu'à +25 %","Une hausse de 10 % pour tous les enseignants, qui pourrait atteindre 25 % avec la progression de carrière, pour un coût estimé à environ 6 Md€.",["sdp","pp"]],
 ["Le privé dans la carte scolaire","Les écoles privées sous contrat, financées par l'État, seraient intégrées à la sectorisation pour plus de mixité sociale.",["pp"]],
@@ -1032,7 +1060,7 @@ pos:{
   melenchon:{s:"Retour à 62 ans dès 2027, puis 60 ans avec 40 années de cotisation.",m:["Retraite à 60 ans avec 40 annuités"]},
   roussel:{s:"Retraite à 60 ans à taux plein.",m:["Retraite à 60 ans à taux plein"]},
   tondelier:{s:"62 ans tout de suite, puis 60 ans à terme pour les métiers pénibles.",m:["Retour immédiat à 62 ans","Objectif 60 ans pour les métiers durs"]},
-  glucksmann:{s:"Abroger la réforme de 2023, puis un âge qui varie selon la pénibilité du métier. Aucun chiffre pour l'instant.",m:["Abroger la réforme de 2023","Pas d'âge unique de départ"]},
+  glucksmann:{s:"Abroger la réforme de 2023 et revenir à 62 ans, avec des départs anticipés selon la pénibilité.",m:["Abroger la réforme de 2023", "Départs anticipés selon la pénibilité"]},
   lepen:{s:"62 ans, et 60 ans pour ceux qui ont commencé à travailler avant 20 ans.",m:["Revenir à 62 ans","60 ans pour ceux qui ont commencé tôt"]},
   attal:{s:"Plus d'âge légal : seule la durée de cotisation compte.",m:["Supprimer l'âge légal de départ"]},
   philippe:{s:"65 ans et 45 années de cotisation, avec des exemptions pour environ un tiers des salariés.",m:["Âge légal porté à 65 ans"]},
@@ -1040,8 +1068,8 @@ pos:{
   villepin:{s:"Pas de réforme imposée : concertation, convention citoyenne, puis référendum en 2028.",m:["Une réforme par référendum en 2028"]}
 },
 scale:{label:"Âge minimum de départ proposé",min:60,max:66,now:62.75,nowLabel:"Aujourd'hui : 62 ans et 9 mois",
-  pts:{melenchon:60,roussel:60,tondelier:62,lepen:62,philippe:65},
-  offLabel:"Pas d'âge unique",off:{attal:"Seule la durée de cotisation compte.",glucksmann:"L'âge dépendrait de la pénibilité, sans chiffre.",retailleau:"63 ou 65 ans selon les sources, à confirmer.",villepin:"Décidé par référendum en 2028."}},
+  pts:{melenchon:60,roussel:60,tondelier:62,lepen:62,glucksmann:62,philippe:65},
+  offLabel:"Pas d'âge unique",off:{attal:"Seule la durée de cotisation compte.",retailleau:"63 ou 65 ans selon les sources, à confirmer.",villepin:"Décidé par référendum en 2028."}},
 how:[
   ["Le système fonctionne par répartition : les cotisations prélevées sur les salaires d'aujourd'hui paient les pensions des retraités d'aujourd'hui. Il n'y a pas de cagnotte individuelle. L'équilibre dépend donc du nombre de cotisants par retraité, qui baisse avec le vieillissement de la population.",["cor26"]],
   "Deux règles décident du départ. L'âge légal est l'âge minimum pour partir. La durée de cotisation est le nombre de trimestres nécessaires pour toucher une pension complète, dite « à taux plein ». Partir sans tous ses trimestres fait perdre 1,25 % de pension par trimestre manquant (la décote) ; travailler plus longtemps en fait gagner autant (la surcote). À 67 ans, la décote disparaît dans tous les cas.",
@@ -1070,7 +1098,7 @@ pc:[
    con:[["Supprimer l'âge légal pénaliserait d'abord les carrières hachées et les femmes, qui ont moins de trimestres, selon l'iFRAP.",["ifrapage"]],
         "Les métiers les plus durs ont une espérance de vie plus courte : un âge plus tardif réduit d'autant leur temps de retraite.",
         ["L'équilibre peut aussi passer par les cotisations ou le niveau des pensions, rappelle l'économiste Jean-Marie Harribey : l'âge n'est qu'un des trois curseurs.",["harr"]]]},
-  {t:"Revenir à 62 ou 60 ans",who:["melenchon","roussel","tondelier","lepen"],
+  {t:"Revenir à 62 ou 60 ans",who:["melenchon","roussel","tondelier","lepen","glucksmann"],
    pro:[["Le déficit actuel est faible : 0,2 % du PIB en 2025, et moins encore une fois comptés les produits financiers, selon l'UNSA.",["cor26","unsa"]],
         ["D'autres recettes sont possibles : hausse des cotisations, cotisations sur les revenus financiers des entreprises, hausse des salaires.",["harr","pcf"]],
         "Partir plus tôt rend des années de retraite en bonne santé, surtout dans les métiers pénibles."],
@@ -1128,7 +1156,7 @@ impl:[
 
 {id:"pensions",t:"Le montant des pensions",q:"Combien touchent les retraités, et qui décide de l'équilibre du système ?",
 pos:{
-  melenchon:{s:"Aucune pension de carrière complète sous le SMIC (1 600 € net), minimum vieillesse au niveau du seuil de pauvreté.",m:["Aucune pension sous le SMIC"]},
+  melenchon:{s:"Aucune pension de carrière complète sous le SMIC (1 700 € net), minimum vieillesse au niveau du seuil de pauvreté, et fin de la décote.",m:["Aucune pension sous le SMIC", "Supprimer la décote"]},
   lepen:{s:"Minimum vieillesse à 1 000 €, pensions indexées sur l'inflation, demi-part fiscale des veufs rétablie.",m:["Minimum vieillesse à 1 000 €"]},
   roussel:{s:"Une hausse générale des pensions.",m:["Hausse générale des pensions"]},
   glucksmann:{s:"Mieux compter les carrières hachées et la pénibilité, moins de régimes, et un pilotage confié aux syndicats et au patronat.",m:["Pensions dignes et régimes simplifiés","Un Haut Conseil de pilotage des retraites"]},
@@ -1182,15 +1210,15 @@ Object.assign(DEB,{
 travail:[
 {id:"smic",t:"Les salaires",q:"Faut-il augmenter le SMIC, ou plutôt baisser ce qui est prélevé sur la fiche de paie ?",
 pos:{
-  melenchon:{s:"SMIC à 1 600 € net tout de suite, tous les salaires indexés sur l'inflation, et un écart maximal de 1 à 20 dans chaque entreprise.",m:["SMIC à 1 600 € net et indexation","Écart de salaire maximal de 1 à 20"]},
-  glucksmann:{s:"SMIC à 1 600 € net en deux ans, et salaire net augmenté par une baisse de la CSG financée par les gros héritages.",m:["SMIC à 1 600 € net","Hausse du net financée par les méga-héritages","Conférences salariales"]},
+  melenchon:{s:"SMIC à 1 700 € net tout de suite, tous les salaires indexés sur l'inflation, et un écart maximal de 1 à 20 dans chaque entreprise.",m:["SMIC à 1 700 € net et indexation", "Écart de salaire maximal de 1 à 20"]},
+  glucksmann:{s:"SMIC à 1 700 € net, dont 100 € tout de suite, et une CSG progressive financée par les gros héritages.",m:["SMIC à 1 700 € net", "Hausse du net financée par les méga-héritages", "Conférences salariales"]},
   tondelier:{s:"Salaire minimum à 2 000 € brut (environ 1 560 € net), et aides aux entreprises réservées à celles qui augmentent les salaires.",m:["Salaire minimum à 2 000 € brut","Exonérations conditionnées aux hausses de salaire"]},
   attal:{s:"Pas de coup de pouce au SMIC : baisser les cotisations payées par le salarié pour augmenter le net.",m:["Baisser les cotisations salariales"]},
   lepen:{s:"Les employeurs pourraient augmenter les salaires de 10 % sans payer de cotisations patronales sur la hausse.",m:["+10 % de salaire sans cotisations patronales"]},
   philippe:{s:"Alléger les cotisations sur le travail, et ne plus en prélever sur deux heures travaillées en plus chaque semaine.",m:["Alléger le poids des cotisations sur le travail","Deux heures de plus sans cotisations"]}
 },
-scale:{label:"SMIC net mensuel proposé",min:1450,max:1650,step:50,unit:" €",now:1478,nowLabel:"Aujourd'hui : 1 478 € net",
-  pts:{melenchon:1600,glucksmann:1600,tondelier:1560},
+scale:{label:"SMIC net mensuel proposé",min:1450,max:1750,step:50,unit:" €",now:1478,nowLabel:"Aujourd'hui : 1 478 € net",
+  pts:{melenchon:1700,glucksmann:1700,tondelier:1560},
   offLabel:"Plutôt des baisses de prélèvements",off:{attal:"Baisser les cotisations salariales.",lepen:"+10 % sans cotisations patronales.",philippe:"Moins de cotisations, deux heures de plus exonérées."}},
 how:[
   ["Le SMIC est le salaire horaire minimum : 12,31 € brut depuis juin 2026, soit 1 867 € brut et 1 478 € net par mois pour 35 heures. Il est revalorisé chaque 1er janvier, et en cours d'année dès que les prix montent de plus de 2 %. Le gouvernement peut ajouter un « coup de pouce », ce qu'il n'a pas fait depuis 2012.",["smic"]],
@@ -1323,10 +1351,10 @@ impl:[
 fiscalite:[
 {id:"riches",t:"Taxer les plus riches ?",q:"Faut-il un impôt sur la fortune, taxer plus les gros héritages, ou au contraire ne rien augmenter ?",
 pos:{
-  melenchon:{s:"Taxe Zucman, ISF « climatique », impôt sur le revenu à 14 tranches, et héritage plafonné à 12 M€ par personne.",m:["Taxe Zucman","Retour d'un ISF « climatique »","Héritage plafonné à 12 M€","Impôt sur le revenu à 14 tranches"]},
+  melenchon:{s:"Taxe Zucman, ISF « climatique », fin de la flat tax, impôt sur le revenu à 14 tranches, et héritage plafonné à 12 M€ par personne.",m:["Taxe Zucman", "Retour d'un ISF « climatique »", "Fin de la flat tax", "Héritage plafonné à 12 M€", "Impôt sur le revenu à 14 tranches"]},
   tondelier:{s:"Impôt sur la grande fortune, taxe Zucman, et héritage plus progressif.",m:["Rétablir l'impôt sur la grande fortune","Taxe Zucman : 2 % au-delà de 100 M€","Héritage progressif"]},
   roussel:{s:"ISF rétabli et renforcé, impôt sur le revenu à 15 tranches.",m:["ISF rétabli et renforcé","Impôt sur le revenu à 15 tranches"]},
-  glucksmann:{s:"Une grande réforme de l'impôt pour moins taxer le travail et plus l'héritage ; taxe sur les héritages de plus de 2 M€.",m:["Grande réforme fiscale","Hausse du net financée par les méga-héritages"]},
+  glucksmann:{s:"Une grande réforme de l'impôt pour moins taxer le travail et plus l'héritage, et une contribution climat exceptionnelle de 50 Md€ sur les fortunes de plus de 100 M€.",m:["Grande réforme fiscale", "Hausse du net financée par les méga-héritages", "Contribution climat sur les très grandes fortunes"]},
   lepen:{s:"Pas d'ISF, mais un impôt sur la fortune financière à la place de l'IFI ; successions allégées pour les classes moyennes.",m:["Un impôt sur la fortune financière","Successions et donations allégées"]},
   attal:{s:"Aucune hausse des droits de succession, donations facilitées.",m:["Pas de hausse des droits de succession"]},
   philippe:{s:"Aucun nouvel impôt pendant cinq ans.",m:["Pas de nouvel impôt pendant cinq ans"]},
@@ -1416,7 +1444,7 @@ pos:{
   roussel:{s:"Carburant bloqué à 1,60 € le litre, électricité et gaz 30 % moins chers.",m:["Carburant bloqué à 1,60 € le litre","Électricité et gaz –30 %"]},
   tondelier:{s:"Encadrer les prix de l'énergie, du logement, de l'eau et de l'alimentation de qualité.",m:["Encadrer les prix des biens essentiels"]},
   lepen:{s:"TVA à 5,5 % sur l'énergie et les carburants, supprimée sur 100 produits essentiels ; péages 15 % moins chers.",m:["TVA à 5,5 % sur l'énergie","Péages –15 %, fin de la redevance"]},
-  glucksmann:{s:"Pas de baisse générale des taxes : un chèque énergie de 500 € ciblé sur les ménages modestes et moyens.",m:["Chèque énergie à 500 € plutôt que baisse des taxes"]}
+  glucksmann:{s:"Pas de baisse générale des taxes : un chèque énergie de 500 € ou 200 € pour 16 millions de familles, et des marges encadrées sur le carburant.",m:["Chèque énergie à 500 € plutôt que baisse des taxes"]}
 },
 how:[
   "Bloquer un prix, c'est interdire de vendre au-dessus d'un plafond fixé par l'État. Une ordonnance de 1945 le permettait largement, jusqu'à la liberté des prix de 1986. Aujourd'hui, l'État peut encore bloquer des prix en cas de crise.",
@@ -1462,8 +1490,8 @@ pos:{
   lepen:{s:"Nouveaux réacteurs et barrages, arrêt de l'éolien et démontage progressif des parcs, moratoire sur le solaire.",m:["Relancer nucléaire et hydroélectricité","Stop à l'éolien"]},
   roussel:{s:"Un mix 100 % public et décarboné, nucléaire et renouvelables.",m:["Nucléaire et pôle public de l'énergie"]},
   tondelier:{s:"Pas de nouveaux réacteurs ; la part du nucléaire baisserait au profit des renouvelables, sans calendrier chiffré.",m:["Sortie progressive du nucléaire"]},
-  melenchon:{s:"Abandonner les EPR, sortir du nucléaire et viser 100 % de renouvelables.",m:["Sortir du nucléaire"]},
-  glucksmann:{s:"Garder le nucléaire et doubler les renouvelables d'ici 2035, avec 200 Md€ d'investissements publics.",m:["200 Md€ pour l'énergie"]},
+  melenchon:{s:"Pas de nouveaux EPR, aucun réacteur au-delà de 60 ans, et 100 % de renouvelables au plus tard en 2060.",m:["Sortir du nucléaire"]},
+  glucksmann:{s:"Prolonger les réacteurs existants et au moins doubler les renouvelables d'ici 2035, avec 200 Md€ d'argent public.",m:["200 Md€ pour l'énergie"]},
   retailleau:{s:"Priorité au nucléaire, moins de subventions pour l'éolien et le solaire.",m:["Nucléaire oui, éolien et solaire moins aidés"]}
 },
 how:[
@@ -1545,7 +1573,7 @@ impl:[
 
 {id:"climat",t:"Le rythme de la transition",q:"À quelle vitesse baisser les émissions, et qui fait l'effort ?",
 pos:{
-  melenchon:{s:"–65 % d'émissions en 2030, 200 Md€ d'investissement, et une « règle verte » dans la Constitution.",m:["–65 % d'émissions en 2030","Plan d'investissement de 200 Md€","Planification écologique et « règle verte »"]},
+  melenchon:{s:"–65 % d'émissions d'ici 2033, 200 Md€ d'investissement, et une « règle verte » dans la Constitution.",m:["–65 % d'émissions d'ici 2033","Plan d'investissement de 200 Md€","Planification écologique et « règle verte »"]},
   tondelier:{s:"Neutralité carbone dès 2040, 110 km/h sur autoroute, grands projets gelés et 7 Md€ par an pour l'adaptation.",m:["110 km/h sur autoroute","Geler les grands projets","7 Md€ par an pour l'adaptation"]},
   glucksmann:{s:"Une grande loi climat : –90 % d'émissions en 2040, et un plan rail national.",m:["Une grande loi climat","Un plan rail national"]},
   roussel:{s:"140 Md€ par an pour le climat et transports publics gratuits.",m:["140 Md€ par an pour le climat","Transports publics gratuits"]},
@@ -1612,7 +1640,7 @@ pos:{
   attal:{s:"Moins d'immigration familiale, et une immigration de travail choisie par un système à points.",m:["Moins de regroupement familial","« Préférence travail »"]},
   glucksmann:{s:"Des voies légales d'immigration de travail, et une convention citoyenne pour décider de la politique migratoire.",m:["Voies légales d'immigration de travail","Une convention citoyenne sur l'immigration"]},
   tondelier:{s:"Des voies d'entrée légales et sûres, par une révision du pacte européen.",m:["Voies légales et sûres"]},
-  melenchon:{s:"Visas facilités, régularisation des travailleurs, étudiants et parents d'enfants scolarisés.",m:["Régularisations et carte de 10 ans"]},
+  melenchon:{s:"Visas facilités, régularisation des travailleurs, étudiants et parents d'enfants scolarisés, carte de séjour de 10 ans.",m:["Régularisations et carte de 10 ans"]},
   roussel:{s:"Une politique d'accueil et des voies d'accès légales et sûres.",m:["Une politique d'accueil d'humanité"]},
   retailleau:{s:"Un référendum sur l'immigration et des quotas votés chaque année.",m:["Un référendum sur l'immigration", "Quotas migratoires votés"]},
   villepin:{s:"Une loi pluriannuelle, préparée après consultation, avec une immigration choisie selon le mérite.",m:["Une loi pluriannuelle sur l'immigration"]}
@@ -1702,7 +1730,7 @@ pos:{
   philippe:{s:"Expulsion immédiate des étrangers délinquants, « centres de retour » hors UE, liste de pays sûrs votée chaque année.",m:["Expulsion immédiate des étrangers délinquants","Liste de pays sûrs votée chaque année","Dénoncer l'accord de 1968 avec l'Algérie"]},
   attal:{s:"Permettre de refouler aux frontières intérieures de l'espace Schengen.",m:["Réformer Schengen"]},
   glucksmann:{s:"Remplacer Dublin par une répartition des demandeurs en Europe, et une force européenne de sauvetage en mer.",m:["Fin du système de Dublin","Sauvetage en mer européen"]},
-  melenchon:{s:"Suspendre Dublin et renégocier les accords du Touquet avec le Royaume-Uni.",m:["Suspendre Dublin, renégocier le Touquet"]},
+  melenchon:{s:"Refuser le pacte européen sur la migration et l'asile, et fermer les centres de rétention.",m:["Refuser le pacte européen, fermer les CRA"]},
   tondelier:{s:"Remplacer Frontex par une agence de sauvetage, et mettre fin aux refoulements aux frontières.",m:["Remplacer Frontex","Fin des refoulements aux frontières"]},
   villepin:{s:"Enregistrement biométrique obligatoire des étrangers sans titre de séjour.",m:["Enregistrement biométrique des sans-papiers"]}
 },
@@ -1914,7 +1942,7 @@ impl:[
 
 {id:"referendum",t:"Référendums et RIC",q:"Les citoyens doivent-ils pouvoir déclencher eux-mêmes un référendum ?",
 pos:{
-  melenchon:{s:"RIC pour proposer ou abroger une loi, modifier la Constitution ou révoquer un élu, avec 900 000 signatures.",m:["Le référendum d'initiative citoyenne"]},
+  melenchon:{s:"RIC pour proposer ou abroger une loi, modifier la Constitution ou révoquer un élu ; vote à 16 ans et vote obligatoire.",m:["Le référendum d'initiative citoyenne", "Vote à 16 ans et vote obligatoire"]},
   lepen:{s:"Un RIC sur tous les sujets.",m:["RIC et proportionnelle"]},
   glucksmann:{s:"Référendums locaux et nationaux à l'initiative des citoyens, et conventions citoyennes généralisées.",m:["Référendums d'initiative citoyenne"]},
   attal:{s:"Une journée référendaire chaque année, avec des questions préparées avec les partis et les syndicats.",m:["Une journée référendaire chaque année"]},
@@ -2014,7 +2042,7 @@ Object.assign(DEB,{
 europe:[
 {id:"ukraine",t:"Ukraine et Russie",q:"Faut-il augmenter l'aide militaire à l'Ukraine, ou privilégier la négociation ?",
 pos:{
-  glucksmann:{s:"Aide militaire fortement augmentée, à l'Ukraine comme à la Moldavie et à l'Arménie.",m:["Aide militaire à l'Ukraine"]},
+  glucksmann:{s:"Aide militaire fortement augmentée, protection du ciel ukrainien, et saisie des 210 Md€ d'avoirs russes gelés.",m:["Aide militaire à l'Ukraine", "Protéger le ciel ukrainien"]},
   tondelier:{s:"Aide militaire, avoirs russes gelés pour l'Ukraine, et arrêt immédiat des achats de gaz, d'uranium et d'engrais russes.",m:["Soutien à l'Ukraine","Avoirs russes pour l'Ukraine","Stop au gaz, à l'uranium et aux engrais russes"]},
   attal:{s:"Poursuivre le soutien, saisir les avoirs russes gelés.",m:["Réarmement et Ukraine"]},
   melenchon:{s:"Une voie diplomatique : cessez-le-feu, retrait des troupes russes et négociations de paix.",m:["Ukraine : une voie diplomatique"]},
@@ -2062,7 +2090,7 @@ pos:{
   glucksmann:{s:"Un fonds européen de défense de 500 Md€, et la dissuasion nucléaire française proposée aux partenaires.",m:["Fonds de défense de 500 Md€","Dissuasion nucléaire étendue"]},
   attal:{s:"Poursuivre le réarmement et faire de la dissuasion « avancée » un outil européen.",m:["Réarmement et Ukraine"]},
   lepen:{s:"Budget des armées à 55 Md€.",m:["Défense à 55 Md€"]},
-  melenchon:{s:"Sortir du commandement intégré de l'OTAN puis de l'organisation, pas d'armée européenne, conscription citoyenne de 9 mois.",m:["Quitter l'OTAN","Pas d'armée européenne","Une conscription citoyenne de 9 mois"]},
+  melenchon:{s:"Sortir du commandement intégré de l'OTAN puis de l'organisation, refuser l'objectif de 5 % du PIB, conscription citoyenne de 9 mois.",m:["Quitter l'OTAN", "Pas d'armée européenne", "Une conscription citoyenne de 9 mois"]},
   roussel:{s:"Quitter l'OTAN et signer le traité d'interdiction des armes nucléaires.",m:["Quitter l'OTAN","Signer le traité d'interdiction des armes nucléaires"]},
   retailleau:{s:"Défense à 3 % du PIB, maintien dans l'OTAN.",m:["Défense à 3 % du PIB", "OTAN et soutien à l'Ukraine"]},
   villepin:{s:"Défense à 3,5 % du PIB si l'économie le permet.",m:["Défense à 3,5 % du PIB"]}
@@ -2350,7 +2378,7 @@ pos:{
   melenchon:{s:"Démanteler Parcoursup, accès sans sélection à la formation choisie, enseignement supérieur gratuit.",m:["Fin de Parcoursup"]},
   roussel:{s:"Fin de la sélection à l'université et revenu étudiant de 850 €.",m:["Fin de la sélection à l'université","Revenu étudiant de 850 €"]},
   tondelier:{s:"Remplacer Parcoursup par une plateforme sans lettre de motivation ni mention du lycée, et 150 000 logements étudiants.",m:["Remplacer Parcoursup","150 000 logements étudiants"]},
-  glucksmann:{s:"Remplacer les bourses par un capital formation utilisable toute la vie, et repenser Parcoursup.",m:["Un capital formation universel"]},
+  glucksmann:{s:"Abroger Parcoursup et lancer des états généraux de l'orientation ; remplacer les bourses par un capital formation.",m:["Abroger Parcoursup", "Un capital formation universel"]},
   lepen:{s:"100 000 logements étudiants, et frais d'inscription plus élevés pour les étudiants étrangers.",m:["Logements étudiants"]},
   philippe:{s:"Former 100 000 ingénieurs par an d'ici cinq ans.",m:["100 000 ingénieurs par an"]}
 },
@@ -2660,7 +2688,7 @@ app.addEventListener("click",e=>{
 
 // GitHub Pages laisse le navigateur garder la page 10 minutes en cache : on vérifie en ligne
 // si une version plus récente existe et, si oui, on recharge une seule fois.
-const BUILD="2026-11-23b";
+const BUILD="2026-11-24a";
 function fresh(){
   if(!/^https?:$/.test(location.protocol))return;
   fetch(location.pathname,{cache:"reload"}).then(r=>r.ok?r.text():"").then(t=>{
